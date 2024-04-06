@@ -14,9 +14,8 @@ class Variables(enumerate):
     """
     Class to set all support variables.
     """
-
     @staticmethod
-    def _get_all_variables() -> list:
+    def get_all_variables() -> list:
         """
         Retrieves all class-level variables of the Variables class.
 
@@ -26,21 +25,21 @@ class Variables(enumerate):
         attributes = inspect.getmembers(Variables, lambda attr: not (inspect.isroutine(attr)))
         return [v for v in attributes if not (v[0].startswith("__") and v[0].endswith("__"))]
 
+
     @staticmethod
     def check_variables() -> None:
         """
         Check if all variables defined in the Variables class have been initialized.
-
-        Args:
-            class_variables (callable): Instance of class Variables.
         """
-        for key, value in Variables._get_all_variables():
+        for key, value in Variables.get_all_variables():
             if not value:
                 print(
                     f"The variable {key} was not created, because the value is: '{value}'"
                 )
 
+
     NAME_VAR: str = ""
+
 
 if __name__ == "__main__":
     Variables.check_variables()

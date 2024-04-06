@@ -3,60 +3,26 @@
 # ================================================================================================
 # Module: readers.py
 # Author: Fernando Theodoro Guimarães
-# E-mail: fernando.guimaraes@boavistascpc.com.br
+# E-mail:
 # Description: This module is responsible for methods that apply operations to Pandas DataFrames.
-# Value Stream: Data
-# Squad: Dados Alternativos
 # ================================================================================================
-import importlib
-import os
-import sys
 from typing import Optional
-
-import fastparquet
 import pandas as pd
-from pandas.errors import ParserError
-
-# When run in Dataproc workspace the original directory structure is not preserved.
-# These imports are useful for the code to be executed both locally and in another external environment.
-PATH = os.path.dirname(os.path.abspath("__file__"))
-sys.path.append(PATH)
-
-def get_module_path(root_path: str):
-    """
-    This function returns the module path based on the given root path.
-
-    Args:
-    root_path (str): The root path of the module.
-
-    Returns:
-    str: If PATH does not start with sys.argv[9], it returns the root path. 
-    """
-    if not PATH.startswith(sys.argv[9]):
-        return root_path
-    else:
-        return root_path.split(".")[-1]
 
 
-LOGGER_MOD_PATH = get_module_path("src.utils.helpers.logger")
-Logger = importlib.import_module(LOGGER_MOD_PATH).Logger
-
-
-class PandasFileHandle:
+class Readers:
     """
     This class provides methods for reading data from a Pandas.
     """
 
-    def __init__(self, logger_obj=Logger) -> None:
+    def __init__(self) -> None:
         """
-        Initializes the PandasCsvHandle object.
-
-        Args:
-            logger (logging.Logger): The logger to be used for logging.
+        Initializes the PandasCsvHandle object..
         """
-        self.logger = logger_obj()
+        pass
 
-    def create_df(self, data: str, columns: list, index: Optional[any] = None) -> pd.DataFrame:
+    @staticmethod
+    def create_df(data: str, columns: list, index: Optional[any] = None) -> pd.DataFrame:
         """
         Creates a pandas DataFrame from file.
 
@@ -67,14 +33,11 @@ class PandasFileHandle:
         Returns:
             pd.DataFrame: The DataFrame obtained from the JSON file.
         """
-        try:
-            df = pd.DataFrame(data=data, index=index, columns=columns)
-            return df
-        except FileNotFoundError as error:
-            self.logger.error(f"FileNotFoundError: {error}")
-            return None
+        df = pd.DataFrame(data=data, index=index, columns=columns)
+        return df
 
-    def normalize_json_file(self, file: str) -> pd.DataFrame:
+    @staticmethod
+    def normalize_json_file(file: str) -> pd.DataFrame:
         """
         Normalize a JSON file and converts it into a pandas DataFrame.
 
@@ -84,15 +47,12 @@ class PandasFileHandle:
         Returns:
             pd.DataFrame: The DataFrame obtained from the JSON file.
         """
-        try:
-            df = pd.json_normalize(file)
-            return df
-        except FileNotFoundError as error:
-            self.logger.error(f"FileNotFoundError: {error}")
-            return None
 
+        df = pd.json_normalize(file)
+        return df
+
+    @staticmethod
     def read_json_file(
-        self,
         file_path: str,
         encoding: str,
         orient: Optional[str] = None,
@@ -108,19 +68,11 @@ class PandasFileHandle:
         Returns:
             pd.DataFrame: The DataFrame obtained from the JSON file.
         """
-        try:
-            df = pd.read_json(
-                file_path,
-                encoding=encoding,
-                orient=orient,
-            )
-            return df
-        except FileNotFoundError as error:
-            self.logger.error(f"FileNotFoundError: {error}")
-            return None
+        df = pd.read_json(file_path, encoding=encoding, orient=orient)
+        return df
 
+    @staticmethod
     def read_csv_file(
-        self,
         file_path: str,
         sep: str,
         encoding: str,
@@ -142,22 +94,15 @@ class PandasFileHandle:
         Returns:
             pd.DataFrame: The DataFrame obtained from the CSV file.
         """
-        try:
-            df = pd.read_csv(
-                file_path,
-                sep=sep,
-                encoding=encoding,
-                header=header,
-                engine=engine,
-                on_bad_lines=on_bad_lines,
-            )
-            return df
-        except FileNotFoundError as error:
-            self.logger.error(f"FileNotFoundError: {error}")
-            return None
-        except ParserError as error:
-            self.logger.error(f"OnBadLines in file: {error}")
-            return None
+        df = pd.read_csv(
+            file_path,
+            sep=sep,
+            encoding=encoding,
+            header=header,
+            engine=engine,
+            on_bad_lines=on_bad_lines,
+        )
+        return df
 
     @staticmethod
     def convert_to_csv_file(
@@ -168,7 +113,7 @@ class PandasFileHandle:
         mode: str = "w",
         header: Optional[bool] = True,
         index: Optional[bool] = False,
-    ) -> None:
+    ) -> str:
         """
         Converts a pandas DataFrame into a CSV file.
 
@@ -181,9 +126,15 @@ class PandasFileHandle:
             header (bool, optional): Whether to write out the column names. Defaults to True.
             index (bool, optional): Whether to write row names. Defaults to False.
         """
-        return df.to_csv(
-            path_or_buf=file_path, sep=sep, encoding=encoding, mode=mode, header=header, index=index
+        df = df.to_csv(
+            path_or_buf=file_path,
+            sep=sep,
+            encoding=encoding,
+            mode=mode,
+            header=header,
+            index=index
         )
+        return df
 
     @staticmethod
     def convert_to_parquet_file(

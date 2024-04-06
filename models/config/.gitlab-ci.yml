@@ -1,0 +1,131 @@
+# ======================================================================================================================
+# Global
+# ======================================================================================================================
+stages:
+  - verify
+  - build
+  - pre-deploy
+  - deploy
+
+variables:
+  DOCKER_IMAGE_TAG: ""
+  PYTHON_IMAGE: "python:3.10.12-slim"
+
+build:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - /kaniko/executor --context=$CI_PROJECT_DIR --dockerfile=$CI_PROJECT_DIR/Dockerfile --destination=$DOCKER_IMAGE_TAG:$CI_COMMIT_SHORT_SHA --destination=$DOCKER_IMAGE_TAG
+
+# ======================================================================================================================
+# Tests Stage
+# ======================================================================================================================
+tests:
+  stage: tests
+  image: $PYTHON_IMAGE
+  before_script:
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
+    - export PYTHONPATH=$(pwd) PROJECT_ID=$PROJECT_ID_DEV BUCKET_ID=$BUCKET_ID_DEV
+  script:
+    - python -m unittest discover --start-directory src/tests --verbose --failfast --pattern '*_test.py
+
+# ======================================================================================================================
+# Build Docs Stage
+# ======================================================================================================================
+build_docs:
+  stage: pre-deploy
+  image: $PYTHON_IMAGE
+  before_script:
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
+    - pip install --upgrade sphinx furo sphinx_rtd_theme
+    - apt-get update && apt-get install make --no-install-recommends -y
+    - apt-get update && apt-get install -y git
+    - export PYTHONPATH=$(pwd)
+  script:
+    - sphinx-quickstart -q --sep -p '' -a 'Fernando Theodoro Guimarães' -v '1.0.0' -l 'pt_BR' docs
+    - sphinx-apidoc -f -e -o $CI_PROJECT_DIR/docs/source/modules -a .
+    - cp $CI_PROJECT_DIR/.config/conf.py $CI_PROJECT_DIR/docs/source/
+    - cd docs && make html
+  after_script:
+    - mv docs/build/html ./public
+  artifacts:
+    paths:
+    - ./public
+  allow_failure: true
+
+# ======================================================================================================================
+# Static Analysis Stage
+# ======================================================================================================================
+pylint:
+  stage: pre-deploy
+  image: $PYTHON_IMAGE
+  before_script:
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pylint
+    - export PYTHONPATH=$(pwd)
+    - mkdir pylint
+  script:
+    - pylint *.py --rcfile=.config/.pylintrc
+  after_script:
+    - pylint *.py --rcfile=.config/.pylintrc --output-format=json > pylint/pylint.json
+    - mv pylint ./public
+  artifacts:
+    paths:
+    - ./public
+  allow_failure: true
+
+bandit:
+  stage: pre-deploy
+  image: $PYTHON_IMAGE
+  before_script:
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade bandit
+    - mkdir bandit
+  script:
+    - bandit -r .
+  after_script:
+    - bandit -r -f json -o bandit/bandit.json .
+    - mv bandit ./public
+  artifacts:
+    paths:
+    - ./public
+  allow_failure: true
+
+coverage:
+  stage: pre-deploy
+  image: $PYTHON_IMAGE
+  before_script:
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade coverage
+    - export PYTHONPATH=$(pwd)
+    - mkdir coverage
+  script:
+      - coverage run --source $CI_PROJECT_DIR -m unittest discover --start-directory src/tests --verbose --failfast --pattern *_test.py
+      - coverage report -m
+  after_script:
+    - coverage html -d coverage/coverage.html
+    - coverage json -o coverage/coverage.json
+    - mv coverage ./public
+  artifacts:
+    paths:
+    - ./public
+  allow_failure: true
+
+radon:
+  stage: pre-deploy
+  image: $PYTHON_IMAGE
+  before_script:
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade radon
+    - mkdir radon
+  script:
+    - radon cc $CI_PROJECT_DIR
+    - radon mi $CI_PROJECT_DIR
+  after_script:
+    - radon cc -s $CI_PROJECT_DIR > radon/report_cc.txt
+    - radon mi -s $CI_PROJECT_DIR > radon/report_mi.txt
+    - mv radon ./public
+  artifacts:
+    paths:
+      - ./public
+  allow_failure: true
+    - main

@@ -3,10 +3,8 @@
 # ================================================================================================
 # Module: setup.py
 # Author: Fernando Theodoro Guimarães
-# E-mail: fernando.guimaraes@boavistascpc.com.br
+# E-mail:
 # Description: Setup script for Profissionais Liberais.
-# Value Stream: Data
-# Squad: Dados Alternativos
 # ================================================================================================
 from __future__ import annotations
 
@@ -35,7 +33,6 @@ setuptools.setup(
     python_requires=">=3.10",
     keywords="",
     classifiers=[
-        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Operating System :: OS Independent",
