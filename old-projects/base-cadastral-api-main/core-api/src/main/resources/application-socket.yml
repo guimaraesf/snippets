@@ -1,0 +1,746 @@
+app:
+  socket:
+      port: 5155
+      max-idle-pool-size: 250
+      min-idle-evictable: 5m #examples: -1, 5m, 1h
+      bye-command: BYE!!!
+      layout-servico:
+        BMACMDOC:
+        - campo: NUM_DOC
+          tamanho: 20
+        - campo: COD_TPO_DOC
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_TPO_DOC
+          tamanho: 30
+        - campo: MET_NUM_DOC
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_OGA_EMS
+          tamanho: 30
+        - campo: MET_NOM_OGA_EMS
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_EMS
+          tamanho: 10
+        - campo: MET_DAT_EMS
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_EST_EMS
+          tamanho: 2
+        - campo: MET_EST_EMS
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_SER_DOC
+          tamanho: 5
+        - campo: MET_NUM_SER_DOC
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_ZON
+          tamanho: 8
+        - campo: MET_NUM_ZON
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_SEC
+          tamanho: 8
+        - campo: MET_NUM_SEC
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_SIT_DOC
+          tamanho: 50
+        - campo: MET_DSC_SIT_TTL
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_LCL_VOT
+          tamanho: 100
+        - campo: MET_DSC_LCL_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_EDR_VOT
+          tamanho: 80
+        - campo: MET_DSC_EDR_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_BRO_VOT
+          tamanho: 100
+        - campo: MET_NOM_BRO_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_CDD_VOT
+          tamanho: 80
+        - campo: MET_NOM_CDD_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_EST_VOT
+          tamanho: 2
+        - campo: MET_EST_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_ATL_VOT
+          tamanho: 10
+        - campo: MET_DAT_ATL_VOT
+          tamanho: 9
+          pad: LEFT
+        BMIDOCNT:
+        - campo: COD_PSS_FIS
+          tamanho: 18
+        - campo: NUM_DOC
+          tamanho: 20
+        - campo: COD_TPO_DOC
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_TPO_DOC
+          tamanho: 30
+        - campo: MET_NUM_DOC
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_OGA_EMS
+          tamanho: 30
+        - campo: MET_NOM_OGA_EMS
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_EMS
+          tamanho: 10
+        - campo: MET_DAT_EMS
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_EST_EMS
+          tamanho: 2
+        - campo: MET_EST_EMS
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_SER_DOC
+          tamanho: 5
+        - campo: MET_NUM_SER_DOC
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_ZON
+          tamanho: 8
+        - campo: MET_NUM_ZON
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_SEC
+          tamanho: 8
+        - campo: MET_NUM_SEC
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_SIT_DOC
+          tamanho: 50
+        - campo: MET_DSC_SIT_TTL
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_LCL_VOT
+          tamanho: 100
+        - campo: MET_DSC_LCL_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_EDR_VOT
+          tamanho: 80
+        - campo: MET_DSC_EDR_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_BRO_VOT
+          tamanho: 100
+        - campo: MET_NOM_BRO_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_CDD_VOT
+          tamanho: 80
+        - campo: MET_NOM_CDD_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_EST_VOT
+          tamanho: 2
+        - campo: MET_EST_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_ATL_VOT
+          tamanho: 10
+        - campo: MET_DAT_ATL_VOT
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_CAD
+          tamanho: 26
+        - campo: COD_ORG
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_ORG
+          tamanho: 60
+        BMACIDEN:
+        - campo: NUM_CPF
+          tamanho: 11
+        - campo: MET_CPF
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_PSS_FIS
+          tamanho: 70
+        - campo: MET_NOM_PSS_FIS
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_SEX
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_SEX
+          tamanho: 20
+        - campo: MET_COD_SEX
+          tamanho: 9
+        - campo: COD_EST_CIV
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_EST_CIV
+          tamanho: 30
+        - campo: MET_COD_EST_CIV
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_PRO
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_PRO
+          tamanho: 150
+        - campo: MET_COD_PRO
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_NSC
+          tamanho: 10
+        - campo: MET_DAT_NSC
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_NAC
+          tamanho: 30
+        - campo: MET_DSC_NAC
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_PAS_NSC
+          tamanho: 100
+        - campo: MET_NOM_PAS_NSC
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_PAI
+          tamanho: 70
+        - campo: MET_NOM_PAI
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_MAE
+          tamanho: 70
+        - campo: MET_NOM_MAE
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_DPD
+          tamanho: 9
+          pad: LEFT
+        - campo: MET_NUM_DPD
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_CJG
+          tamanho: 100
+        - campo: MET_NOM_CJG
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_STS_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_STS_RCT
+          tamanho: 30
+        - campo: NUM_PRL_RCT
+          tamanho: 20
+        - campo: MET_NUM_PRL_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: MET_PRL_STS_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_CST_RCT
+          tamanho: 10
+        - campo: MET_DAT_CST_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_GAU_ITC
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_GAU_ITC
+          tamanho: 40
+        - campo: MET_COD_GAU_ITC
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_DOC
+          tamanho: 20
+        - campo: HOR_CST_RCT
+          tamanho: 8
+        - campo: COD_OBT
+          tamanho: 1
+        BMIDECNT:
+        - campo: NUM_CPF
+          tamanho: 11
+        - campo: MET_CPF
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_PSS_FIS
+          tamanho: 70
+        - campo: MET_NOM_PSS_FIS
+          tamanho: 9
+        - campo: COD_PSS_FIS
+          tamanho: 18
+          pad: LEFT
+        - campo: COD_SEX
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_SEX
+          tamanho: 20
+        - campo: MET_COD_SEX
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_EST_CIV
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_EST_CIV
+          tamanho: 30
+        - campo: MET_COD_EST_CIV
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_PRO
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_PRO
+          tamanho: 150
+        - campo: MET_COD_PRO
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_NSC
+          tamanho: 10
+        - campo: MET_DAT_NSC
+          tamanho: 9
+        - campo: DSC_NAC
+          tamanho: 30
+        - campo: MET_DSC_NAC
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_PAS_NSC
+          tamanho: 100
+        - campo: MET_NOM_PAS_NSC
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_PAI
+          tamanho: 70
+        - campo: MET_NOM_PAI
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_MAE
+          tamanho: 70
+        - campo: MET_NOM_MAE
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_DPD
+          tamanho: 9
+          pad: LEFT
+        - campo: MET_NUM_DPD
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_CJG
+          tamanho: 100
+        - campo: MET_NOM_CJG
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_STS_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_STS_RCT
+          tamanho: 30
+        - campo: NUM_PRL_RCT
+          tamanho: 20
+        - campo: MET_NUM_PRL_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: MET_PRL_STS_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_CST_RCT
+          tamanho: 10
+        - campo: MET_DAT_CST_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: HOR_CST_RCT
+          tamanho: 8
+        - campo: COD_CSS_SCL
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_CSS_SCL
+          tamanho: 30
+        - campo: MET_COD_CSS_SCL
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_GAU_ITC
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_GAU_ITC
+          tamanho: 40
+        - campo: MET_COD_GAU_ITC
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_CAD
+          tamanho: 26
+        - campo: COD_ORG
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_ORG
+          tamanho: 115
+        BMACCONT:
+        - campo: COD_ORG
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_ORG
+          tamanho: 60
+        - campo: COD_PSS_FIS
+          tamanho: 18
+          pad: LEFT
+        - campo: MET_COD_CTT
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_TPO_CTT
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_TPO_CTT
+          tamanho: 40
+        - campo: COD_CSS_CTT
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_CSS_CTT
+          tamanho: 30
+        - campo: DAT_ITL
+          tamanho: 10
+        - campo: MET_DAT_ITL
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_STS_CTT
+          tamanho: 9
+        - campo: DSC_STS_CTT
+          tamanho: 20
+        - campo: MET_COD_STS_CTT
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_TPO_SIG
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_TPO_SIG
+          tamanho: 40
+        - campo: MET_COD_TPO_SIG
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_REG
+          tamanho: 10
+        - campo: TPO_ATL
+          tamanho: 2
+        - campo: DSC_CTT
+          tamanho: 80
+        BMACMCNT:
+        - campo: COD_ORG
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_ORG
+          tamanho: 60
+        - campo: COD_PSS_FIS
+          tamanho: 18
+          pad: LEFT
+        - campo: MET_COD_CTT
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_TPO_CTT
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_TPO_CTT
+          tamanho: 40
+        - campo: COD_CSS_CTT
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_CSS_CTT
+          tamanho: 30
+        - campo: DAT_ITL
+          tamanho: 10
+        - campo: MET_DAT_ITL
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_STS_CTT
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_STS_CTT
+          tamanho: 20
+        - campo: MET_COD_STS_CTT
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_TPO_SIG
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_TPO_SIG
+          tamanho: 40
+        - campo: MET_COD_TPO_SIG
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_REG
+          tamanho: 10
+        - campo: TPO_ATL
+          tamanho: 2
+        - campo: DSC_CTT
+          tamanho: 80
+        BMACENDE:
+        - campo: COD_ORG
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_ORG
+          tamanho: 60
+        - campo: COD_PSS_FIS
+          tamanho: 18
+          pad: LEFT
+        - campo: MET_COD_EDR
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_TPO_EDR
+          tamanho: 40
+        - campo: DAT_INI_RSD
+          tamanho: 10
+        - campo: MET_DAT_INI_RSD
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_ULT_ALT
+          tamanho: 34
+        - campo: SGL_TPO_LGR
+          tamanho: 10
+        - campo: NOM_LGR
+          tamanho: 70
+        - campo: NUM_LGR
+          tamanho: 10
+        - campo: DSC_CPT
+          tamanho: 50
+        - campo: NOM_BRO
+          tamanho: 65
+        - campo: NUM_CEP
+          tamanho: 8
+        - campo: NOM_CDD
+          tamanho: 65
+        - campo: COD_EST
+          tamanho: 2
+        - campo: DSC_PAS
+          tamanho: 30
+        - campo: NUM_LTT
+          tamanho: 15
+        - campo: NUM_LGT
+          tamanho: 15
+        - campo: COD_SET_CNS_2000
+          tamanho: 15
+        - campo: COD_SET_CNS_2010
+          tamanho: 15
+        BMACMEND:
+        - campo: MET_COD_EDR
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_INI_RSD
+          tamanho: 10
+        - campo: MET_DAT_INI_RSD
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_CAD
+          tamanho: 30
+        - campo: SGL_TPO_LGR
+          tamanho: 10
+        - campo: NOM_LGR
+          tamanho: 70
+        - campo: NUM_LGR
+          tamanho: 10
+        - campo: DSC_CPT
+          tamanho: 50
+        - campo: NOM_BRO
+          tamanho: 65
+        - campo: NUM_CEP
+          tamanho: 8
+        - campo: NOM_CDD
+          tamanho: 65
+        - campo: COD_EST
+          tamanho: 2
+        - campo: DSC_PAS
+          tamanho: 30
+        - campo: NUM_LTT
+          tamanho: 15
+        - campo: NUM_LGT
+          tamanho: 15
+        - campo: COD_SET_CNS_2000
+          tamanho: 15
+        - campo: COD_SET_CNS_2010
+          tamanho: 15
+        BMIDEN00:
+        - campo: NUM_CPF
+          tamanho: 11
+        - campo: MET_CPF
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_PSS_FIS
+          tamanho: 70
+        - campo: MET_NOM_PSS_FIS
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_SEX
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_SEX
+          tamanho: 20
+        - campo: MET_COD_SEX
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_EST_CIV
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_EST_CIV
+          tamanho: 30
+        - campo: MET_COD_EST_CIV
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_PRO
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_PRO
+          tamanho: 150
+        - campo: MET_COD_PRO
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_NSC
+          tamanho: 10
+        - campo: MET_DAT_NSC
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_NAC
+          tamanho: 30
+        - campo: MET_DSC_NAC
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_PAS_NSC
+          tamanho: 100
+        - campo: MET_NOM_PAS_NSC
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_PAI
+          tamanho: 70
+        - campo: MET_NOM_PAI
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_MAE
+          tamanho: 70
+        - campo: MET_NOM_MAE
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_DPD
+          tamanho: 9
+          pad: LEFT
+        - campo: MET_NUM_DPD
+          tamanho: 9
+          pad: LEFT
+        - campo: NOM_CJG
+          tamanho: 100
+        - campo: MET_NOM_CJG
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_STS_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_STS_RCT
+          tamanho: 30
+        - campo: NUM_PRL_RCT
+          tamanho: 20
+        - campo: MET_NUM_PRL_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: MET_PRL_STS_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: DAT_CST_RCT
+          tamanho: 10
+        - campo: MET_DAT_CST_RCT
+          tamanho: 9
+          pad: LEFT
+        - campo: COD_GAU_ITC
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_GAU_ITC
+          tamanho: 40
+        - campo: MET_COD_GAU_ITC
+          tamanho: 9
+          pad: LEFT
+        - campo: NUM_DOC
+          tamanho: 20
+        - campo: HOR_CST_RCT
+          tamanho: 8
+        - campo: COD_OBT
+          tamanho: 1
+        BMBPFEND:
+        - campo: COD_ORG
+          tamanho: 9
+          pad: LEFT
+        - campo: DSC_ORG
+          tamanho: 60
+        - campo: COD_PSS_FIS
+          tamanho: 18
+          pad: LEFT
+        - campo: MET_COD_EDR
+          tamanho: 3
+          pad: LEFT
+        - campo: COD_TPO_EDR
+          tamanho: 3
+          pad: LEFT
+        - campo: DSC_TPO_EDR
+          tamanho: 30
+        - campo: DAT_INI_RSD
+          tamanho: 10
+        - campo: MET_DAT_INI_RSD
+          tamanho: 3
+          pad: LEFT
+        - campo: DAT_CAD
+          tamanho: 10
+        - campo: DAT_ULT_ALT
+          tamanho: 10
+        - campo: SGL_TPO_LGR
+          tamanho: 10
+        - campo: NOM_LGR
+          tamanho: 70
+        - campo: NUM_LGR
+          tamanho: 10
+        - campo: DSC_CPT
+          tamanho: 50
+        - campo: NOM_BRO
+          tamanho: 65
+        - campo: NUM_CEP
+          tamanho: 8
+          pad: LEFT
+        - campo: NOM_CDD
+          tamanho: 65
+        - campo: COD_EST
+          tamanho: 2
+        - campo: DSC_PAS
+          tamanho: 30
+        - campo: NUM_LTT
+          tamanho: 40
+        - campo: NUM_LGT
+          tamanho: 40
+        - campo: COD_SET_CNS_0
+          tamanho: 15
+        - campo: COD_SET_CNS_1
+          tamanho: 15
+
+---
+spring:
+  profiles: prod
+
+app:
+  socket:
+    port: 5155
+
+---
+spring:
+  profiles: homol
+
+app:
+  socket:
+    port: 5155
+
+---
+spring:
+  profiles: dev
+
+app:
+  socket:
+    port: 5155

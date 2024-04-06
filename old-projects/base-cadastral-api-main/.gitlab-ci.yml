@@ -1,0 +1,133 @@
+# Template para versionamento, build, testes de segurança, publicação de artefatos docker e maven e deploy no gke
+
+#include:
+#    - project: 'tech/architecture/devsecops'
+#      file: 'stages/verify/sast-java.yml'
+#    - project: 'tech/architecture/devsecops'
+#      file: 'stages/verify/docker-lint.yml'
+
+stages:
+    - maven
+#    - verify
+    - build
+    - publish
+  
+variables:
+  DOCKER_IMAGE_TAG: 'gcr.io/bvs-main-98cb/api-base-cadastral'
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  MAVEN_CLI_OPTS: "--batch-mode"
+
+maven:
+  stage: maven
+  image: maven:3.5-jdk-8-alpine
+  cache:
+    paths:
+      - .m2/repository/
+      - security/target/
+      - core-common/target/
+      - core-bigtable/target/
+      - reversed-index-bigtable/target/
+      - scpc-fone/target/
+      - ppe-pessoa/target/
+      - rest-api-v1/target/
+      - rest-api-v2/target/
+      - socket-api/target/
+      - core-api/target/
+
+  script:
+    - mvn clean package
+  artifacts:
+    paths:
+      - security/target/*.jar
+      - core-common/target/*.jar
+      - core-bigtable/target/*.jar
+      - reversed-index-bigtable/target/*.jar
+      - scpc-fone/target/*.jar
+      - ppe-pessoa/target/*.jar
+      - rest-api-v1/target/*.jar
+      - rest-api-v2/target/*.jar
+      - socket-api/target/*.jar
+      - core-api/target/*.jar
+
+#sast:
+#  variables:
+#    BINARIES_PATH: "core-api/target"
+
+build:
+  stage: build
+  image: 
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+  - /kaniko/executor --context=$CI_PROJECT_DIR --dockerfile=$CI_PROJECT_DIR/Dockerfile --destination=$DOCKER_IMAGE_TAG:$CI_COMMIT_SHORT_SHA --destination=$DOCKER_IMAGE_TAG
+
+
+feature:
+  stage: publish
+  image: google/cloud-sdk:367.0.0
+  environment: develop
+  variables:
+    DOCKER_IMAGE_TAG: 'gcr.io/bvs-main-98cb/api-base-cadastral'
+  script:
+    - echo $GKE_PUBLISH_DEV
+    - gcloud auth activate-service-account --key-file $GKE_PUBLISH_DEV
+    - gcloud config set project dev-data-31ce
+    - gcloud config set compute/zone us-east1
+    - gcloud container clusters get-credentials gke-dev-data-cluster
+    - kubectl -n dados-cadastrais-dev set image deployment/dc-api-base-cadastral-dev dc-api-base-cadastral-dev=$DOCKER_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+    - kubectl -n dados-cadastrais-dev rollout status deployment.v1.apps/dc-api-base-cadastral-dev
+  only:
+    - feature-SCPC-Fone
+
+dev:
+  stage: publish
+  image: google/cloud-sdk:367.0.0
+  environment: develop
+  variables:
+    DOCKER_IMAGE_TAG: 'gcr.io/bvs-main-98cb/api-base-cadastral'
+  script:
+    - echo $GKE_PUBLISH_DEV
+    - gcloud auth activate-service-account --key-file $GKE_PUBLISH_DEV
+    - gcloud config set project dev-data-31ce
+    - gcloud config set compute/zone us-east1
+    - gcloud container clusters get-credentials gke-dev-data-cluster
+    - echo $DOCKER_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+    - kubectl -n dados-cadastrais-dev set image deployment/dc-api-base-cadastral-dev dc-api-base-cadastral-dev=$DOCKER_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+    - kubectl -n dados-cadastrais-dev rollout status deployment.v1.apps/dc-api-base-cadastral-dev
+  only:
+    - develop
+
+hml:
+  stage: publish
+  image: google/cloud-sdk:367.0.0
+  environment: hml
+  variables:
+    DOCKER_IMAGE_TAG: 'gcr.io/bvs-main-98cb/api-base-cadastral'
+  script:
+    - echo $GKE_PUBLISH_NP
+    - gcloud auth activate-service-account --key-file $GKE_PUBLISH_NP
+    - gcloud config set project data-88d7
+    - gcloud config set compute/zone southamerica-east1
+    - gcloud container clusters get-credentials gke-np-data-cluster
+    - kubectl -n dados-cadastrais-hml set image deployment/dc-api-base-cadastral-hml dc-api-base-cadastral-hml=$DOCKER_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+    - kubectl -n dados-cadastrais-hml rollout status deployment.v1.apps/dc-api-base-cadastral-hml
+  only:
+    - homolog
+
+prod:
+  stage: publish
+  image: google/cloud-sdk:367.0.0
+  environment: production
+  variables:
+    DOCKER_IMAGE_TAG: 'gcr.io/bvs-main-98cb/api-base-cadastral'
+  script:
+    - echo $GKE_PUBLISH_PROD  
+    - gcloud auth activate-service-account --key-file $GKE_PUBLISH_PROD
+    - gcloud config set project data-3660
+    - gcloud config set compute/zone us-east1
+    - gcloud container clusters get-credentials gke-prod-data-cluster-us
+    - kubectl -n dados-cadastrais-prod set image deployment/dc-api-base-cadastral-prod dc-api-base-cadastral-prod=$DOCKER_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+    - kubectl -n dados-cadastrais-prod rollout status deployment.v1.apps/dc-api-base-cadastral-prod
+  only:
+    - master
+  when: manual

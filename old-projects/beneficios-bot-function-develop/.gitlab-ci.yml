@@ -1,0 +1,357 @@
+# ======================================================================================================================
+# Global
+# ======================================================================================================================
+
+stages:
+  - verify
+  - build
+  - tests
+  - pre-deploy
+  - deploy-function
+
+variables:
+  DOCKER_IMAGE_TAG: 'gcr.io/bvs-main-98cb/da-beneficios-bot'
+  RUNTIME: "python311"
+  IMAGE: "399.0.0"
+  PYTHON_IMAGE: "3.10.12-slim"
+  INGRESS: "all"
+  ENTRYPOINT: "run_jobs"
+  REGION: "us-east1"
+  ZONE: "us-east1-b"
+  MEMORY: 4096MB
+  TIMEOUT: 540
+
+include:
+  - project: 'tech/architecture/devsecops'
+    file: 'stages/verify/code-quality.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH == "master"'
+  - project: 'tech/architecture/devsecops'
+    file: 'stages/verify/sast.yml'
+    rules:
+      - if: '$CI_COMMIT_BRANCH == "master"'
+# ======================================================================================================================
+#                                                   DEVELOPMENT
+# ======================================================================================================================
+
+# ======================================================================================================================
+# Build Stage
+# ======================================================================================================================
+build:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - /kaniko/executor --context=$CI_PROJECT_DIR --dockerfile=$CI_PROJECT_DIR/Dockerfile --destination=$DOCKER_IMAGE_TAG:$CI_COMMIT_SHORT_SHA --destination=$DOCKER_IMAGE_TAG
+
+# ======================================================================================================================
+# Tests Stage
+# ======================================================================================================================
+integration:
+  stage: tests
+  image: python:$PYTHON_IMAGE
+  before_script:
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
+    - export PYTHONPATH=$(pwd) PROJECT_ID=$PROJECT_ID_DEV BUCKET_ID=$BUCKET_NAME_DEV
+  script:
+    - python -m unittest discover --start-directory src/tests/integration --verbose --failfast --pattern 'test_*.py'
+
+# ======================================================================================================================
+# Build Docs Stage
+# ======================================================================================================================
+build_docs:
+  stage: pre-deploy
+  image: python:$PYTHON_IMAGE
+  before_script:
+    - pip install --upgrade sphinx furo sphinx_rtd_theme
+    - apt-get update && apt-get install make --no-install-recommends -y
+    - apt-get update && apt-get install -y git
+    - export PYTHONPATH=$(pwd)
+  script:
+    - sphinx-apidoc -o $CI_PROJECT_DIR/docs/source/modules .     
+    - cd docs/source && make html
+  # after_script:
+  #   - mv docs/source/build/html ./public
+  # artifacts:
+  #   paths:
+  #   - ./public
+
+# ======================================================================================================================
+# Static Analysis Stage
+# ======================================================================================================================
+pylint:
+  stage: pre-deploy
+  image: python:$PYTHON_IMAGE
+  before_script:
+    - pip install --upgrade pylint
+    - export PYTHONPATH=$(pwd)
+    - mkdir pylint
+  script:
+    - pylint --verbose --fail-under 7 --exit-zero --min-similarity-lines 10 --ignore-comments y --ignore-docstrings y --ignore-imports y --max-line-length 100 src/*.py src/data/ingestion/*.py src/data/ingestion/tasks/*.py src/tests/integration/*.py src/tests/unit/*.py src/utils/*.py src/utils/config/*.py src/utils/dataframe/*.py src/utils/gcp/*.py src/data/acquisition/tasks/beneficios/*.py src/data/acquisition/tasks/cnpj/*.py src/data/acquisition/tasks/debitos/*.py src/data/acquisition/tasks/fornecedores/*.py src/data/acquisition/tasks/ibama/*.py src/data/acquisition/tasks/sancoes/*.py src/data/acquisition/tasks/seguro-desemprego/*.py src/data/acquisition/tasks/servidores/*.py
+  # after_script:
+  #   - pylint --verbose --fail-under 7 --exit-zero --min-similarity-lines 10 --ignore-comments y --ignore-docstrings y --ignore-imports y --max-line-length 100 --output-format=json > pylint/pylint.json
+  #   - mv pylint ./public
+  # artifacts:
+  #   paths:
+  #   - ./public    
+  allow_failure: true
+
+autopep8:
+  stage: pre-deploy
+  image: python:$PYTHON_IMAGE
+  before_script:
+    - pip install --upgrade autopep8  
+  script:
+    - autopep8 --diff --verbose --max-line-length 100 --aggressive --recursive . 
+  allow_failure: true
+
+bandit:
+  stage: pre-deploy
+  image: python:$PYTHON_IMAGE
+  before_script:
+    - pip install --upgrade bandit  
+    - mkdir bandit
+  script:
+    - bandit -r -v --exit-zero .
+  # after_script:
+  #   - bandit -r -f json -o bandit/bandit.json .
+  #   - mv bandit ./public
+  # artifacts:
+  #   paths:
+  #   - ./public       
+  allow_failure: true
+
+coverage:
+  stage: pre-deploy
+  image: python:$PYTHON_IMAGE
+  before_script:
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
+    - pip install --upgrade coverage
+    - export PYTHONPATH=$(pwd) PROJECT_ID=$PROJECT_ID_DEV BUCKET_ID=$BUCKET_NAME_DEV
+    - mkdir coverage
+  script:
+      - coverage run --source $CI_PROJECT_DIR -m unittest discover --start-directory src/tests/integration --verbose --failfast --pattern test_*.py
+      - coverage report -m
+  # after_script:
+  #   - coverage html -d coverage/coverage.html
+  #   - coverage json -o coverage/coverage.json
+  #   - mv coverage ./public
+  # artifacts:
+  #   paths:
+  #   - ./public         
+  allow_failure: true
+
+radon:
+  stage: pre-deploy
+  image: python:$PYTHON_IMAGE
+  before_script:
+    - pip install --upgrade radon
+    - mkdir radon
+  script:
+    - radon cc --total-average --show-complexity --order SCORE --no-assert --exclude test_*.py __init__.py $CI_PROJECT_DIR
+    - radon mi --show --exclude test_*.py __init__.py $CI_PROJECT_DIR
+  # after_script:
+  #   - radon cc -s $CI_PROJECT_DIR > radon/report_cc.txt
+  #   - radon mi -s $CI_PROJECT_DIR > radon/report_mi.txt
+  #   - mv radon ./public
+  # artifacts:
+  #   paths:
+  #     - ./public
+  allow_failure: true
+
+# ======================================================================================================================
+# Source Code Sync Stage
+# ======================================================================================================================
+# sync-src-bucket-dev:
+#   stage: copy-files
+#   image: google/cloud-sdk:$IMAGE
+#   environment: development
+  #   - gcloud auth activate-service-account --key-file=$BOT_SA_DEV
+  #   - gsutil -m rm -r gs://$BUCKET_JOBS_DEV/src
+  # script:
+  #   - gsutil -m cp -r src/ gs://$BUCKET_JOBS_DEV
+  #   - gsutil -m mv -r gs://$BUCKET_JOBS_DEV/src/data/acquisition/tasks/**/*.py gs://$BUCKET_JOBS_DEV/src/data/acquisition/tasks/
+  # only:
+  #   - develop
+
+# ======================================================================================================================
+# Terraform Prep Stage
+# ======================================================================================================================
+terraform-prep-dev:
+  stage: pre-deploy
+  image: python:$PYTHON_IMAGE
+  before_script:
+    - export PYTHONPATH=$(pwd) PROJECT_ID=$PROJECT_ID_DEV BUCKET_ID=$BUCKET_NAME_DEV
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
+    - pip install --upgrade google-cloud-storage pyspark pandas fastparquet snappy
+  script:
+    - python3 src/utils/gcp/storage/terraform_prep.py
+  only:
+    - develop
+
+# ======================================================================================================================
+# Cloud Function Stage
+# ======================================================================================================================
+function-dev:
+  stage: deploy-function
+  image: google/cloud-sdk:$IMAGE
+  environment: development
+  variables:
+    ENVIRONMENT: "development"
+  script:
+    - gcloud config set project dev-data-31ce
+    - gcloud config set compute/zone $ZONE
+    - |
+      gcloud functions deploy da-beneficios-dev \
+      --min-instances=1 \
+      --max-instances=4 \
+      --set-env-vars LABEL_APPLICATION=$LABEL_APPLICATION,LABEL_COST_CENTER=$LABEL_COST_CENTER,LABEL_VALUE_STREAM=$LABEL_VALUE_STREAM,LABEL_SQUAD=$LABEL_SQUAD,SERVICE_ACCOUNT=$SERVICE_ACCOUNT_DEV,SUBNETWORK=$SUBNETWORK_DEV,BUCKET_INITIALIZATION_ACTIONS=$BUCKET_INITIALIZATION_ACTIONS_DEV,TMP_DIR=$TMP_DIR,ENVIRONMENT=$ENVIRONMENT,BUCKET_NAME=$BUCKET_NAME_DEV,PROJECT_NAME=$PROJECT_NAME_DEV,PROJECT_ID=$PROJECT_ID_DEV,TOPIC_NAME=$TOPIC_NAME_DEV,CLUSTER_NAME=$CLUSTER_NAME_DEV,REGION=$REGION,BUCKET_JOBS_NAME=$BUCKET_JOBS_DEV,DATASET=$DATASET_DEV,DATASET_EXT=$DATASET_EXT_DEV,SPARK_MASTER=$SPARK_MASTER,SPARK_APP_NAME=$SPARK_APP_NAME,MASTER_NUM_INSTANCES=$MASTER_NUM_INSTANCES,MACHINE_TYPE_URI=$MACHINE_TYPE_URI_DEV,WORKER_NUM_INSTANCES=$WORKER_NUM_INSTANCES_DEV,DISK_SIZE_GB=$DISK_SIZE_GB_DEV,TABLE_NAME_SANCOES_CEIS=$TABLE_NAME_SANCOES_CEIS,TABLE_NAME_SANCOES_CEPIM=$TABLE_NAME_SANCOES_CEPIM,TABLE_NAME_SANCOES_CNEP=$TABLE_NAME_SANCOES_CNEP,TABLE_NAME_SANCOES_ACORDOS=$TABLE_NAME_SANCOES_ACORDOS,TABLE_NAME_SANCOES_EFEITOS=$TABLE_NAME_SANCOES_EFEITOS,TABLE_NAME_IBAMA=$TABLE_NAME_IBAMA,TABLE_NAME_AUX_BRASIL=$TABLE_NAME_AUX_BRASIL,TABLE_NAME_AUX_EMERG=$TABLE_NAME_AUX_EMERG,TABLE_NAME_BF_PAGAMENTOS=$TABLE_NAME_BF_PAGAMENTOS,TABLE_NAME_BF_SAQUES=$TABLE_NAME_BF_SAQUES,TABLE_NAME_BPC=$TABLE_NAME_BPC,TABLE_NAME_GARANTIAS_SAFRA=$TABLE_NAME_GARANTIAS_SAFRA,TABLE_NAME_PETI=$TABLE_NAME_PETI,TABLE_NAME_SEGURO_DEFESO=$TABLE_NAME_SEGURO_DEFESO,TABLE_NAME_TRAB_FORMAL=$TABLE_NAME_TRAB_FORMAL,TABLE_NAME_EMPR_DOMESTICO=$TABLE_NAME_EMPR_DOMESTICO,TABLE_NAME_TRAB_RESGATADO=$TABLE_NAME_TRAB_RESGATADO,TABLE_NAME_BOLSA_QUALIFIC=$TABLE_NAME_BOLSA_QUALIFIC,TABLE_NAME_PESC_ARTESANAL=$TABLE_NAME_PESC_ARTESANAL,TABLE_NAME_APOSENTADOS=$TABLE_NAME_APOSENTADOS,TABLE_NAME_HONOR_ADVOC=$TABLE_NAME_HONOR_ADVOC,TABLE_NAME_HONOR_JETONS=$TABLE_NAME_HONOR_JETONS,TABLE_NAME_MILITARES=$TABLE_NAME_MILITARES,TABLE_NAME_PENSIONISTAS=$TABLE_NAME_PENSIONISTAS,TABLE_NAME_RESERVA_REF_MILITARES=$TABLE_NAME_RESERVA_REF_MILITARES,TABLE_NAME_SERVIDORES=$TABLE_NAME_SERVIDORES,TABLE_NAME_SERVIDORES_SP=$TABLE_NAME_SERVIDORES_SP,TABLE_NAME_SERVIDORES_MG=$TABLE_NAME_SERVIDORES_MG,TABLE_NAME_SERVIDORES_ES=$TABLE_NAME_SERVIDORES_ES,TABLE_NAME_FORNECEDORES_COMPRAS=$TABLE_NAME_FORNECEDORES_COMPRAS,TABLE_NAME_FORNECEDORES_ITEM_COMPRA=$TABLE_NAME_FORNECEDORES_ITEM_COMPRA,TABLE_NAME_FORNECEDORES_TERMO_ADITIVO=$TABLE_NAME_FORNECEDORES_TERMO_ADITIVO,TABLE_NAME_CNPJ_CNAES=$TABLE_NAME_CNPJ_CNAES,TABLE_NAME_CNPJ_EMPRESAS=$TABLE_NAME_CNPJ_EMPRESAS,TABLE_NAME_CNPJ_ESTABELECIMENTOS=$TABLE_NAME_CNPJ_ESTABELECIMENTOS,TABLE_NAME_CNPJ_IMUNE_ISENTAS=$TABLE_NAME_CNPJ_IMUNE_ISENTAS,TABLE_NAME_CNPJ_LUCRO_ARBITRADO=$TABLE_NAME_CNPJ_LUCRO_ARBITRADO,TABLE_NAME_CNPJ_LUCRO_PRESUMIDO=$TABLE_NAME_CNPJ_LUCRO_PRESUMIDO,TABLE_NAME_CNPJ_LUCRO_REAL=$TABLE_NAME_CNPJ_LUCRO_REAL,TABLE_NAME_CNPJ_MOTIVOS=$TABLE_NAME_CNPJ_MOTIVOS,TABLE_NAME_CNPJ_MUNICIPIOS=$TABLE_NAME_CNPJ_MUNICIPIOS,TABLE_NAME_CNPJ_NATUREZA_JURIDICA=$TABLE_NAME_CNPJ_NATUREZA_JURIDICA,TABLE_NAME_CNPJ_PAISES=$TABLE_NAME_CNPJ_PAISES,TABLE_NAME_CNPJ_QUALIFICACAO_SOCIO=$TABLE_NAME_CNPJ_QUALIFICACAO_SOCIO,TABLE_NAME_CNPJ_SIMPLES=$TABLE_NAME_CNPJ_SIMPLES,TABLE_NAME_CNPJ_SOCIOS=$TABLE_NAME_CNPJ_SOCIOS,TABLE_NAME_SERVIDORES_SC=$TABLE_NAME_SERVIDORES_SC,TABLE_NAME_DEBITOS_PREV=$TABLE_NAME_DEBITOS_PREV,TABLE_NAME_DEBITOS_NAO_PREV=$TABLE_NAME_DEBITOS_NAO_PREV,TABLE_NAME_DEBITOS_FGTS=$TABLE_NAME_DEBITOS_FGTS,TABLE_NAME_SERVIDORES_PR=$TABLE_NAME_SERVIDORES_PR,TABLE_NAME_NOVO_BF=$TABLE_NAME_NOVO_BF,TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO=$TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO,TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_DESC=$TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_DESC,TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_SUB=$TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_SUB,TABLE_NAME_SERVIDORES_DF_DESP_LANCAMENTO=$TABLE_NAME_SERVIDORES_DF_DESP_LANCAMENTO,TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC=$TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC,TABLE_NAME_SERVIDORES_DF_DESP_ORD_CANCELADA=$TABLE_NAME_SERVIDORES_DF_DESP_ORD_CANCELADA,TABLE_NAME_SERVIDORES_DF_DESP_ORD_EMPENHO=$TABLE_NAME_SERVIDORES_DF_DESP_ORD_EMPENHO,TABLE_NAME_SERVIDORES_DF_DESP_PGTO=$TABLE_NAME_SERVIDORES_DF_DESP_PGTO,TABLE_NAME_SERVIDORES_DF_DESP_PRINCIPAL=$TABLE_NAME_SERVIDORES_DF_DESP_PRINCIPAL,TABLE_NAME_SERVIDORES_DF_LICITACAO=$TABLE_NAME_SERVIDORES_DF_LICITACAO,TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC_EVENTO=$TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC_EVENTO,TABLE_NAME_SERVIDORES_DF_PATRIMONIO=$TABLE_NAME_SERVIDORES_DF_PATRIMONIO,TABLE_NAME_SERVIDORES_DF_RECEITA=$TABLE_NAME_SERVIDORES_DF_RECEITA,TABLE_NAME_SERVIDORES_DF_REMUNERACAO=$TABLE_NAME_SERVIDORES_DF_REMUNERACAO,TABLE_NAME_SERVIDORES_DF_REMUNERACAO_DET=$TABLE_NAME_SERVIDORES_DF_REMUNERACAO_DET,TABLE_NAME_SERVIDORES_DF_ORGAO=$TABLE_NAME_SERVIDORES_DF_ORGAO \
+      --entry-point $ENTRYPOINT \
+      --region $REGION \
+      --memory $MEMORY \
+      --runtime $RUNTIME \
+      --timeout $TIMEOUT \
+      --ingress-settings $INGRESS \
+      --service-account $SERVICE_ACCOUNT_DEV \
+      --source $CI_PROJECT_DIR \
+      --trigger-topic=$TOPIC_NAME_DEV \
+      --vpc-connector=projects/np-network-ffe3/locations/us-east1/connectors/connector-cf-dev-us \
+      --verbosity=debug \
+      --update-labels=application=$LABEL_APPLICATION,billing-id=$LABEL_APPLICATION,cost-center=$LABEL_COST_CENTER,environment=$ENVIRONMENT,product=$LABEL_APPLICATION,resource=dataproc-cloud-function,squad=$LABEL_SQUAD,type=cloud-function,value-stream=$LABEL_VALUE_STREAM
+  only:
+    - develop
+
+# ======================================================================================================================
+#                                                   HOMOLOGATION
+# ======================================================================================================================
+
+# ======================================================================================================================
+# Source Code Sync Stage
+# ======================================================================================================================
+# sync-src-bucket-hml:
+#   stage: copy-files
+#   image: google/cloud-sdk:$IMAGE
+#   environment: hml
+  #   - gcloud auth activate-service-account --key-file=$BOT_SA_HML
+  #   - gsutil -m rm -r gs://$BUCKET_JOBS_HML/src
+  # script:
+  #   - gsutil -m cp -r src/ gs://$BUCKET_JOBS_HML
+  #   - gsutil -m mv -r gs://$BUCKET_JOBS_HML/src/data/acquisition/tasks/**/*.py gs://$BUCKET_JOBS_HML/src/data/acquisition/tasks/
+#   only:
+#     - homolog
+
+# ======================================================================================================================
+# Terraform Prep Stage
+# ======================================================================================================================
+terraform-prep-hml:
+  stage: pre-deploy
+  image: python:$PYTHON_IMAGE
+  before_script:
+    - export PYTHONPATH=$(pwd) PROJECT_ID=$PROJECT_ID_HML BUCKET_ID=$BUCKET_NAME_HML
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
+    - pip install --upgrade google-cloud-storage pyspark pandas fastparquet snappy
+  script:
+    - python3 src/utils/gcp/storage/terraform_prep.py
+  only:
+    - homolog
+
+# ======================================================================================================================
+# Cloud Function Stage
+# ======================================================================================================================
+function-hml:
+  stage: deploy-function
+  image: google/cloud-sdk:$IMAGE
+  environment: hml
+  variables:
+    ENVIRONMENT: "homologation"
+  script:
+    - gcloud config set project data-88d7
+    - gcloud config set compute/zone $ZONE
+    - |
+      gcloud functions deploy da-beneficios-hml \
+      --min-instances=1 \
+      --max-instances=4 \
+      --set-env-vars LABEL_APPLICATION=$LABEL_APPLICATION,LABEL_COST_CENTER=$LABEL_COST_CENTER,LABEL_VALUE_STREAM=$LABEL_VALUE_STREAM,LABEL_SQUAD=$LABEL_SQUAD,SERVICE_ACCOUNT=$SERVICE_ACCOUNT_HML,SUBNETWORK=$SUBNETWORK_HML,BUCKET_INITIALIZATION_ACTIONS=$BUCKET_INITIALIZATION_ACTIONS_HML,TMP_DIR=$TMP_DIR,ENVIRONMENT=$ENVIRONMENT,BUCKET_NAME=$BUCKET_NAME_HML,PROJECT_NAME=$PROJECT_NAME_HML,PROJECT_ID=$PROJECT_ID_HML,TOPIC_NAME=$TOPIC_NAME_HML,CLUSTER_NAME=$CLUSTER_NAME_HML,REGION=$REGION,BUCKET_JOBS_NAME=$BUCKET_JOBS_HML,DATASET=$DATASET_HML,DATASET_EXT=$DATASET_EXT_HML,SPARK_MASTER=$SPARK_MASTER,SPARK_APP_NAME=$SPARK_APP_NAME,MASTER_NUM_INSTANCES=$MASTER_NUM_INSTANCES,MACHINE_TYPE_URI=$MACHINE_TYPE_URI_HML,WORKER_NUM_INSTANCES=$WORKER_NUM_INSTANCES_HML,DISK_SIZE_GB=$DISK_SIZE_GB_HML,TABLE_NAME_SANCOES_CEIS=$TABLE_NAME_SANCOES_CEIS,TABLE_NAME_SANCOES_CEPIM=$TABLE_NAME_SANCOES_CEPIM,TABLE_NAME_SANCOES_CNEP=$TABLE_NAME_SANCOES_CNEP,TABLE_NAME_SANCOES_ACORDOS=$TABLE_NAME_SANCOES_ACORDOS,TABLE_NAME_SANCOES_EFEITOS=$TABLE_NAME_SANCOES_EFEITOS,TABLE_NAME_IBAMA=$TABLE_NAME_IBAMA,TABLE_NAME_AUX_BRASIL=$TABLE_NAME_AUX_BRASIL,TABLE_NAME_AUX_EMERG=$TABLE_NAME_AUX_EMERG,TABLE_NAME_BF_PAGAMENTOS=$TABLE_NAME_BF_PAGAMENTOS,TABLE_NAME_BF_SAQUES=$TABLE_NAME_BF_SAQUES,TABLE_NAME_BPC=$TABLE_NAME_BPC,TABLE_NAME_GARANTIAS_SAFRA=$TABLE_NAME_GARANTIAS_SAFRA,TABLE_NAME_PETI=$TABLE_NAME_PETI,TABLE_NAME_SEGURO_DEFESO=$TABLE_NAME_SEGURO_DEFESO,TABLE_NAME_TRAB_FORMAL=$TABLE_NAME_TRAB_FORMAL,TABLE_NAME_EMPR_DOMESTICO=$TABLE_NAME_EMPR_DOMESTICO,TABLE_NAME_TRAB_RESGATADO=$TABLE_NAME_TRAB_RESGATADO,TABLE_NAME_BOLSA_QUALIFIC=$TABLE_NAME_BOLSA_QUALIFIC,TABLE_NAME_PESC_ARTESANAL=$TABLE_NAME_PESC_ARTESANAL,TABLE_NAME_APOSENTADOS=$TABLE_NAME_APOSENTADOS,TABLE_NAME_HONOR_ADVOC=$TABLE_NAME_HONOR_ADVOC,TABLE_NAME_HONOR_JETONS=$TABLE_NAME_HONOR_JETONS,TABLE_NAME_MILITARES=$TABLE_NAME_MILITARES,TABLE_NAME_PENSIONISTAS=$TABLE_NAME_PENSIONISTAS,TABLE_NAME_RESERVA_REF_MILITARES=$TABLE_NAME_RESERVA_REF_MILITARES,TABLE_NAME_SERVIDORES=$TABLE_NAME_SERVIDORES,TABLE_NAME_SERVIDORES_SP=$TABLE_NAME_SERVIDORES_SP,TABLE_NAME_SERVIDORES_MG=$TABLE_NAME_SERVIDORES_MG,TABLE_NAME_SERVIDORES_ES=$TABLE_NAME_SERVIDORES_ES,TABLE_NAME_FORNECEDORES_COMPRAS=$TABLE_NAME_FORNECEDORES_COMPRAS,TABLE_NAME_FORNECEDORES_ITEM_COMPRA=$TABLE_NAME_FORNECEDORES_ITEM_COMPRA,TABLE_NAME_FORNECEDORES_TERMO_ADITIVO=$TABLE_NAME_FORNECEDORES_TERMO_ADITIVO,TABLE_NAME_CNPJ_CNAES=$TABLE_NAME_CNPJ_CNAES,TABLE_NAME_CNPJ_EMPRESAS=$TABLE_NAME_CNPJ_EMPRESAS,TABLE_NAME_CNPJ_ESTABELECIMENTOS=$TABLE_NAME_CNPJ_ESTABELECIMENTOS,TABLE_NAME_CNPJ_IMUNE_ISENTAS=$TABLE_NAME_CNPJ_IMUNE_ISENTAS,TABLE_NAME_CNPJ_LUCRO_ARBITRADO=$TABLE_NAME_CNPJ_LUCRO_ARBITRADO,TABLE_NAME_CNPJ_LUCRO_PRESUMIDO=$TABLE_NAME_CNPJ_LUCRO_PRESUMIDO,TABLE_NAME_CNPJ_LUCRO_REAL=$TABLE_NAME_CNPJ_LUCRO_REAL,TABLE_NAME_CNPJ_MOTIVOS=$TABLE_NAME_CNPJ_MOTIVOS,TABLE_NAME_CNPJ_MUNICIPIOS=$TABLE_NAME_CNPJ_MUNICIPIOS,TABLE_NAME_CNPJ_NATUREZA_JURIDICA=$TABLE_NAME_CNPJ_NATUREZA_JURIDICA,TABLE_NAME_CNPJ_PAISES=$TABLE_NAME_CNPJ_PAISES,TABLE_NAME_CNPJ_QUALIFICACAO_SOCIO=$TABLE_NAME_CNPJ_QUALIFICACAO_SOCIO,TABLE_NAME_CNPJ_SIMPLES=$TABLE_NAME_CNPJ_SIMPLES,TABLE_NAME_CNPJ_SOCIOS=$TABLE_NAME_CNPJ_SOCIOS,TABLE_NAME_SERVIDORES_SC=$TABLE_NAME_SERVIDORES_SC,TABLE_NAME_DEBITOS_PREV=$TABLE_NAME_DEBITOS_PREV,TABLE_NAME_DEBITOS_NAO_PREV=$TABLE_NAME_DEBITOS_NAO_PREV,TABLE_NAME_DEBITOS_FGTS=$TABLE_NAME_DEBITOS_FGTS,TABLE_NAME_SERVIDORES_PR=$TABLE_NAME_SERVIDORES_PR,TABLE_NAME_NOVO_BF=$TABLE_NAME_NOVO_BF,TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO=$TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO,TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_DESC=$TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_DESC,TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_SUB=$TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_SUB,TABLE_NAME_SERVIDORES_DF_DESP_LANCAMENTO=$TABLE_NAME_SERVIDORES_DF_DESP_LANCAMENTO,TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC=$TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC,TABLE_NAME_SERVIDORES_DF_DESP_ORD_CANCELADA=$TABLE_NAME_SERVIDORES_DF_DESP_ORD_CANCELADA,TABLE_NAME_SERVIDORES_DF_DESP_ORD_EMPENHO=$TABLE_NAME_SERVIDORES_DF_DESP_ORD_EMPENHO,TABLE_NAME_SERVIDORES_DF_DESP_PGTO=$TABLE_NAME_SERVIDORES_DF_DESP_PGTO,TABLE_NAME_SERVIDORES_DF_DESP_PRINCIPAL=$TABLE_NAME_SERVIDORES_DF_DESP_PRINCIPAL,TABLE_NAME_SERVIDORES_DF_LICITACAO=$TABLE_NAME_SERVIDORES_DF_LICITACAO,TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC_EVENTO=$TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC_EVENTO,TABLE_NAME_SERVIDORES_DF_PATRIMONIO=$TABLE_NAME_SERVIDORES_DF_PATRIMONIO,TABLE_NAME_SERVIDORES_DF_RECEITA=$TABLE_NAME_SERVIDORES_DF_RECEITA,TABLE_NAME_SERVIDORES_DF_REMUNERACAO=$TABLE_NAME_SERVIDORES_DF_REMUNERACAO,TABLE_NAME_SERVIDORES_DF_REMUNERACAO_DET=$TABLE_NAME_SERVIDORES_DF_REMUNERACAO_DET,TABLE_NAME_SERVIDORES_DF_ORGAO=$TABLE_NAME_SERVIDORES_DF_ORGAO \
+      --entry-point $ENTRYPOINT \
+      --region $REGION \
+      --memory $MEMORY \
+      --runtime $RUNTIME \
+      --timeout $TIMEOUT \
+      --ingress-settings $INGRESS \
+      --service-account $SERVICE_ACCOUNT_HML \
+      --source $CI_PROJECT_DIR \
+      --trigger-topic=$TOPIC_NAME_HML \
+      --vpc-connector=projects/np-network-ffe3/locations/us-east1/connectors/connector-cf-np-us \
+      --verbosity=debug \
+      --update-labels=application=$LABEL_APPLICATION,billing-id=$LABEL_APPLICATION,cost-center=$LABEL_COST_CENTER,environment=$ENVIRONMENT,product=$LABEL_APPLICATION,resource=dataproc-cloud-function,squad=$LABEL_SQUAD,type=cloud-function,value-stream=$LABEL_VALUE_STREAM
+  only:
+    - homolog
+
+
+# ======================================================================================================================
+#                                                   PRODUCTION
+# ======================================================================================================================
+
+# ======================================================================================================================
+# Source Code Sync Stage
+# ======================================================================================================================
+sync-src-bucket-prod:
+  stage: pre-deploy
+  image: google/cloud-sdk:$IMAGE
+  environment: production
+  before_script:
+    - gcloud auth activate-service-account --key-file=$BOT_SA_PROD
+    - gsutil -m rm -r gs://$BUCKET_JOBS_PROD/src
+  script:
+    - gsutil -m cp -r src/ gs://$BUCKET_JOBS_PROD
+    - gsutil -m mv -r gs://$BUCKET_JOBS_PROD/src/data/acquisition/tasks/**/*.py gs://$BUCKET_JOBS_PROD/src/data/acquisition/tasks/
+  only:
+    - master
+
+# ======================================================================================================================
+# Terraform Prep Stage
+# ======================================================================================================================
+terraform-prep-prod:
+  stage: pre-deploy
+  image: python:$PYTHON_IMAGE
+  before_script:
+    - export PYTHONPATH=$(pwd) PROJECT_ID=$PROJECT_ID_PROD BUCKET_ID=$BUCKET_NAME_PROD
+    - pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pythonhosted.org -r requirements.txt
+    - pip install --upgrade google-cloud-storage pyspark pandas fastparquet snappy
+  script:
+    - python3 src/utils/gcp/storage/terraform_prep.py
+  only:
+    - master
+
+# ======================================================================================================================
+# Cloud Function Stage
+# ======================================================================================================================
+function-prod:
+  stage: deploy-function
+  image: google/cloud-sdk:$IMAGE
+  environment: prd
+  variables:
+    ENVIRONMENT: "production"
+  script:
+    - gcloud config set project data-3660
+    - gcloud config set compute/zone $ZONE
+    - |
+      gcloud functions deploy da-beneficios-prd \
+      --min-instances=1 \
+      --max-instances=4 \
+      --set-env-vars LABEL_APPLICATION=$LABEL_APPLICATION,LABEL_COST_CENTER=$LABEL_COST_CENTER,LABEL_VALUE_STREAM=$LABEL_VALUE_STREAM,LABEL_SQUAD=$LABEL_SQUAD,SERVICE_ACCOUNT=$SERVICE_ACCOUNT_PROD,SUBNETWORK=$SUBNETWORK_PROD,BUCKET_INITIALIZATION_ACTIONS=$BUCKET_INITIALIZATION_ACTIONS_PROD,TMP_DIR=$TMP_DIR,ENVIRONMENT=$ENVIRONMENT,BUCKET_NAME=$BUCKET_NAME_PROD,PROJECT_NAME=$PROJECT_NAME_PROD,PROJECT_ID=$PROJECT_ID_PROD,TOPIC_NAME=$TOPIC_NAME_PROD,CLUSTER_NAME=$CLUSTER_NAME_PROD,REGION=$REGION,BUCKET_JOBS_NAME=$BUCKET_JOBS_PROD,DATASET=$DATASET_PROD,DATASET_EXT=$DATASET_EXT_PROD,SPARK_MASTER=$SPARK_MASTER,SPARK_APP_NAME=$SPARK_APP_NAME,MASTER_NUM_INSTANCES=$MASTER_NUM_INSTANCES,MACHINE_TYPE_URI=$MACHINE_TYPE_URI_PROD,WORKER_NUM_INSTANCES=$WORKER_NUM_INSTANCES_PROD,DISK_SIZE_GB=$DISK_SIZE_GB_PROD,TABLE_NAME_SANCOES_CEIS=$TABLE_NAME_SANCOES_CEIS,TABLE_NAME_SANCOES_CEPIM=$TABLE_NAME_SANCOES_CEPIM,TABLE_NAME_SANCOES_CNEP=$TABLE_NAME_SANCOES_CNEP,TABLE_NAME_SANCOES_ACORDOS=$TABLE_NAME_SANCOES_ACORDOS,TABLE_NAME_SANCOES_EFEITOS=$TABLE_NAME_SANCOES_EFEITOS,TABLE_NAME_IBAMA=$TABLE_NAME_IBAMA,TABLE_NAME_AUX_BRASIL=$TABLE_NAME_AUX_BRASIL,TABLE_NAME_AUX_EMERG=$TABLE_NAME_AUX_EMERG,TABLE_NAME_BF_PAGAMENTOS=$TABLE_NAME_BF_PAGAMENTOS,TABLE_NAME_BF_SAQUES=$TABLE_NAME_BF_SAQUES,TABLE_NAME_BPC=$TABLE_NAME_BPC,TABLE_NAME_GARANTIAS_SAFRA=$TABLE_NAME_GARANTIAS_SAFRA,TABLE_NAME_PETI=$TABLE_NAME_PETI,TABLE_NAME_SEGURO_DEFESO=$TABLE_NAME_SEGURO_DEFESO,TABLE_NAME_TRAB_FORMAL=$TABLE_NAME_TRAB_FORMAL,TABLE_NAME_EMPR_DOMESTICO=$TABLE_NAME_EMPR_DOMESTICO,TABLE_NAME_TRAB_RESGATADO=$TABLE_NAME_TRAB_RESGATADO,TABLE_NAME_BOLSA_QUALIFIC=$TABLE_NAME_BOLSA_QUALIFIC,TABLE_NAME_PESC_ARTESANAL=$TABLE_NAME_PESC_ARTESANAL,TABLE_NAME_APOSENTADOS=$TABLE_NAME_APOSENTADOS,TABLE_NAME_HONOR_ADVOC=$TABLE_NAME_HONOR_ADVOC,TABLE_NAME_HONOR_JETONS=$TABLE_NAME_HONOR_JETONS,TABLE_NAME_MILITARES=$TABLE_NAME_MILITARES,TABLE_NAME_PENSIONISTAS=$TABLE_NAME_PENSIONISTAS,TABLE_NAME_RESERVA_REF_MILITARES=$TABLE_NAME_RESERVA_REF_MILITARES,TABLE_NAME_SERVIDORES=$TABLE_NAME_SERVIDORES,TABLE_NAME_SERVIDORES_SP=$TABLE_NAME_SERVIDORES_SP,TABLE_NAME_SERVIDORES_MG=$TABLE_NAME_SERVIDORES_MG,TABLE_NAME_SERVIDORES_ES=$TABLE_NAME_SERVIDORES_ES,TABLE_NAME_FORNECEDORES_COMPRAS=$TABLE_NAME_FORNECEDORES_COMPRAS,TABLE_NAME_FORNECEDORES_ITEM_COMPRA=$TABLE_NAME_FORNECEDORES_ITEM_COMPRA,TABLE_NAME_FORNECEDORES_TERMO_ADITIVO=$TABLE_NAME_FORNECEDORES_TERMO_ADITIVO,TABLE_NAME_CNPJ_CNAES=$TABLE_NAME_CNPJ_CNAES,TABLE_NAME_CNPJ_EMPRESAS=$TABLE_NAME_CNPJ_EMPRESAS,TABLE_NAME_CNPJ_ESTABELECIMENTOS=$TABLE_NAME_CNPJ_ESTABELECIMENTOS,TABLE_NAME_CNPJ_IMUNE_ISENTAS=$TABLE_NAME_CNPJ_IMUNE_ISENTAS,TABLE_NAME_CNPJ_LUCRO_ARBITRADO=$TABLE_NAME_CNPJ_LUCRO_ARBITRADO,TABLE_NAME_CNPJ_LUCRO_PRESUMIDO=$TABLE_NAME_CNPJ_LUCRO_PRESUMIDO,TABLE_NAME_CNPJ_LUCRO_REAL=$TABLE_NAME_CNPJ_LUCRO_REAL,TABLE_NAME_CNPJ_MOTIVOS=$TABLE_NAME_CNPJ_MOTIVOS,TABLE_NAME_CNPJ_MUNICIPIOS=$TABLE_NAME_CNPJ_MUNICIPIOS,TABLE_NAME_CNPJ_NATUREZA_JURIDICA=$TABLE_NAME_CNPJ_NATUREZA_JURIDICA,TABLE_NAME_CNPJ_PAISES=$TABLE_NAME_CNPJ_PAISES,TABLE_NAME_CNPJ_QUALIFICACAO_SOCIO=$TABLE_NAME_CNPJ_QUALIFICACAO_SOCIO,TABLE_NAME_CNPJ_SIMPLES=$TABLE_NAME_CNPJ_SIMPLES,TABLE_NAME_CNPJ_SOCIOS=$TABLE_NAME_CNPJ_SOCIOS,TABLE_NAME_SERVIDORES_SC=$TABLE_NAME_SERVIDORES_SC,TABLE_NAME_DEBITOS_PREV=$TABLE_NAME_DEBITOS_PREV,TABLE_NAME_DEBITOS_NAO_PREV=$TABLE_NAME_DEBITOS_NAO_PREV,TABLE_NAME_DEBITOS_FGTS=$TABLE_NAME_DEBITOS_FGTS,TABLE_NAME_SERVIDORES_PR=$TABLE_NAME_SERVIDORES_PR,TABLE_NAME_NOVO_BF=$TABLE_NAME_NOVO_BF,TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO=$TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO,TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_DESC=$TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_DESC,TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_SUB=$TABLE_NAME_SERVIDORES_DF_DESP_EMPENHO_SUB,TABLE_NAME_SERVIDORES_DF_DESP_LANCAMENTO=$TABLE_NAME_SERVIDORES_DF_DESP_LANCAMENTO,TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC=$TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC,TABLE_NAME_SERVIDORES_DF_DESP_ORD_CANCELADA=$TABLE_NAME_SERVIDORES_DF_DESP_ORD_CANCELADA,TABLE_NAME_SERVIDORES_DF_DESP_ORD_EMPENHO=$TABLE_NAME_SERVIDORES_DF_DESP_ORD_EMPENHO,TABLE_NAME_SERVIDORES_DF_DESP_PGTO=$TABLE_NAME_SERVIDORES_DF_DESP_PGTO,TABLE_NAME_SERVIDORES_DF_DESP_PRINCIPAL=$TABLE_NAME_SERVIDORES_DF_DESP_PRINCIPAL,TABLE_NAME_SERVIDORES_DF_LICITACAO=$TABLE_NAME_SERVIDORES_DF_LICITACAO,TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC_EVENTO=$TABLE_NAME_SERVIDORES_DF_DESP_NT_LANC_EVENTO,TABLE_NAME_SERVIDORES_DF_PATRIMONIO=$TABLE_NAME_SERVIDORES_DF_PATRIMONIO,TABLE_NAME_SERVIDORES_DF_RECEITA=$TABLE_NAME_SERVIDORES_DF_RECEITA,TABLE_NAME_SERVIDORES_DF_REMUNERACAO=$TABLE_NAME_SERVIDORES_DF_REMUNERACAO,TABLE_NAME_SERVIDORES_DF_REMUNERACAO_DET=$TABLE_NAME_SERVIDORES_DF_REMUNERACAO_DET,TABLE_NAME_SERVIDORES_DF_ORGAO=$TABLE_NAME_SERVIDORES_DF_ORGAO \
+      --entry-point $ENTRYPOINT \
+      --region $REGION \
+      --memory $MEMORY \
+      --runtime $RUNTIME \
+      --timeout $TIMEOUT \
+      --ingress-settings $INGRESS \
+      --service-account $SERVICE_ACCOUNT_PROD \
+      --source $CI_PROJECT_DIR \
+      --trigger-topic=$TOPIC_NAME_PROD \
+      --vpc-connector=projects/data-3660/locations/us-east1/connectors/conectorcfprddados \
+      --verbosity=debug \
+      --update-labels=application=$LABEL_APPLICATION,billing-id=$LABEL_APPLICATION,cost-center=$LABEL_COST_CENTER,environment=$ENVIRONMENT,product=$LABEL_APPLICATION,resource=dataproc-cloud-function,squad=$LABEL_SQUAD,type=cloud-function,value-stream=$LABEL_VALUE_STREAM
+  only:
+    - master

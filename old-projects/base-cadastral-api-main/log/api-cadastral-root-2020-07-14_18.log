@@ -1,0 +1,180 @@
+2020-07-14 18:15:30.223 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] b.c.b.ApiBaseCadastral                   : Starting ApiBaseCadastral on LGNTVIVO75 with PID 21492 (C:\Users\gdelmondes\Downloads\base-cadastral-api\core-api\target\classes started by gdelmondes in C:\Users\gdelmondes\Downloads\base-cadastral-api)
+2020-07-14 18:15:30.230 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] b.c.b.ApiBaseCadastral                   : The following profiles are active: socket,dePara
+2020-07-14 18:15:33.307 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] ptablePropertiesBeanFactoryPostProcessor : Post-processing PropertySource instances
+2020-07-14 18:15:33.391 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource configurationProperties [org.springframework.boot.context.properties.source.ConfigurationPropertySourcesPropertySource] to AOP Proxy
+2020-07-14 18:15:33.391 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource servletConfigInitParams [org.springframework.core.env.PropertySource$StubPropertySource] to EncryptablePropertySourceWrapper
+2020-07-14 18:15:33.391 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource servletContextInitParams [org.springframework.core.env.PropertySource$StubPropertySource] to EncryptablePropertySourceWrapper
+2020-07-14 18:15:33.392 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource systemProperties [org.springframework.core.env.MapPropertySource] to EncryptableMapPropertySourceWrapper
+2020-07-14 18:15:33.392 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource systemEnvironment [org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor$OriginAwareSystemEnvironmentPropertySource] to EncryptableMapPropertySourceWrapper
+2020-07-14 18:15:33.392 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource random [org.springframework.boot.env.RandomValuePropertySource] to EncryptablePropertySourceWrapper
+2020-07-14 18:15:33.392 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource applicationConfig: [classpath:/application-dePara.yml] [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
+2020-07-14 18:15:33.392 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource applicationConfig: [classpath:/application-socket.yml] (document #0) [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
+2020-07-14 18:15:33.392 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.EncryptablePropertySourceConverter : Converting PropertySource applicationConfig: [classpath:/application.yml] (document #0) [org.springframework.boot.env.OriginTrackedMapPropertySource] to EncryptableMapPropertySourceWrapper
+2020-07-14 18:15:33.495 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$6bc30dfe] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-07-14 18:15:33.519 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.camel.spring.boot.CamelAutoConfiguration' of type [org.apache.camel.spring.boot.CamelAutoConfiguration$$EnhancerBySpringCGLIB$$8decd41d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-07-14 18:15:34.984 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] o.s.b.w.e.t.TomcatWebServer              : Tomcat initialized with port(s): 8085 (http)
+2020-07-14 18:15:35.017 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] o.a.c.h.Http11NioProtocol                : Initializing ProtocolHandler ["http-nio-8085"]
+2020-07-14 18:15:35.034 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] o.a.c.c.StandardService                  : Starting service [Tomcat]
+2020-07-14 18:15:35.034 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] o.a.c.c.StandardEngine                   : Starting Servlet engine: [Apache Tomcat/9.0.14]
+2020-07-14 18:15:35.047 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] o.a.c.c.AprLifecycleListener             : The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [C:\Program Files\Java\jdk-11.0.5\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Dell\Dell Data Protection\Encryption\;C:\Program Files\Java\jdk-11.0.5\bin;C:\Program Files\apache-maven-3.6.3\bin;C:\Program Files\Git\cmd;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Users\gdelmondes\AppData\Local\Programs\Python\Python38-32\Scripts\;C:\Users\gdelmondes\AppData\Local\Programs\Python\Python38-32\;C:\Users\gdelmondes\AppData\Local\Microsoft\WindowsApps;C:\Users\gdelmondes\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2019.3.3\bin;;C:\Program Files\JetBrains\PyCharm Community Edition 2020.1.2\bin;;C:\Users\gdelmondes\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin;.]
+2020-07-14 18:15:35.428 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] o.a.c.c.C.[.[.[/]                        : Initializing Spring embedded WebApplicationContext
+2020-07-14 18:15:35.429 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] o.s.w.c.ContextLoader                    : Root WebApplicationContext: initialization completed in 5139 ms
+2020-07-14 18:15:35.730 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.r.DefaultLazyPropertyResolver      : Property Resolver custom Bean not found with name 'encryptablePropertyResolver'. Initializing Default Property Resolver
+2020-07-14 18:15:35.736 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] c.u.j.d.DefaultLazyPropertyDetector      : Property Detector custom Bean not found with name 'encryptablePropertyDetector'. Initializing Default Property Detector
+2020-07-14 18:15:36.189 :: TRACER_ID:   WARN LGNTVIVO75-      --- [           main] o.a.c.i.c.AnnotationTypeConverterLoader  : Ignoring converter type: org.apache.camel.converter.AttachmentConverter as a dependent class could not be found: java.lang.NoClassDefFoundError: javax/activation/DataHandler
+java.lang.NoClassDefFoundError: javax/activation/DataHandler
+	at java.base/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredMethods(Class.java:3166)
+	at java.base/java.lang.Class.getDeclaredMethods(Class.java:2309)
+	at org.apache.camel.impl.converter.AnnotationTypeConverterLoader.loadConverterMethods(AnnotationTypeConverterLoader.java:263)
+	at org.apache.camel.impl.converter.AnnotationTypeConverterLoader.load(AnnotationTypeConverterLoader.java:131)
+	at org.apache.camel.impl.converter.BaseTypeConverterRegistry.loadCoreTypeConverters(BaseTypeConverterRegistry.java:631)
+	at org.apache.camel.impl.converter.DefaultTypeConverter.doStart(DefaultTypeConverter.java:58)
+	at org.apache.camel.support.ServiceSupport.start(ServiceSupport.java:72)
+	at org.apache.camel.util.ServiceHelper.startService(ServiceHelper.java:75)
+	at org.apache.camel.impl.DefaultCamelContext.doAddService(DefaultCamelContext.java:1486)
+	at org.apache.camel.impl.DefaultCamelContext.addService(DefaultCamelContext.java:1446)
+	at org.apache.camel.impl.DefaultCamelContext.getTypeConverter(DefaultCamelContext.java:2567)
+	at org.apache.camel.impl.DefaultCamelContext.getTypeConverterRegistry(DefaultCamelContext.java:2590)
+	at org.apache.camel.spring.boot.CamelAutoConfiguration.afterPropertiesSet(CamelAutoConfiguration.java:397)
+	at org.apache.camel.spring.boot.CamelAutoConfiguration.doConfigureCamelContext(CamelAutoConfiguration.java:257)
+	at org.apache.camel.spring.boot.CamelAutoConfiguration.camelContext(CamelAutoConfiguration.java:119)
+	at org.apache.camel.spring.boot.CamelAutoConfiguration$$EnhancerBySpringCGLIB$$8decd41d.CGLIB$camelContext$9(<generated>)
+	at org.apache.camel.spring.boot.CamelAutoConfiguration$$EnhancerBySpringCGLIB$$8decd41d$$FastClassBySpringCGLIB$$7179106c.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:244)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:363)
+	at org.apache.camel.spring.boot.CamelAutoConfiguration$$EnhancerBySpringCGLIB$$8decd41d.camelContext(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:622)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:607)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1288)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1127)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:538)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:498)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:277)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1244)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1164)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:593)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:90)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:374)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1378)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:575)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:498)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:277)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1244)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1164)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:857)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:760)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:218)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1308)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1154)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:538)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:498)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:846)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:863)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:546)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:142)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:775)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:397)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:316)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1260)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1248)
+	at br.com.bs.ApiBaseCadastral.main(ApiBaseCadastral.java:16)
+Caused by: java.lang.ClassNotFoundException: javax.activation.DataHandler
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:581)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521)
+	... 73 more
+2020-07-14 18:15:36.217 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] o.a.c.i.c.DefaultTypeConverter           : Type converters loaded (core: 194, classpath: 21)
+2020-07-14 18:15:36.290 :: TRACER_ID:   WARN LGNTVIVO75-      --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'restServerBuilder' defined in file [C:\Users\gdelmondes\Downloads\base-cadastral-api\core-api\target\classes\br\com\bs\rest\builders\RestServerBuilder.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'appConfig': Unsatisfied dependency expressed through field 'camelContext'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'camelContext' defined in class path resource [org/apache/camel/spring/boot/CamelAutoConfiguration.class]: Post-processing of merged bean definition failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [org.apache.camel.impl.DefaultCamelContext] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@16f65612]
+2020-07-14 18:15:36.297 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] o.a.c.c.StandardService                  : Stopping service [Tomcat]
+2020-07-14 18:15:36.495 :: TRACER_ID:   INFO LGNTVIVO75-      --- [           main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2020-07-14 18:15:36.498 :: TRACER_ID:  ERROR LGNTVIVO75-      --- [           main] o.s.b.SpringApplication                  : Application run failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'restServerBuilder' defined in file [C:\Users\gdelmondes\Downloads\base-cadastral-api\core-api\target\classes\br\com\bs\rest\builders\RestServerBuilder.class]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'appConfig': Unsatisfied dependency expressed through field 'camelContext'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'camelContext' defined in class path resource [org/apache/camel/spring/boot/CamelAutoConfiguration.class]: Post-processing of merged bean definition failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [org.apache.camel.impl.DefaultCamelContext] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@16f65612]
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:769)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:218)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1308)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1154)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:538)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:498)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:846)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:863)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:546)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:142)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:775)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:397)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:316)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1260)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1248)
+	at br.com.bs.ApiBaseCadastral.main(ApiBaseCadastral.java:16)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'appConfig': Unsatisfied dependency expressed through field 'camelContext'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'camelContext' defined in class path resource [org/apache/camel/spring/boot/CamelAutoConfiguration.class]: Post-processing of merged bean definition failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [org.apache.camel.impl.DefaultCamelContext] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@16f65612]
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:596)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:90)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:374)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1378)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:575)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:498)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:277)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1244)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1164)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:857)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:760)
+	... 19 more
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'camelContext' defined in class path resource [org/apache/camel/spring/boot/CamelAutoConfiguration.class]: Post-processing of merged bean definition failed; nested exception is java.lang.IllegalStateException: Failed to introspect Class [org.apache.camel.impl.DefaultCamelContext] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@16f65612]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:498)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:320)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:318)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:277)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1244)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1164)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:593)
+	... 33 more
+Caused by: java.lang.IllegalStateException: Failed to introspect Class [org.apache.camel.impl.DefaultCamelContext] from ClassLoader [jdk.internal.loader.ClassLoaders$AppClassLoader@16f65612]
+	at org.springframework.util.ReflectionUtils.getDeclaredFields(ReflectionUtils.java:785)
+	at org.springframework.util.ReflectionUtils.doWithLocalFields(ReflectionUtils.java:717)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.buildResourceMetadata(CommonAnnotationBeanPostProcessor.java:365)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.findResourceMetadata(CommonAnnotationBeanPostProcessor.java:350)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessMergedBeanDefinition(CommonAnnotationBeanPostProcessor.java:298)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyMergedBeanDefinitionPostProcessors(AbstractAutowireCapableBeanFactory.java:1044)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:550)
+	... 42 more
+Caused by: java.lang.NoClassDefFoundError: Ljavax/xml/bind/JAXBContext;
+	at java.base/java.lang.Class.getDeclaredFields0(Native Method)
+	at java.base/java.lang.Class.privateGetDeclaredFields(Class.java:3061)
+	at java.base/java.lang.Class.getDeclaredFields(Class.java:2248)
+	at org.springframework.util.ReflectionUtils.getDeclaredFields(ReflectionUtils.java:780)
+	... 48 more
+Caused by: java.lang.ClassNotFoundException: javax.xml.bind.JAXBContext
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:581)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521)
+	... 52 more

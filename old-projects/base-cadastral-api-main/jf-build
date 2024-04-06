@@ -1,0 +1,46 @@
+pipeline {
+    environment {
+        registryCredential = 'jenkins-alm'
+    }
+    agent { label 'master' }
+    tools { 
+        maven 'mvn-3-6-1' 
+        jdk 'openjdk-11-0-3' 
+    }
+    stages {
+        stage('Init') {
+            steps {
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                    echo "JAVA_HOME = ${JAVA_HOME}"
+                '''
+            }
+        }
+        stage('SonarQube analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('sonarqube') {
+                        sh '''
+                            java -version
+                            mvn --version
+                            MAVEN_OPTS=-Xmx1024m && mvn clean verify sonar:sonar -DskipTests
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Build and Publish to Nexus') {
+            steps {
+                script {
+                    sh '''
+                        java -version
+                        mvn --version
+                        MAVEN_OPTS=-Xmx1024m && mvn clean deploy
+                    '''
+                }
+            }
+        }
+
+    }
+}

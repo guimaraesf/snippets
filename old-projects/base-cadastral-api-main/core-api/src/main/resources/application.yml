@@ -1,0 +1,507 @@
+jasypt:
+  encryptor:
+    password: ${JASYPT_ENCRYPTOR_PASSWORD:}
+
+spring:
+  profiles:
+    include: socket, dePara
+  main:
+    web-environment: true
+    allow-bean-definition-overriding: true
+  data:
+    redis:
+      repositories:
+        enabled: false
+  cloud:
+    loadbalancer:
+      ribbon:
+        enable: false
+  sleuth:
+    feign:
+      enabled: false
+
+feign:
+  client:
+    config:
+      serpro-auth:
+        logger-level: full
+      serpro:
+        logger-level: full
+
+serpro:
+  enabled: ${SERPRO_ENABLED:true}
+  url: ${SERPRO_URL:https://gateway.apiserpro.serpro.gov.br}
+  auth:
+    client-id: ${SERPRO_AUTH_CLIENT_ID:123}
+    client-secret: ${SERPRO_AUTH_CLIENT_SECRET:123}
+    token-trial: ${SERPRO_AUTH_TOKEN_TRIAL:06aef429-a981-3ec5-a1f8-71d38d86481e}
+  cpf:
+    enabled: ${SERPRO_CPF_ENABLED:true}
+    path-prefix: ${SERPRO_CPF_PATH_PREFIX:/consulta-cpf-df-trial/v1}
+  cnpj:
+    enabled: ${SERPRO_CNPJ_ENABLED:true}
+    path-prefix: ${SERPRO_CNPJ_PATH_PREFIX:/consulta-cnpj-df-trial/v2/empresa}
+  cache:
+    cpf: ${SERPRO_CACHE_CPF:true}
+    cnpj: ${SERPRO_CACHE_CNPJ:true}
+    ttl:
+      token: ${SERPRO_CACHE_TTL_TOKEN:2700}
+      not-found: ${SERPRO_CACHE_TTL_NOT_FOUND:2592000}
+      underage: ${SERPRO_CACHE_TTL_UNDERAGE:2592000}
+
+
+camel:
+  springboot:
+    name: ApiCadastral
+
+debug: false
+
+logging:
+  #conf: classpath:log4j2.xml
+  conf: classpath:logback.xml
+  #conf: /api-base-cadastral/log4j2.xml
+
+management:
+  server:
+    port: 8089
+  security:
+    enabled: false
+    jwt:
+      key-store: classpath:keystore.jks
+      key-store-password: letmein
+      key-pair-alias: mytestkey
+      key-pair-password: changeme
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        hawtio: console
+      exposure:
+        include: hawtio,jolokia,health
+  health:
+    redis:
+      enabled: false
+
+endpoints:
+  jolokia:
+    sensitive: false
+
+hawtio:
+  authenticationEnabled: false
+
+server.port: 8085
+
+app:
+  context-path: /api
+  api-timeout: 5s
+
+  rest:
+    port: 3333
+    doc-json: /doc/json
+    doc-port: 443
+    doc-protocol: https
+    doc-host: localhost
+
+  pidFile: app.pid
+  enable-swagger-ui: true
+
+  redis:
+    host: ${APP_REDIS_HOST:127.0.0.1}
+    port: ${APP_REDIS_PORT:6380}
+    database: ${APP_REDIS_DATABASE:0}
+    password: ${APP_REDIS_PASSWORD:test}
+    pem-file: ${APP_REDIS_PEM_FILE:${app.rest.resources-path}/server-ca.pem}
+    timeout: ${APP_REDIS_TIMEOUT:15}
+    timeout-commands: ${APP_REDIS_TIMEOUT_COMMANDS:true}
+    keep-alive: ${APP_REDIS_KEEP_ALIVE:true}
+
+  rate-limiting:
+    login:
+      enabled: ${APP_RATE_LIMITING_LOGIN_ENABLED:true}
+      attempts: ${APP_RATE_LIMITING_LOGIN_ATTEMPTS:10}
+      block-seconds: ${APP_RATE_LIMITING_LOGIN_BLOCK_SECONDS:60}
+
+  bigtable:
+    limitRows: 15
+    limit-rows: 15
+    column-family: reg
+    projectId: data-3660
+    appProfile: api_consulta
+    instanceId: base-cadastral
+    tablePrefix: base_cadastral_
+    tableProduto: _produto
+
+  reversed-index:
+    tableName: reversed_index
+    limit-rows: ${app.bigtable.limit-rows}
+    verbos:
+      - household
+      - email
+      - nome
+      - nome-nascimento
+      - telefone
+
+  columnQualifier:
+    dataNascimento: DAT_NSC
+    dataNascimentoMetrica: MET_DAT_NSC
+    nomeServico: NOM_PSS_FIS
+    nomeCivil: NOM_RAZ_SOC
+    nomeSocial: NOM_FNTS_SOCL
+    situacaoReceita: DSC_STT_DCTO_RCTA
+    nomeRelacionada: NOM_PSSA_RELC
+    tipoRelacionamento: DSC_TIP_RELC_PSSA
+    cpfRelacionado: NUM_CPF_RELC
+    metricaPessoaRelacionada: MET_NOM_PSSA_RELC
+    maeServico: NOM_MAE
+    metricaMaeServico: MET_NOM_MAE
+    paiServico: NOM_PAI
+    metricaPaiServico: MET_NOM_PAI
+    conjugeServico: NOM_CJG
+    metricaConjugeServico: MET_NOM_CJG
+    telefoneTipo: COD_TIP_CTAT
+    telefoneNumero: NUM_TEL
+    telefoneDDD: COD_DDD
+    telefoneClassificacao: COD_CLSS_CTAT
+    tipoDocumento: DSC_TIP_DCTO
+    tipoEndereco: COD_TIP_ENDR
+    statusContexto: DSC_COND
+    codOrgm: COD_ORGM
+    mensagemMenor: MSG_MNR_IDD
+  status-inibido: Inibido
+  situacaoReceitaDefault: "Nao Informado"
+  contexto-carga-direta:
+    - ppe_pessoa
+    - obito
+  contexto-sem-index:
+    - nome
+    - protocolo
+  contexto-list:
+    obito:
+      colunas:
+    ppe_pessoa:
+      colunas:
+    pri:
+      colunas:
+    faixa_renda:
+      colunas:
+    telefone:
+      colunas:
+      - COD_ORGM
+      - NUM_CPF_CNPJ
+      - IDT_BVS
+      - MET_TELEFONE
+      - COD_TIP_CTAT
+      - COD_CLSS_CTAT
+      - DSC_CLSS_CTAT
+      - DAT_INST
+      - DSC_TIP_SGLO
+      - NUM_TEL
+      - COD_DDD
+      - DSC_COND
+      - INDEX
+    protocolo:
+      colunas:
+      - NUM_CPF_CNPJ
+      - DSC_STT_DCTO_RCTA
+      - COD_COND_COD_STT_DCTO_RCTA
+      - DTH_CSTA
+      - MET_DTH_CSTA
+      - COD_PTCL_RCTA
+      - MET_COD_PTCL_RCTA_X_STATUS
+      - DSC_COND
+      - INDEX
+    nome:
+      colunas:
+      - COD_ORGM
+      - NUM_CPF_CNPJ
+      - MET_NUM_CPF_CNPJ
+      - NOM_FNTS_SOCL
+      - NOM_RAZ_SOC
+      - MET_NOM_RAZ_SOC
+      - IDT_BVS
+      - DAT_NSC
+      - MET_DAT_NSC
+      - DTH_PROC_ORGM
+      - DSC_COND
+    endereco:
+      colunas:
+      - COD_ORGM
+      - NUM_CPF_CNPJ
+      - IDT_BVS
+      - MET_END
+      - COD_TIP_ENDR
+      - DAT_INI_RSID
+      - DTH_PROC_ORGM
+      - DTH_INCL_REG
+      - ENDR_TIP_LGDO
+      - ENDR_CPTO
+      - ENDR_NRO
+      - ENDR_CMPL
+      - ENDR_NOM_BAI
+      - ENDR_CEP
+      - ENDR_NOM_MNCP
+      - UF
+      - ENDR_LTTD
+      - ENDR_LGTD
+      - STR_SENSO_2000
+      - STR_SENSO_2010
+      - DSC_COND
+      - INDEX
+    sexo:
+      colunas:
+      - NUM_CPF_CNPJ
+      - DSC_SEX_ORI
+      - MET_COD_SEX
+      - DSC_COND
+      - INDEX
+    nacionalidade:
+      colunas:
+      - NUM_CPF_CNPJ
+      - DSC_NCLD
+      - MET_DSC_NCLD
+      - DSC_COND
+      - INDEX
+    naturalidade:
+      colunas:
+      - NUM_CPF_CNPJ
+      - SIGLA_UF_NCTO
+      - DSC_NTLD
+      - MET_DSC_NTLD
+      - DSC_COND
+      - INDEX
+    nome_pais:
+      colunas:
+      - NUM_CPF_CNPJ
+      - NOM_PAIS
+      - MET_NOM_PAIS
+      - DSC_COND
+      - INDEX
+    estado_civil:
+      colunas:
+      - NUM_CPF_CNPJ
+      - DSC_EST_CVL
+      - MET_COD_EST_CVL
+      - DSC_COND
+      - INDEX
+    grau_instrucao:
+      colunas:
+      - NUM_CPF_CNPJ
+      - DSC_GRAU_INST
+      - MET_COD_GRAU_INST
+      - DSC_COND
+      - INDEX
+    classe_social:
+      colunas:
+      - NUM_CPF_CNPJ
+      - DSC_CLASSE_SOCIAL
+      - MET_COD_CLSS_SOCL
+      - DSC_COND
+      - INDEX
+    documento:
+      colunas:
+      - NUM_CPF_CNPJ
+      - COD_ORGM
+      - IDT_BVS
+      - IDT_PRI_DCTO
+      - DSC_TIP_DCTO
+      - IDT_ORG_EMSS_DCTO
+      - DAT_EMSS_DCTO
+      - SIGLA_UF_EMSS_DCTO
+      - NUM_SRIE_DCTO
+      - NUM_ZNA_TITL_ELTR
+      - NUM_SEC_TITL_ELTR
+      - DSC_SIT_TITL_ELTR
+      - NOM_LOCL_VOTA
+      - ENDR_CPTO_VOTA
+      - BAI_VOT_ELEI
+      - MUN_VOT_ELEI
+      - SGL_UF_VOTA
+      - DAT_ATLZ_VOTA
+      - DTH_PROC_ORGM
+      - DSC_COND
+      - INDEX
+    pessoa_relacionada:
+      colunas:
+      - NUM_CPF_CNPJ
+      - NOM_PSSA_RELC
+      - MET_NOM_PSSA_RELC
+      - DSC_TIP_RELC_PSSA
+      - DSC_COND
+      - INDEX
+    ocupacao:
+      colunas:
+      - NUM_CPF_CNPJ
+      - COD_OCP
+      - DSC_OCUPACAO
+      - MET_OCUPACAO
+      - DSC_COND
+      - INDEX
+    numero_dependentes:
+      colunas:
+      - NUM_CPF_CNPJ
+      - NUM_DPD
+      - MET_NUM_DPD
+      - DSC_COND
+      - INDEX
+    ano_obito:
+      colunas:
+      - NUM_CPF_CNPJ
+      - ANO_OBTO
+      - MET_ANO_OBTO
+      - DSC_COND
+      - INDEX
+    email:
+      colunas:
+        - COD_ORGM
+        - COD_FONT
+        - COD_INFT
+        - NUM_CNPJ_INFT
+        - COD_OPER
+        - DSC_COND
+        - NUM_CPF_CNPJ
+        - COD_CLSS_CTAT
+        - DSC_CLSS_CTAT
+        - ENDR_CORR_ELTR
+        - MET_ENDR_CORR_ELTR
+        - COD_CLSF_CTAT
+        - DSC_TIP_ATLZ
+        - EVT_MOT
+        - IDT_BVS
+        - IDT_OPT_IN
+        - SUB_MOT
+        - DTH_INCL_REG
+        - DTH_PROC_ORGM
+        - M1_PREENCHIMENTO
+        - M2_ESTRUTURA
+        - M3_SIMILARIDADE
+        - M4_RADICAL_IGUAL
+        - M5_RADICAL_PJ
+        - M6_DOMINIO_PREVISTO
+        - M7_BLACKLIST
+        - M8_CORRECAO
+        - CTD_HITS_SIMILARIDADE
+        - IDT_LOTE
+    end_instalacao:
+      colunas:
+        - ENDR_CPTO
+        - ENDR_NRO
+        - ENDR_CMPL
+        - ENDR_NOM_BAI
+        - ENDR_CEP
+        - ENDR_NOM_MNCP
+        - UF
+        - ORIGEM
+        - DTH_PROC_ORGM
+        - DTH_INCL_REG
+
+---
+spring:
+  profiles: prod
+
+management:
+  server:
+    port: 8089
+
+server.port: 8085
+
+app:
+  rest:
+    port: 3333
+    doc-host: cadastral-dados.bvsnet.com.br
+    doc-port: #forcando doc sem porta, devido a dominio configurado em producao
+    resources-path: /api-base-cadastral/
+  bigtable:
+    projectId: data-3660
+    instanceId: base-cadastral
+    appProfile: api_consulta
+    tablePrefix: base_cadastral_
+    tableProduto: _produto
+    limitRows: 15
+    limit-rows: 15
+    #columnFamily: reg
+  jwt:
+    expiration: 60
+    secret: ${SECRET_PASSWORD_DER:}
+  swagger:
+    redirect-path: ${app.rest.resources-path}oauth2-redirect.html
+    redirect-url: https://${app.rest.doc-host}:${server.port}/api/oauth/dialog
+  socket:
+    allow-ip: ${AS400_IP:} #AS-400-PROD
+  authentication:
+    public-key-path: ${app.rest.resources-path}public_key.der
+    encrypt-file: ${app.rest.resources-path}users_encrypted.txt
+
+---
+spring:
+  profiles: hml
+
+management:
+  server:
+    port: 8089
+
+server.port: 8085
+
+app:
+  rest:
+    port: 3333
+    doc-host: cadastral-dados-hml.bvsnet.com.br
+    doc-port: #forcando doc sem porta, devido a dominio configurado em producao
+    resources-path: /api-base-cadastral/
+  bigtable:
+    projectId: data-88d7
+    instanceId: dc-base-cadastral-hml
+    appProfile: api_consulta
+    tablePrefix: base_cadastral_
+    tableProduto: _produto
+    limitRows: 15
+    limit-rows: 15
+    #columnFamily: reg
+  jwt:
+    expiration: 3600
+    secret: ${SECRET_PASSWORD_DER:}
+  swagger:
+    redirect-path: ${app.rest.resources-path}oauth2-redirect.html
+    redirect-url: https://${app.rest.doc-host}:${server.port}/api/oauth/dialog
+  socket:
+    allow-ip: ${AS400_IP:} #AS-400-HOMOL
+  authentication:
+    public-key-path: ${app.rest.resources-path}public_key.der
+    encrypt-file: ${app.rest.resources-path}users_encrypted.txt
+
+---
+spring:
+  profiles: dev
+
+management:
+  server:
+    port: 8089
+
+server.port: 8085
+
+app:
+  rest:
+    port: 3333
+    doc-host: cadastral-dados-dev.bvsnet.com.br
+    #doc-port: #forcando doc sem porta, devido a dominio configurado em producao
+    resources-path: /api-base-cadastral/
+  bigtable:
+    projectId: dev-data-31ce
+    instanceId: dc-base-cadastral-dev
+    appProfile: api_consulta
+    tablePrefix: base_cadastral_
+    tableProduto: _produto
+    limitRows: 15
+    limit-rows: 15
+    #columnFamily: reg
+  jwt:
+    expiration: 3600
+    secret: ${SECRET_PASSWORD_DER:}
+  swagger:
+    redirect-path: ${app.rest.resources-path}oauth2-redirect.html
+    redirect-url: https://${app.rest.doc-host}:${server.port}/api/oauth/dialog
+  socket:
+    allow-ip: ${AS400_IP:}
+  authentication:
+    public-key-path: ${app.rest.resources-path}public_key.der
+    encrypt-file: ${app.rest.resources-path}users_encrypted.txt
+

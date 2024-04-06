@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+    <Properties>
+        <Property name="APP_LOG_ROOT">log</Property>
+        <Property name="TRACER_PATTERN">:: TRACER_ID: %X{TRACER_ID}</Property>
+        <Property name="SIMPLE_LOGGER_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} ${TRACER_PATTERN} %5p ${hostName} : %m%n%ex</Property>
+        <Property name="FULL_LOGGER_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} ${TRACER_PATTERN} %5p ${hostName}-%5X{pid} --- [%15.15t] %-40.40c{1.} : %m%n%ex</Property>
+    </Properties>
+
+    <Appenders>
+        <RollingFile name="rootFileLogger" fileName="${APP_LOG_ROOT}/api-cadastral-root.log" filePattern="${APP_LOG_ROOT}/api-cadastral-root-%d{yyyy-MM-dd_HH}.log">
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} ${TRACER_PATTERN} %5p ${hostName}-%5X{pid} --- [%15.15t] %-40.40c{1.} : %m%n%ex</pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="50 MB" />
+                <TimeBasedTriggeringPolicy interval="24" />
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <RollingFile name="restRequestTimeLog" fileName="${APP_LOG_ROOT}/rest-api-cadastral-requests.log" filePattern="${APP_LOG_ROOT}/rest-api-cadastral-requests-%d{yyyy-MM-dd_HH}-%i.log" >
+            <PatternLayout>
+                <pattern>${SIMPLE_LOGGER_PATTERN}</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="200 MB" />
+                <TimeBasedTriggeringPolicy interval="24" />
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <RollingFile name="socketRequestTimeLog" fileName="${APP_LOG_ROOT}/socket-api-cadastral-requests.log" filePattern="${APP_LOG_ROOT}/socket-api-cadastral-requests-%d{yyyy-MM-dd_HH}-%i.log" >
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} ${TRACER_PATTERN} %5p ${hostName} : %m%n%ex</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="200 MB" />
+                <TimeBasedTriggeringPolicy interval="24" />
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${FULL_LOGGER_PATTERN}" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="br.com.bs.rest.process.RequestTimeProcess" level="info" additivity="false">
+            <appender-ref ref="restRequestTimeLog" />
+        </Logger>
+        <Logger name="br.com.bs.socket.service.ConsultaSocketService" level="info" additivity="false">
+            <appender-ref ref="socketRequestTimeLog" />
+        </Logger>
+
+        <Root level="info" additivity="false">
+            <appender-ref ref="console" />
+            <appender-ref ref="rootFileLogger" />
+        </Root>
+    </Loggers>
+
+</Configuration>

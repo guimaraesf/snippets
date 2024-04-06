@@ -1,0 +1,7 @@
+# LOCAL
+export CADASTRAL_API_LOCAL_HOME="/home/svc_alm/api/api_base_cadastral"
+export CADASTRAL_API_LOCAL_LOG="${CADASTRAL_API_LOCAL_HOME}/log"
+export CADASTRAL_API_LOCAL_UTIL="/home/svc_alm/api/util"
+
+# CONFIG
+export CADASTRAL_API_VERSION="1.1"

@@ -1,0 +1,123 @@
+def remoteData = [:]
+def remoteHosts = []
+def jobSettings = [:]
+
+def CADASTRAL_API_PORT = ""
+
+pipeline {
+    agent { label 'master' }
+    tools {
+        maven 'mvn-3-6-1'
+    }
+    environment {
+        REMOTE_CREDENTIAL = credentials('svc_alm-dev-cadastral')
+        REMOTE_USER = "${env.REMOTE_CREDENTIAL_USR}"
+        REMOTE_PASSWORD = "${env.REMOTE_CREDENTIAL_PSW  }"
+    }
+    stages {
+        stage('Init') {
+            steps {
+                script {
+                    remoteData.name = 'remote'
+                    remoteData.user = "${REMOTE_USER}"
+                    remoteData.password = "${REMOTE_PASSWORD}"
+                    remoteData.allowAnyHosts = true
+
+                    jobSettings.apiIntervalCheckUp = "5s"
+                    jobSettings.apiMaxCheckUp = "10"
+                    jobSettings.apiTailLinesErrorLog = "50"
+                    jobSettings.cadastralDeployRemotePath = "deploy_api_cadastral"
+                    jobSettings.deployEnv = params.DEPLOY_ENV.replace("\n", "")
+
+                    if (jobSettings.deployEnv == 'prod') {    
+                        remoteHosts = ['dtbhad01p.bvs.corp', 'dtbhad02p.bvs.corp']
+                    } else if (jobSettings.deployEnv == 'homol') {
+                        remoteHosts = ['slahad13h.bvs.corp']
+                    } else  {
+                        remoteHosts = ['nanhad12d.bvsdev.corp']
+                    }
+                }
+            }
+        }
+        stage('Prepare packages') {
+            steps {
+                script {
+
+                    def local_scripts_path = "deploy_scripts_api_jenkins"
+                    sh "rm -rf ${local_scripts_path} deploy_utils.zip  deploy_scripts.zip run.sh core-api.jar; mkdir ${local_scripts_path};"
+
+                    def resoures_deploy = "core-api/src/main/resources"
+
+                    jobSettings.cadastralApiPort = sh(returnStdout: true, script: "grep -A10 'profiles: ${jobSettings.deployEnv}' ${resoures_deploy}/application.yml | tail -n2 | awk '{ print \$2}' | tr -d '[:space:]'").trim()
+                    jobSettings.cadastralVersion = sh(returnStdout: true, script: "sed -n '/version>/,/version/p' pom.xml | head -1 | sed -e 's/<version>\\(.*\\)<\\/version>/\\1/' | tr -d '[:space:]'").trim()
+
+                    echo "JOB SETTINGS :: cadastralVersion: ${jobSettings.cadastralVersion} :: cadastralApiPort: ${jobSettings.cadastralApiPort}"
+
+                    sh """
+                        sed -i 's/.*CADASTRAL_API_VERSION.*/export CADASTRAL_API_VERSION=${jobSettings.cadastralVersion}/' configs/profile_cadastral-${jobSettings.deployEnv}
+                       """
+
+                    echo "Praparando arquivos principais de deploy"
+                    sh """
+                        cp configs/scripts/run-${jobSettings.deployEnv}.sh ${local_scripts_path}/run.sh;
+                        cp configs/scripts/shutdown.sh ${local_scripts_path}/;
+                        cp ${resoures_deploy}/log4j2.xml ${local_scripts_path}/log4j2.custom.xml;
+                        cp ${resoures_deploy}/application.yml ${local_scripts_path}/;
+                        cp ${resoures_deploy}/application-dePara.yml ${local_scripts_path}/;
+                        cp ${resoures_deploy}/application-socket.yml ${local_scripts_path}/;
+                        ls -ltr ${local_scripts_path}
+                       """
+
+                    zip zipFile: 'deploy_utils.zip', archive: false, dir: 'configs/util', glob: "*.sh"
+                    zip zipFile: 'deploy_scripts.zip', archive: false, dir: "${local_scripts_path}", glob: "*"
+
+                    sh "mvn dependency:get -Dartifact=br.com.bs:core-api:${jobSettings.cadastralVersion}:jar -Ddest=core-api.jar -Dtransitive=false"
+                }
+            }
+        }
+
+        stage('Copy packages to Remote Server') {
+            steps {
+                script {
+                    /*for(String host in remoteHosts) {
+
+                    }*/
+                    for (int i = 0; i < remoteHosts.size(); i++) {
+                        remoteData.host = "${remoteHosts[i]}"
+                        echo "COPY PACKAGES TO: ${remoteData.host}"
+
+                        sshCommand remote: remoteData, command: "ls -lrt; mkdir -p ${jobSettings.cadastralDeployRemotePath}"
+
+                        sshPut remote: remoteData, from: 'deploy.sh', into: "${jobSettings.cadastralDeployRemotePath}"
+                        sshPut remote: remoteData, from: "configs/profile_cadastral-${jobSettings.deployEnv}", into: "${jobSettings.cadastralDeployRemotePath}/profile_cadastral"
+                        sshPut remote: remoteData, from: 'deploy_utils.zip', into: "${jobSettings.cadastralDeployRemotePath}"
+                        sshPut remote: remoteData, from: 'deploy_scripts.zip', into: "${jobSettings.cadastralDeployRemotePath}"
+                        sshPut remote: remoteData, from: 'core-api.jar', into: "${jobSettings.cadastralDeployRemotePath}"
+                    }
+                }
+            }
+        }
+
+        stage('Execute Deploy') {
+            steps {
+                script {
+                    for (int i = 0; i < remoteHosts.size(); i++) {
+                        remoteData.host = "${remoteHosts[i]}"
+                        echo "DEPLOYING TO: ${remoteData.host}"
+                        sshCommand remote: remoteData, command: "ls -lrt ${jobSettings.cadastralDeployRemotePath}"
+                        sshCommand remote: remoteData, command: "chmod +x ${jobSettings.cadastralDeployRemotePath}/deploy.sh"
+                        sshCommand remote: remoteData, command: "sh ${jobSettings.cadastralDeployRemotePath}/deploy.sh ${jobSettings.cadastralVersion} ${jobSettings.cadastralApiPort} ${jobSettings.apiIntervalCheckUp} ${jobSettings.apiMaxCheckUp} ${jobSettings.apiTailLinesErrorLog}"
+                    }
+                }
+            }
+        }
+
+        stage('Clean up Remote Server') {
+            steps {
+                script {
+                    sshRemove remote: remoteData, path: "${jobSettings.cadastralDeployRemotePath}", failOnError: true
+                }
+            }
+        }
+    }
+}

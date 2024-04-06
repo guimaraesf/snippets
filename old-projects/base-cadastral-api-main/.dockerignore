@@ -1,0 +1,17 @@
+.git/
+# target/
+.mvn
+*.iml
+*.ipr
+*.iws
+.idea
+.DS_Store
+.classpath
+.project
+.settings
+log
+app.pid
+nohup.out
+.gitignore
+*.sh
+Dockerfile*

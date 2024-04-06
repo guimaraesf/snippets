@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>br.com.bs</groupId>
+    <artifactId>camel-basecadastral</artifactId>
+    <version>${version}</version>
+
+    <packaging>pom</packaging>
+
+    <name>API :: BaseCadastral</name>
+
+    <modules>
+        <module>core-common</module>
+        <module>core-api</module>
+        <module>socket-api</module>
+        <module>rest-api-v1</module>
+        <module>rest-api-v2</module>
+        <module>security</module>
+        <module>core-bigtable</module>
+        <module>reversed-index-bigtable</module>
+        <module>ppe-pessoa</module>
+        <module>scpc-fone</module>
+        <module>endereco-cep</module>
+        <module>outras-grafias</module>
+        <module>serpro</module>
+        <module>cache</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>package-store</id>
+            <url>https://gitlab.bvsnet.com.br/-/package-router/maven</url>
+        </repository>
+    </repositories>
+
+
+    <distributionManagement>
+        <!--<repository>
+            <id>nexus</id>
+            <name>maven-releases</name>
+            <url>https://alm.bvsnet.com.br/nexus/repository/maven-releases/</url>
+        </repository>-->
+        <repository>
+            <id>package-store</id>
+            <url>https://gitlab.bvsnet.com.br/-/package-router/maven</url>
+        </repository>
+        <!--<snapshotRepository>
+            <id>nexus</id>
+            <name>maven-snapshots</name>
+            <url>https://alm.bvsnet.com.br/nexus/repository/maven-snapshots/</url>
+        </snapshotRepository>-->
+        <snapshotRepository>
+            <id>package-store</id>
+            <url>https://gitlab.bvsnet.com.br/-/package-router/maven</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+    <plugins>
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.7</version>
+            <executions>
+                <execution>
+                    <id>default-prepare-agent</id>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>report</id>
+                    <phase>prepare-package</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+    </build>
+</project>
