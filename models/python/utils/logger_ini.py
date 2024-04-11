@@ -3,19 +3,22 @@
 # ================================================================================================
 # Module: logger.py
 # Author: Fernando Theodoro Guimarães
+# E-mail: fernando.guimaraes@ime.usp.br
 # Description:
 # ================================================================================================
+import os
 import logging
 from logging import config
 
 
-__PATH__ = "../../config/logging.ini"
+__PATH__ = os.path.join(os.path.dirname(__file__), "../../config/logging.ini")
 
 
 class Logger:
     """
     Logger class for the application.
     """
+
     _instance = None
 
     @staticmethod
