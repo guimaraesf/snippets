@@ -9,15 +9,28 @@ import logging
 from logging import config
 
 
-__CONFIG_LOGGING__ = "../config/logging.ini"
+__PATH__ = "../../config/logging.ini"
 
 
 class Logger:
     """
     Logger class for the application.
     """
+    _instance = None
 
-    def __init__(self, config_file: str = __CONFIG_LOGGING__) -> None:
+    @staticmethod
+    def get_instance():
+        """
+
+        Returns
+        -------
+
+        """
+        if Logger._instance is None:
+            Logger()
+        return Logger._instance
+
+    def __init__(self, config_file: str = __PATH__) -> None:
         """
         Initializes the logger with the specified log level.
 
@@ -26,10 +39,14 @@ class Logger:
         config_file : logging, optional
             The config file of logging to be used.
         """
-        self.config_file = config_file
-        self.config_logger()
+        if Logger._instance is not None:
+            raise Exception("This class is a Singleton")
+        else:
+            self.config_file = config_file
+            self.logger = self._config_and_get_logger()
+            Logger._instance = self
 
-    def config_logger(self) -> logging.Logger:
+    def _config_and_get_logger(self) -> logging.Logger:
         """
         Returns the root logger.
 
@@ -39,5 +56,4 @@ class Logger:
             The root logger.
         """
         logging.config.fileConfig(self.config_file)
-        logger = logging.getLogger()
-        return logger
+        return logging.getLogger()
