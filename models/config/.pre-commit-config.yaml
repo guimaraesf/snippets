@@ -16,23 +16,23 @@ repos:
     rev: 1.7.5
     hooks:
     -   id: bandit
-        args: ["-r", "-lll"]
+        args: ["--configfile=.config/bandit.ini"]
         verbose: true
 -   repo: https://github.com/pycqa/pylint
     rev: v3.0.2
     hooks:
     -   id: pylint
-        args: ["-v", "--errors-only", "--rcfile=.config/.pylintrc"]
+        args: ["--rcfile=.config/.pylintrc"]
 -   repo: https://github.com/asottile/reorder-python-imports
     rev: v3.12.0
     hooks:
     -   id: reorder-python-imports
-        args: [--py310-plus]
+        args: ["--py310-plus"]
 -   repo: https://github.com/psf/black
     rev: 23.10.1
     hooks:
     -   id: black
-        args: [--line-length=100]
+        args: ["--config=.config/black.ini"]
 -   repo: https://github.com/yunojuno/pre-commit-xenon
     rev: cc59b0431a5d072786b59430e9b342b2881064f6
     hooks:
@@ -41,5 +41,15 @@ repos:
 -   repo: https://github.com/frostming/fix-future-annotations
     rev: 0.5.0
     hooks:
-    -   id: fix-future-annotations
+      - id: fix-future-annotations
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.9.0  # Use the sha / tag you want to point at
+    hooks:
+    -   id: mypy
+        args: ["--config-file=.config/mypy.ini"]
+#-   repo: https://github.com/pycqa/pydocstyle
+#    rev: 6.3.0
+#    hooks:
+#    - id: pydocstyle
+#      args: ["--verbose", "--ignore-decorators", "--convention=numpy", "--ignore-self-only-init"]
 files: \.(py|txt|yaml)$
