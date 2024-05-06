@@ -3,10 +3,8 @@
 # ================================================================================================
 # Module: columns.py
 # Author: Fernando Theodoro Guimarães
-# E-mail: fernando.guimaraes@boavistascpc.com.br
+# E-mail:
 # Description: This code centralizes all columns to use in spark schemas.
-# Value Stream: Data
-# Squad: Dados Alternativos
 # ================================================================================================
 from typing import NamedTuple
 from pyspark.sql.types import FloatType
