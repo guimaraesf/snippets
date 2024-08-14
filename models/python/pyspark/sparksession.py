@@ -43,7 +43,6 @@ class SparkSessionInit:
         Returns:
             SparkSession: The initialized and configured Spark session.
         """
-        MASTER, APP_NAME = (self.spark_conf["master"], self.spark_conf["app_name"])
-        spark = SparkSession.builder.master(MASTER).appName(APP_NAME).getOrCreate()
+        spark = SparkSession.builder.config(*self.spark_conf).getOrCreate()
         self._set_spark_conf(spark)
         return spark
