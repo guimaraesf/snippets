@@ -36,7 +36,7 @@ class SparkSessionInit:
         for key, value in self.spark_conf.items():
             spark.conf.set(key, value)
 
-    def initialize_sparksession(self) -> SparkSession:
+    def init_session(self) -> SparkSession:
         """
         Initializes and configures a SparkSession.
 
