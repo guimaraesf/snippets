@@ -8,7 +8,6 @@
 # ================================================================================================
 import os
 import logging
-from logging import config
 
 
 __PATH__ = os.path.join(os.path.dirname(__file__), "../../config/logging.ini")
