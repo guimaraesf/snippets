@@ -27,7 +27,6 @@ class MyClass:
     def main(self):
         self.logger.info("As dependências foram injetadas...")
 
-
 if __name__ == "__main__":
     container = Container()
     container.init_resources()
@@ -36,3 +35,4 @@ if __name__ == "__main__":
 
     run = MyClass()
     run.main()
+    
