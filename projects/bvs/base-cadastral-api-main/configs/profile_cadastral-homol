@@ -1,7 +1,0 @@
-# LOCAL
-export CADASTRAL_API_LOCAL_HOME="/home/svc_cadastral_api/api/api_base_cadastral-accumulo"
-export CADASTRAL_API_LOCAL_LOG="${CADASTRAL_API_LOCAL_HOME}/log"
-export CADASTRAL_API_LOCAL_UTIL="/home/svc_cadastral_api/api/util"
-
-# CONFIG
-export CADASTRAL_API_VERSION="1.1"
