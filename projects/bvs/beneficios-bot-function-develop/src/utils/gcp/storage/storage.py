@@ -15,6 +15,7 @@ import os
 import sys
 from google.cloud import storage
 from pyspark.sql.functions import col
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
 
@@ -117,10 +118,12 @@ class GcsHandle:
         Returns a Spark DataFrame that contains only the column that have the specified file name.
         """
         try:
-            dataframe = spark.read.parquet(file_path) \
-                    .select("ARQUIVO") \
-                    .filter(col("ARQUIVO") == file_name) \
-                    .limit(1)
+            dataframe = (
+                spark.read.parquet(file_path)
+                .select("ARQUIVO")
+                .filter(col("ARQUIVO") == file_name)
+                .limit(1)
+            )
             return dataframe
         except Exception:
             pass
@@ -130,21 +133,23 @@ class GcsHandle:
         Checks if the specified file name already exists in the GCS.
         """
         if dataframe is None or dataframe.rdd.isEmpty():
-            self.logger.info(f"File {file_name} does not processed. Starting processing file.")
+            self.logger.info(
+                f"File {file_name} does not processed. Starting processing file."
+            )
             return True
         self.logger.info(f"File {file_name} already processed. Skipping.")
         return False
 
     def write_to_parquet(self, dataframe, destination_path, mode):
-        """ 
+        """
         Writes the given dataframe to the given destination.
         """
         try:
             blob_trusted_name = "/".join(destination_path.split("/")[3:])
-            dataframe.write \
-                .mode(mode) \
-                .parquet(destination_path)
-            self.logger.info(f"DataFrame was successfully written to the Trusted layer: {blob_trusted_name}.")
+            dataframe.write.mode(mode).parquet(destination_path)
+            self.logger.info(
+                f"DataFrame was successfully written to the Trusted layer: {blob_trusted_name}."
+            )
         except Exception as error:
             self.logger.error(f"An error occurred while writing the DataFrame: {error}")
 

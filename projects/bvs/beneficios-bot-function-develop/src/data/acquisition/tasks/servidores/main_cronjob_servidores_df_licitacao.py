@@ -16,6 +16,7 @@ import os
 import ssl
 import sys
 import concurrent.futures
+
 # Adding python modules from bucket (e.g. da-beneficios-jobs) to path
 # These files are those passed in the "python_file_uris" parameter in "main.py"
 sys.path.append(os.path.abspath("../"))
@@ -36,14 +37,15 @@ class ProcessRunner:
     """
 
     def __init__(
-            self,
-            project_id,
-            bucket_name,
-            local_dir,
-            files,
-            target_date,
-            dates_for_blobs,
-            logger) -> None:
+        self,
+        project_id,
+        bucket_name,
+        local_dir,
+        files,
+        target_date,
+        dates_for_blobs,
+        logger,
+    ) -> None:
         self.project_id = project_id
         self.bucket_name = bucket_name
         self.local_dir = local_dir
@@ -72,7 +74,9 @@ class ProcessRunner:
         """
         Get download path for a target date.
         """
-        download_path = os.path.join(self.local_dir, f"Licitacao_{self.target_date}.zip")
+        download_path = os.path.join(
+            self.local_dir, f"Licitacao_{self.target_date}.zip"
+        )
         return download_path
 
     def get_file_names(self):
@@ -96,7 +100,9 @@ class ProcessRunner:
         Checking if the file exists in Google Cloud Storage.
         """
         gcs_file_validator = GcsFileValidator()
-        file_exists = gcs_file_validator.file_exists_in_bucket(list_blobs, file_names, self.logger)
+        file_exists = gcs_file_validator.file_exists_in_bucket(
+            list_blobs, file_names, self.logger
+        )
         return file_exists
 
     def set_ssl_context(self):
@@ -113,9 +119,7 @@ class ProcessRunner:
         """
         Running download files.
         """
-        file_downloader = UrllibDownloader(
-            url, context, zipfile_path, self.logger
-        )
+        file_downloader = UrllibDownloader(url, context, zipfile_path, self.logger)
         file_downloader.run_download()
 
     def validate_if_file_exists(self, zipfile_path):
@@ -138,9 +142,7 @@ class ProcessRunner:
         """
         Unpacking files to "/tmp".
         """
-        file_unpacker = FileUnpacker(
-            zipfile_path, self.local_dir, self.logger
-        )
+        file_unpacker = FileUnpacker(zipfile_path, self.local_dir, self.logger)
         file_unpacker.unpack_zipfile()
 
     def get_file_blob_map(self, structure_dir):
@@ -148,7 +150,8 @@ class ProcessRunner:
         Get dictionary with blobs to send files.
         """
         file_blob_map = {
-            f"{self.target_date}_Licitacao.csv": f"SERVIDORES/ESTADUAIS/STAGING/DF/LICITACAO/{structure_dir}"}
+            f"{self.target_date}_Licitacao.csv": f"SERVIDORES/ESTADUAIS/STAGING/DF/LICITACAO/{structure_dir}"
+        }
         return file_blob_map
 
     def upload_files_to_gcs(self, bucket, file_names_to_send, file_blob_map):
@@ -156,7 +159,9 @@ class ProcessRunner:
         Uploading files into Google Cloud Storage.
         """
         gcs_handle = GcsHandle(bucket, self.logger)
-        gcs_handle.upload_blobs_to_gcs(self.local_dir, file_names_to_send, file_blob_map)
+        gcs_handle.upload_blobs_to_gcs(
+            self.local_dir, file_names_to_send, file_blob_map
+        )
 
     def get_new_file_name(self, file):
         """
@@ -172,7 +177,11 @@ class ProcessRunner:
         """
         gcs_handle = GcsHandle(bucket, self.logger)
         for blob in list_blobs:
-            if blob.exists() and file_name in blob.name and self.target_date == tag_name:
+            if (
+                blob.exists()
+                and file_name in blob.name
+                and self.target_date == tag_name
+            ):
                 gcs_handle.delete_blob(blob)
                 self.logger.warning("Deleting blob at earlier dates.")
 
@@ -181,10 +190,7 @@ class ProcessRunner:
         Read file on Pandas DataFrame.
         """
         dataframe = self.pd_csv_handle.read_csv_file(
-            file_path,
-            sep=";",
-            encoding="UTF-8",
-            header=None
+            file_path, sep=";", encoding="UTF-8", header=None
         )
         return dataframe
 
@@ -193,10 +199,7 @@ class ProcessRunner:
         Convert dataframe to CSV format.
         """
         self.pd_csv_handle.convert_to_csv_file(
-            dataframe,
-            file_path,
-            sep=";",
-            encoding="ISO-8859-1"
+            dataframe, file_path, sep=";", encoding="ISO-8859-1"
         )
         self.logger.info(f"File successfully saved as csv to {file_path}.")
 
@@ -214,7 +217,7 @@ class ProcessRunner:
             "DATA_3",
             "SITUACAO",
             "TOTAL_PROPOSTO",
-            "TOTAL_HOMOLOGADO"
+            "TOTAL_HOMOLOGADO",
         ]
         dataframe.columns = columns_name
 
@@ -228,10 +231,13 @@ class ProcessRunner:
         zipfile_path = self.get_download_path()
         file_names = self.get_file_names()
         list_blobs = self.get_blobs_to_validate(bucket)
-        file_exists_in_bucket = self.checking_if_file_exists_in_gcs(list_blobs, file_names)
+        file_exists_in_bucket = self.checking_if_file_exists_in_gcs(
+            list_blobs, file_names
+        )
         if not file_exists_in_bucket:
             self.logger.info(
-                f"Starting the download for the Public Servants (DF) - Licitação from {self.target_date}.")
+                f"Starting the download for the Public Servants (DF) - Licitação from {self.target_date}."
+            )
             context = self.set_ssl_context()
             self.download_file(url, context, zipfile_path)
             # Change the directory of "dataproc job" to "/tmp"
@@ -240,7 +246,9 @@ class ProcessRunner:
             zipfile_is_valid = self.validate_if_zipfile_is_valid(zipfile_path)
             if zipfile_is_valid and file_exists:
                 self.unzip_files(zipfile_path)
-                old_file_path = os.path.join(self.local_dir, f"Licitacao_{self.target_date}.csv")
+                old_file_path = os.path.join(
+                    self.local_dir, f"Licitacao_{self.target_date}.csv"
+                )
                 if os.path.exists(old_file_path):
                     old_file_name = f"Licitacao_{self.target_date}.csv"
                     new_file_name = self.get_new_file_name(old_file_name)

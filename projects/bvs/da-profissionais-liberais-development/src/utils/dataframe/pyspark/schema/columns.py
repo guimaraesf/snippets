@@ -44,11 +44,19 @@ class Columns(enumerate):
 
     TABLE_INFOS_CONFEF: dict = {
         "estado": DataframeParams(
-            schema_params=(string_type, True, {"description": "Estado do conselho profissional"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Estado do conselho profissional"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "registro": DataframeParams(
-            schema_params=(string_type, True, {"description": "Registro do profissional"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Registro do profissional"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r" ")),
         ),
         "nome": DataframeParams(
@@ -56,15 +64,27 @@ class Columns(enumerate):
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "sigla_registro": DataframeParams(
-            schema_params=(string_type, True, {"description": "Sigla do registro do profissional"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Sigla do registro do profissional"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r" ")),
         ),
         "categoria": DataframeParams(
-            schema_params=(string_type, True, {"description": "Categoria profissional"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Categoria profissional"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "natureza_titulo": DataframeParams(
-            schema_params=(string_type, True, {"description": "Natureza do título profissional"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Natureza do título profissional"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r" ")),
         ),
         "indice": DataframeParams(
@@ -98,15 +118,27 @@ class Columns(enumerate):
 
     TABLE_INFOS_SUSEP: dict = {
         "corretor_id": DataframeParams(
-            schema_params=(string_type, True, {"description": "Identificador único do corretor"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Identificador único do corretor"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "cpf_cnpj": DataframeParams(
-            schema_params=(string_type, True, {"description": "CPF ou CNPJ do corretor"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "CPF ou CNPJ do corretor"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "protocolo": DataframeParams(
-            schema_params=(string_type, True, {"description": "Número de protocolo do corretor"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Número de protocolo do corretor"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "nome": DataframeParams(
@@ -122,7 +154,11 @@ class Columns(enumerate):
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "situacao": DataframeParams(
-            schema_params=(string_type, True, {"description": "Situação atual do corretor"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Situação atual do corretor"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "produtos": DataframeParams(
@@ -146,7 +182,11 @@ class Columns(enumerate):
 
     TABLE_INFOS_CFC: dict = {
         "chave": DataframeParams(
-            schema_params=(string_type, True, {"description": "Chave única para cada registro"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Chave única para cada registro"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r" ")),
         ),
         "nome": DataframeParams(
@@ -162,11 +202,19 @@ class Columns(enumerate):
             regex=((STRIP_NON_ALPHANUMERIC, r" ")),
         ),
         "estado_conselho": DataframeParams(
-            schema_params=(string_type, True, {"description": "Estado do conselho profissional"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Estado do conselho profissional"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r" ")),
         ),
         "cpf_cnpj": DataframeParams(
-            schema_params=(string_type, True, {"description": "CPF ou CNPJ do profissional"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "CPF ou CNPJ do profissional"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "descricao_categoria": DataframeParams(
@@ -178,7 +226,11 @@ class Columns(enumerate):
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "descricao_tipo_registro": DataframeParams(
-            schema_params=(string_type, True, {"description": "Descrição do tipo de registro"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Descrição do tipo de registro"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "situacao_cadastral": DataframeParams(
@@ -210,7 +262,11 @@ class Columns(enumerate):
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "crfa": DataframeParams(
-            schema_params=(string_type, True, {"description": "Registro CRFA do profissional"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Registro CRFA do profissional"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "nome": DataframeParams(
@@ -222,11 +278,19 @@ class Columns(enumerate):
             regex=((STRIP_NON_ALPHANUMERIC, r" ")),
         ),
         "especialidade": DataframeParams(
-            schema_params=(string_type, True, {"description": "Especialidade do profissional"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Especialidade do profissional"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r" ")),
         ),
         "estado": DataframeParams(
-            schema_params=(string_type, True, {"description": "Estado do conselho profissional"}),
+            schema_params=(
+                string_type,
+                True,
+                {"description": "Estado do conselho profissional"},
+            ),
             regex=((STRIP_NON_ALPHANUMERIC, r"")),
         ),
         "cidade": DataframeParams(

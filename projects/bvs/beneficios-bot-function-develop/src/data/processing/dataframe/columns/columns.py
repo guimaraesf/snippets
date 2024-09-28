@@ -13,6 +13,7 @@
 
 import os
 import sys
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
 
@@ -1170,7 +1171,7 @@ select_columns_Servidores_DF_Orgao = [
     "MES_REFERENCIA",
     "SITUACAO_FUNCIONAL_ESPECIFICA",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Receita = [
@@ -1205,7 +1206,7 @@ select_columns_Servidores_DF_Receita = [
     "IN_MES",
     "DT_CARGA",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Remuneracao = [
@@ -1237,7 +1238,7 @@ select_columns_Servidores_DF_Remuneracao = [
     "BRUTO",
     "LIQUIDO",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Remuneracao_Detalhamento = [
@@ -1251,7 +1252,7 @@ select_columns_Servidores_DF_Remuneracao_Detalhamento = [
     "MES_REFERENCIA",
     "VALOR",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Licitacao = [
@@ -1268,7 +1269,7 @@ select_columns_Servidores_DF_Licitacao = [
     "TOTAL_PROPOSTO",
     "TOTAL_HOMOLOGADO",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Desp_Ord_Banc_Cancelada = [
@@ -1294,7 +1295,7 @@ select_columns_Servidores_DF_Desp_Ord_Banc_Cancelada = [
     "VL_A_PAGAR_PAGO_RET",
     "VL_PAGO_RET",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Desp_Nota_Lanc_Emp = [
@@ -1306,7 +1307,7 @@ select_columns_Servidores_DF_Desp_Nota_Lanc_Emp = [
     "NR_ANO_NE",
     "VL_FINAL",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Desp_Ord_Banc_Nota_Emp = [
@@ -1322,7 +1323,7 @@ select_columns_Servidores_DF_Desp_Ord_Banc_Nota_Emp = [
     "VL_CANCELADO",
     "VL_FINAL",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Desp_Emp_Subelemento = [
@@ -1337,7 +1338,7 @@ select_columns_Servidores_DF_Desp_Emp_Subelemento = [
     "CODIGO_NATUREZA",
     "VALOR_EMPENHADO",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Desp_Emp_Descricao = [
@@ -1355,7 +1356,7 @@ select_columns_Servidores_DF_Desp_Emp_Descricao = [
     "VALOR_UNITARIO",
     "VALOR_TOTAL",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Desp_Principal = [
@@ -1401,7 +1402,7 @@ select_columns_Servidores_DF_Desp_Principal = [
     "PAGO_RET",
     "TOTAL_PAGO",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Desp_Nota_Lanc_Evento = [
@@ -1417,7 +1418,7 @@ select_columns_Servidores_DF_Desp_Nota_Lanc_Evento = [
     "CD_CLASSIFICACAO",
     "VL_LANCAMENTO",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Desp_Lanc = [
@@ -1440,7 +1441,7 @@ select_columns_Servidores_DF_Desp_Lanc = [
     "OBSERVACAO",
     "VALOR",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Desp_Pgto = [
@@ -1468,7 +1469,7 @@ select_columns_Servidores_DF_Desp_Pgto = [
     "DESCRICAO",
     "VALOR_FINAL",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Desp_Emp = [
@@ -1521,7 +1522,7 @@ select_columns_Servidores_DF_Desp_Emp = [
     "VALOR_INICIAL",
     "VALOR_FINAL",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]
 
 select_columns_Servidores_DF_Patrimonio = [
@@ -1535,5 +1536,5 @@ select_columns_Servidores_DF_Patrimonio = [
     "VALOR_ATUAL",
     "DATA_INCORPORACAO",
     "ARQUIVO",
-    "DATA_PROCESSAMENTO"
+    "DATA_PROCESSAMENTO",
 ]

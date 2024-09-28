@@ -52,10 +52,14 @@ class Uploader:
         """
         YEAR, MONTH, DAY = current_dates
         for blob_path in self.blob_trusted_name:
-            blob_trusted_path = f"trusted/{blob_path}/ano={YEAR}/mes={MONTH}/dia={DAY}/tf.parquet"
+            blob_trusted_path = (
+                f"trusted/{blob_path}/ano={YEAR}/mes={MONTH}/dia={DAY}/tf.parquet"
+            )
             try:
                 blob = self.bucket.blob(blob_trusted_path)
-                blob.upload_from_filename(self.file_path, content_type="application/octet-stream")
+                blob.upload_from_filename(
+                    self.file_path, content_type="application/octet-stream"
+                )
                 if blob.exists():
                     print(f"{blob.name} has been uploaded successfully.")
             except Exception as e:

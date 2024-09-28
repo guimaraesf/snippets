@@ -16,6 +16,7 @@ import sys
 import pandas as pd
 import snappy
 import fastparquet
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
 from src.utils.gcp.storage.storage import GcsClient, GcsHandle

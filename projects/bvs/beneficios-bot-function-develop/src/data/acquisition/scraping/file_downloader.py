@@ -76,7 +76,15 @@ class UrllibDownloader(ParserUrl):
     Class for downloading files.
     """
 
-    def __init__(self, url, context, path_where_to_save, logger, request=urllib.request.Request, urlopen=urllib.request.urlopen):
+    def __init__(
+        self,
+        url,
+        context,
+        path_where_to_save,
+        logger,
+        request=urllib.request.Request,
+        urlopen=urllib.request.urlopen,
+    ):
         self.url = url
         self.context = context
         self.path_where_to_save = path_where_to_save
@@ -158,9 +166,7 @@ class UrllibDownloader(ParserUrl):
             self.logger.info(f"Downloading file to: {self.path_where_to_save}")
             self.__process_response(response.read())
         else:
-            self.logger.error(
-                f"HTTP Error {status_code}: {reason}"
-            )
+            self.logger.error(f"HTTP Error {status_code}: {reason}")
 
     def run_download(self):
         """

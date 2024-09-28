@@ -14,6 +14,7 @@
 import os
 import sys
 from pyspark.sql.types import StructType, StructField, StringType
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
 # pylint: disable=import-error
@@ -101,7 +102,7 @@ class Schemas:
             self.variables.FILENAME_PATRIMONIO: select_columns_Servidores_DF_Patrimonio,
             self.variables.FILENAME_RECEITA: select_columns_Servidores_DF_Receita,
             self.variables.FILENAME_REMUNERACAO: select_columns_Servidores_DF_Remuneracao,
-            self.variables.FILENAME_REMUNERACAO_DETALHAMENTO: select_columns_Servidores_DF_Remuneracao_Detalhamento
+            self.variables.FILENAME_REMUNERACAO_DETALHAMENTO: select_columns_Servidores_DF_Remuneracao_Detalhamento,
         }
 
     @staticmethod

@@ -14,6 +14,7 @@
 import os
 import sys
 from collections import namedtuple
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
 from variables import Variables
@@ -178,7 +179,7 @@ class IngestionTasks:
                 6,
             ),
             "empregado-domestico": ingestion_task(
-                "seguro-desemprego",                
+                "seguro-desemprego",
                 "SEGURODESEMPREGO/EMPRDOMESTICO/ENTRADA/",
                 self.variables.FILENAME_EMPR_DOMESTICO,
                 self.functions.columns_empr_domestico,
@@ -189,7 +190,7 @@ class IngestionTasks:
                 6,
             ),
             "trabalhador-resgatado": ingestion_task(
-                "seguro-desemprego",                
+                "seguro-desemprego",
                 "SEGURODESEMPREGO/TRABRESGATADO/ENTRADA/",
                 self.variables.FILENAME_TRAB_RESGATADO,
                 self.functions.columns_trab_resgatado,
@@ -200,7 +201,7 @@ class IngestionTasks:
                 6,
             ),
             "bolsa-qualificacao": ingestion_task(
-                "seguro-desemprego",                
+                "seguro-desemprego",
                 "SEGURODESEMPREGO/BOLSAQUALIFIC/ENTRADA/",
                 self.variables.FILENAME_BOLSA_QUALIFIC,
                 self.functions.columns_bolsa_qualific,
@@ -211,7 +212,7 @@ class IngestionTasks:
                 6,
             ),
             "pescador-artesanal": ingestion_task(
-                "seguro-desemprego",                
+                "seguro-desemprego",
                 "SEGURODESEMPREGO/PESCARTESANAL/ENTRADA/",
                 self.variables.FILENAME_PESC_ARTESANAL,
                 self.functions.columns_pesc_artesanal,
@@ -233,7 +234,7 @@ class IngestionTasks:
                 6,
             ),
             "aposetandos-siape": ingestion_task(
-                "servidores-federais",                
+                "servidores-federais",
                 "SERVIDORES/APOSENTADOS/SIAPE/ENTRADA/",
                 self.variables.FILENAME_APOSENTADOS_SIAPE,
                 self.functions.columns_aposentados,
@@ -244,7 +245,7 @@ class IngestionTasks:
                 6,
             ),
             "militares": ingestion_task(
-                "servidores-federais",                
+                "servidores-federais",
                 "SERVIDORES/MILITARES/ENTRADA/",
                 self.variables.FILENAME_MILITARES,
                 self.functions.columns_militares,
@@ -255,7 +256,7 @@ class IngestionTasks:
                 6,
             ),
             "pensionistas-siape": ingestion_task(
-                "servidores-federais",                
+                "servidores-federais",
                 "SERVIDORES/PENSIONISTAS/SIAPE/ENTRADA/",
                 self.variables.FILENAME_PENSIONISTAS_SIAPE,
                 self.functions.columns_pensionistas,
@@ -266,7 +267,7 @@ class IngestionTasks:
                 6,
             ),
             "pensionistas-bacen": ingestion_task(
-                "servidores-federais",                
+                "servidores-federais",
                 "SERVIDORES/PENSIONISTAS/BACEN/ENTRADA/",
                 self.variables.FILENAME_PENSIONISTAS_BACEN,
                 self.functions.columns_pensionistas,
@@ -277,7 +278,7 @@ class IngestionTasks:
                 6,
             ),
             "pensionistas-defesa": ingestion_task(
-                "servidores-federais",                
+                "servidores-federais",
                 "SERVIDORES/PENSIONISTAS/DEFESA/ENTRADA/",
                 self.variables.FILENAME_PENSIONISTAS_DEFESA,
                 self.functions.columns_pensionistas,
@@ -288,7 +289,7 @@ class IngestionTasks:
                 6,
             ),
             "reserva-militares": ingestion_task(
-                "servidores-federais",                
+                "servidores-federais",
                 "SERVIDORES/RESERVAMILIARES/ENTRADA/",
                 self.variables.FILENAME_RESERVA_MILITARES,
                 self.functions.columns_reserva_militares,
@@ -299,7 +300,7 @@ class IngestionTasks:
                 6,
             ),
             "servidores-bacen": ingestion_task(
-                "servidores-federais",                
+                "servidores-federais",
                 "SERVIDORES/SERVPUBLICOS/BACEN/ENTRADA/",
                 self.variables.FILENAME_SERVIDORES_BACEN,
                 self.functions.columns_servidores,
@@ -310,7 +311,7 @@ class IngestionTasks:
                 6,
             ),
             "servidores-siape": ingestion_task(
-                "servidores-federais",                
+                "servidores-federais",
                 "SERVIDORES/SERVPUBLICOS/SIAPE/ENTRADA/",
                 self.variables.FILENAME_SERVIDORES_SIAPE,
                 self.functions.columns_servidores,
@@ -321,7 +322,7 @@ class IngestionTasks:
                 6,
             ),
             "honorarios-advoc": ingestion_task(
-                "servidores-federais",                
+                "servidores-federais",
                 "SERVIDORES/HONORARIOSADVOC/ENTRADA/",
                 self.variables.FILENAME_HONORARIOS_ADVOC,
                 self.functions.columns_honorarios_advoc,
@@ -332,7 +333,7 @@ class IngestionTasks:
                 6,
             ),
             "honorarios-jetons": ingestion_task(
-                "servidores-federais",                
+                "servidores-federais",
                 "SERVIDORES/HONORARIOSJETONS/ENTRADA/",
                 self.variables.FILENAME_HONORARIOS_JETONS,
                 self.functions.columns_honorarios_jetons,
@@ -354,7 +355,7 @@ class IngestionTasks:
                 6,
             ),
             "servidores-mg": ingestion_task(
-                "servidores-mg",                
+                "servidores-mg",
                 "SERVIDORES/ESTADUAIS/MG/ENTRADA/",
                 self.variables.FILENAME_SERVIDORES_MG,
                 self.functions.columns_servidores_mg,
@@ -365,7 +366,7 @@ class IngestionTasks:
                 6,
             ),
             "servidores-es": ingestion_task(
-                "servidores-es",                
+                "servidores-es",
                 "SERVIDORES/ESTADUAIS/ES/ENTRADA/",
                 self.variables.FILENAME_SERVIDORES_ES,
                 self.functions.columns_servidores_es,
@@ -376,7 +377,7 @@ class IngestionTasks:
                 6,
             ),
             "servidores-sc": ingestion_task(
-                "servidores-sc",                
+                "servidores-sc",
                 "SERVIDORES/ESTADUAIS/SC/ENTRADA/",
                 self.variables.FILENAME_SERVIDORES_SC,
                 self.functions.columns_servidores_sc,
@@ -406,10 +407,10 @@ class IngestionTasks:
                 select_columns_fornecedores_compras,
                 self.ingestion_args["table_fornecedores_compras"],
                 self.append_mode,
-                6
+                6,
             ),
             "fornecedores-item_compra": ingestion_task(
-                "fornecedores-gov",                
+                "fornecedores-gov",
                 "FORNECEDORES/ITEMCOMPRA/ENTRADA/",
                 self.variables.FILENAME_FORNECEDORES_ITEM_COMPRA,
                 self.functions.columns_fornecedores_item_compra,
@@ -420,7 +421,7 @@ class IngestionTasks:
                 6,
             ),
             "fornecedores-termo_aditivo": ingestion_task(
-                "fornecedores-gov",                
+                "fornecedores-gov",
                 "FORNECEDORES/TERMOADITIVO/ENTRADA/",
                 self.variables.FILENAME_FORNECEDORES_TERMO_ADITIVO,
                 self.functions.columns_fornecedores_termo_aditivo,
@@ -442,7 +443,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-empresas": ingestion_task(
-                "cnpj-cadastros",                
+                "cnpj-cadastros",
                 "CNPJ/EMPRESAS/ENTRADA/",
                 self.variables.FILENAME_CNPJ_EMPRESAS,
                 self.functions.columns_cnpj_empresas,
@@ -453,7 +454,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-estabelecimentos": ingestion_task(
-                "cnpj-cadastros",                
+                "cnpj-cadastros",
                 "CNPJ/ESTABELECIMENTOS/ENTRADA/",
                 self.variables.FILENAME_CNPJ_ESTABELECIMENTOS,
                 self.functions.columns_cnpj_estabelecimentos,
@@ -464,7 +465,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-socios": ingestion_task(
-                "cnpj-cadastros",                
+                "cnpj-cadastros",
                 "CNPJ/SOCIOS/ENTRADA/",
                 self.variables.FILENAME_CNPJ_SOCIOS,
                 self.functions.columns_cnpj_socios,
@@ -475,7 +476,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-motivos": ingestion_task(
-                "cnpj-cadastros",                
+                "cnpj-cadastros",
                 "CNPJ/MOTIVOS/ENTRADA/",
                 self.variables.FILENAME_CNPJ_MOTIVOS,
                 self.functions.columns_cnpj_motivos,
@@ -486,7 +487,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-municipios": ingestion_task(
-                "cnpj-cadastros",                
+                "cnpj-cadastros",
                 "CNPJ/MUNICIPIOS/ENTRADA/",
                 self.variables.FILENAME_CNPJ_MUNICIPIOS,
                 self.functions.columns_cnpj_municipios,
@@ -497,7 +498,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-natureza_juridica": ingestion_task(
-                "cnpj-cadastros",                
+                "cnpj-cadastros",
                 "CNPJ/NATUREZASJURIDICAS/ENTRADA/",
                 self.variables.FILENAME_CNPJ_NATUREZA_JURIDICA,
                 self.functions.columns_cnpj_natureza_juridica,
@@ -508,7 +509,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-paises": ingestion_task(
-                "cnpj-cadastros",                
+                "cnpj-cadastros",
                 "CNPJ/PAISES/ENTRADA/",
                 self.variables.FILENAME_CNPJ_PAISES,
                 self.functions.columns_cnpj_paises,
@@ -519,7 +520,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-qualificacoes_socios": ingestion_task(
-                "cnpj-cadastros",                
+                "cnpj-cadastros",
                 "CNPJ/QUALIFICACOESSOCIOS/ENTRADA/",
                 self.variables.FILENAME_CNPJ_QUALIFICACOES_SOCIOS,
                 self.functions.columns_cnpj_qualific_socios,
@@ -530,7 +531,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-simples": ingestion_task(
-                "cnpj-cadastros",                
+                "cnpj-cadastros",
                 "CNPJ/SIMPLES/ENTRADA/",
                 self.variables.FILENAME_CNPJ_SIMPLES,
                 self.functions.columns_cnpj_simples,
@@ -552,7 +553,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-lucro_arbitrado": ingestion_task(
-                "cnpj-regime-tributario",                
+                "cnpj-regime-tributario",
                 "CNPJ/REGIMETRIBUTARIO/LUCROARBITRADO/ENTRADA/",
                 self.variables.FILENAME_CNPJ_LUCRO_ARBITRADO,
                 self.functions.columns_cnpj_lucro_arbitrado,
@@ -574,7 +575,7 @@ class IngestionTasks:
                 1,
             ),
             "cnpj-lucro_presumido": ingestion_task(
-                "cnpj-regime-tributario",                
+                "cnpj-regime-tributario",
                 "CNPJ/REGIMETRIBUTARIO/LUCROPRESUMIDO/ENTRADA/",
                 self.variables.FILENAME_CNPJ_LUCRO_PRESUMIDO,
                 self.functions.columns_cnpj_lucro_presumido,
@@ -596,7 +597,7 @@ class IngestionTasks:
                 3,
             ),
             "debitos-nao-previdenciario": ingestion_task(
-                "debitos-trabalhistas",                
+                "debitos-trabalhistas",
                 "DEBITOSTRABALHISTAS/NAOPREVIDENCIARIO/ENTRADA/",
                 self.variables.FILENAME_DEBITOS_NAO_PREVIDENCIARIO,
                 self.functions.columns_debitos_nao_prev,
@@ -607,7 +608,7 @@ class IngestionTasks:
                 3,
             ),
             "debitos-fgts": ingestion_task(
-                "debitos-trabalhistas",                
+                "debitos-trabalhistas",
                 "DEBITOSTRABALHISTAS/FGTS/ENTRADA/",
                 self.variables.FILENAME_DEBITOS_FGTS,
                 self.functions.columns_debitos_fgts,
@@ -618,7 +619,7 @@ class IngestionTasks:
                 3,
             ),
             "servidores-df-desp-emp": ingestion_task(
-                "servidores-df-despesa",                
+                "servidores-df-despesa",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA/EMPENHO",
                 self.variables.FILENAME_DESP_EMPENHO,
                 self.functions.columns_servidores_df_desp_emp,
@@ -629,7 +630,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-desp-emp-desc": ingestion_task(
-                "servidores-df-despesa",                
+                "servidores-df-despesa",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA/EMPENHODESCRICAO",
                 self.variables.FILENAME_DESP_EMPENHO_DESC,
                 self.functions.columns_servidores_df_desp_emp_desc,
@@ -640,7 +641,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-desp-emp-sub": ingestion_task(
-                "servidores-df-despesa",                
+                "servidores-df-despesa",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA/EMPENHOSUBELEMENTO",
                 self.variables.FILENAME_DESP_EMPENHO_SUB,
                 self.functions.columns_servidores_df_desp_emp_sub,
@@ -651,7 +652,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-desp-lanc": ingestion_task(
-                "servidores-df-despesa",                
+                "servidores-df-despesa",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA/LANCAMENTO",
                 self.variables.FILENAME_DESP_LANCAMENTO,
                 self.functions.columns_servidores_df_desp_lanc,
@@ -662,7 +663,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-desp-nt-lanc-emp": ingestion_task(
-                "servidores-df-despesa",                
+                "servidores-df-despesa",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA/NOTALANCAMENTOEMPENHO",
                 self.variables.FILENAME_DESP_NT_LANC_NT_EMPENHO,
                 self.functions.columns_servidores_df_desp_nt_lanc_emp,
@@ -673,7 +674,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-desp-nt-lanc-evento": ingestion_task(
-                "servidores-df-despesa",                
+                "servidores-df-despesa",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA/NOTALANCAMENTOEVENTO",
                 self.variables.FILENAME_DESP_NT_LANC_EVENTO,
                 self.functions.columns_servidores_df_desp_nt_lanc_evento,
@@ -684,7 +685,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-desp-ord-cancelada": ingestion_task(
-                "servidores-df-despesa",                
+                "servidores-df-despesa",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA/ORDEMBANCARIACANCELADA",
                 self.variables.FILENAME_DESP_ORD_BANC_CANCELADA,
                 self.functions.columns_servidores_df_ord_banc_cancel,
@@ -695,7 +696,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-desp-ord-nt-emp": ingestion_task(
-                "servidores-df-despesa",                
+                "servidores-df-despesa",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA/ORDEMBANCARIAEMPENHO",
                 self.variables.FILENAME_DESP_ORD_BANC_NT_EMPENHO,
                 self.functions.columns_servidores_df_desp_ord_nt_emp,
@@ -706,7 +707,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-desp-pagamento": ingestion_task(
-                "servidores-df-despesa",                
+                "servidores-df-despesa",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA/PAGAMENTO",
                 self.variables.FILENAME_DESP_PAGAMENTO,
                 self.functions.columns_servidores_df_desp_pgto,
@@ -717,7 +718,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-desp-principal": ingestion_task(
-                "servidores-df-despesa",                
+                "servidores-df-despesa",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA/PRINCIPAL",
                 self.variables.FILENAME_DESP_PRINCIPAL,
                 self.functions.columns_servidores_df_desp_principal,
@@ -728,7 +729,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-licitacao": ingestion_task(
-                "servidores-df-licitacao",                
+                "servidores-df-licitacao",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/LICITACAO",
                 self.variables.FILENAME_LICITACAO,
                 self.functions.columns_servidores_df_licitacao,
@@ -739,7 +740,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-orgao": ingestion_task(
-                "servidores-df-orgao",                
+                "servidores-df-orgao",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/ORGAO",
                 self.variables.FILENAME_SERVIDORES_ORGAO,
                 self.functions.columns_servidores_df_orgao,
@@ -750,7 +751,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-patrimonio": ingestion_task(
-                "servidores-df-patrimonio",                
+                "servidores-df-patrimonio",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/PATRIMONIO",
                 self.variables.FILENAME_PATRIMONIO,
                 self.functions.columns_servidores_df_patrimonio,
@@ -761,7 +762,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-receita": ingestion_task(
-                "servidores-df-receita",                
+                "servidores-df-receita",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/RECEITA",
                 self.variables.FILENAME_RECEITA,
                 self.functions.columns_servidores_df_receita,
@@ -772,7 +773,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-remuneracao": ingestion_task(
-                "servidores-df-remuneracao",                
+                "servidores-df-remuneracao",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/REMUNERACAO/REMUNERACAO",
                 self.variables.FILENAME_REMUNERACAO,
                 self.functions.columns_servidores_df_remuneracao,
@@ -783,7 +784,7 @@ class IngestionTasks:
                 1,
             ),
             "servidores-df-remuneracao-det": ingestion_task(
-                "servidores-df-remuneracao",                
+                "servidores-df-remuneracao",
                 "SERVIDORES/ESTADUAIS/STAGING/DF/REMUNERACAO/REMUNERACAODETALHAMENTO",
                 self.variables.FILENAME_REMUNERACAO_DETALHAMENTO,
                 self.functions.columns_servidores_df_remuneracao_det,
@@ -805,7 +806,7 @@ class IngestionTasks:
                 7,
             ),
             "sancoes_cepim": ingestion_task(
-                "sancoes",                
+                "sancoes",
                 "SANCOES/CEPIM/ENTRADA/",
                 self.variables.FILENAME_CEPIM,
                 self.functions.columns_cepim,
@@ -816,7 +817,7 @@ class IngestionTasks:
                 7,
             ),
             "sancoes_cnep": ingestion_task(
-                "sancoes",                
+                "sancoes",
                 "SANCOES/CEPIM/ENTRADA/",
                 self.variables.FILENAME_CNEP,
                 self.functions.columns_cnep,
@@ -827,7 +828,7 @@ class IngestionTasks:
                 7,
             ),
             "sancoes_acordos_leniencia": ingestion_task(
-                "sancoes",                
+                "sancoes",
                 "SANCOES/ACORDOSLENIENCIA/ACORDOS/ENTRADA/",
                 self.variables.FILENAME_ACORDOS_LENIENCIA,
                 self.functions.columns_acordos_leniencia,
@@ -838,7 +839,7 @@ class IngestionTasks:
                 7,
             ),
             "sancoes_efeitos_leniencia": ingestion_task(
-                "sancoes",                
+                "sancoes",
                 "SANCOES/ACORDOSLENIENCIA/ACORDOS/ENTRADA/",
                 self.variables.FILENAME_EFEITOS_LENIENCIA,
                 self.functions.columns_efeitos_leniencia,
@@ -849,7 +850,7 @@ class IngestionTasks:
                 7,
             ),
             "ibama": ingestion_task(
-                "ibama",                
+                "ibama",
                 "IBAMA/ENTRADA/",
                 self.variables.FILENAME_IBAMA,
                 self.functions.columns_ibama,

@@ -97,7 +97,11 @@ class SparkLauncher:
             SparkSession: The initialized and configured Spark session.
         """
         try:
-            spark = SparkSession.builder.master(self.master).appName(self.app_name).getOrCreate()
+            spark = (
+                SparkSession.builder.master(self.master)
+                .appName(self.app_name)
+                .getOrCreate()
+            )
             self.logger.info("The SparkSession was created successfully.")
             self._set_spark_conf(spark)
             return spark

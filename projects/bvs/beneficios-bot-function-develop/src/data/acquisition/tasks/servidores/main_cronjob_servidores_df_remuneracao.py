@@ -17,6 +17,7 @@ import ssl
 import sys
 import shutil
 import concurrent.futures
+
 # Adding python modules from bucket (e.g. da-beneficios-jobs) to path
 # These files are those passed in the "python_file_uris" parameter in "main.py"
 sys.path.append(os.path.abspath("../"))
@@ -74,7 +75,9 @@ class ProcessRunner:
         """
         Get download path for a target date.
         """
-        download_path = os.path.join(self.local_dir, f"Remuneracao_{target_date_year}.zip")
+        download_path = os.path.join(
+            self.local_dir, f"Remuneracao_{target_date_year}.zip"
+        )
         return download_path
 
     def get_file_names(self):
@@ -82,7 +85,11 @@ class ProcessRunner:
         Returns a list of file names for the target date.
         """
         # The interval indexes correspond to the 12 months of the year.
-        file_names = [f"{self.target_date}{str(i).zfill(2)}_{file_name}" for i in range(1, 13) for file_name in self.files]
+        file_names = [
+            f"{self.target_date}{str(i).zfill(2)}_{file_name}"
+            for i in range(1, 13)
+            for file_name in self.files
+        ]
         return file_names
 
     def get_blobs_to_validate(self, bucket):
@@ -100,7 +107,9 @@ class ProcessRunner:
         """
         if self.target_date != tag_name:
             gcs_file_validator = GcsFileValidator()
-            file_exists = gcs_file_validator.file_exists_in_bucket(list_blobs, file_names, self.logger)
+            file_exists = gcs_file_validator.file_exists_in_bucket(
+                list_blobs, file_names, self.logger
+            )
             return file_exists
 
     def set_ssl_context(self):
@@ -117,9 +126,7 @@ class ProcessRunner:
         """
         Running download files.
         """
-        file_downloader = UrllibDownloader(
-            url, context, zipfile_path, self.logger
-        )
+        file_downloader = UrllibDownloader(url, context, zipfile_path, self.logger)
         file_downloader.run_download()
 
     def validate_if_file_exists(self, zipfile_path):
@@ -142,9 +149,7 @@ class ProcessRunner:
         """
         Unpacking files to "/tmp".
         """
-        file_unpacker = FileUnpacker(
-            zipfile_path, self.local_dir, self.logger
-        )
+        file_unpacker = FileUnpacker(zipfile_path, self.local_dir, self.logger)
         file_unpacker.unpack_zipfile()
 
     def get_date_prefix(self, file_name, splited_file_name):
@@ -164,18 +169,22 @@ class ProcessRunner:
         Uploading files into Google Cloud Storage.
         """
         gcs_handle = GcsHandle(bucket, self.logger)
-        gcs_handle.upload_blobs_to_gcs(self.local_dir, file_names_to_send, file_blob_map)
+        gcs_handle.upload_blobs_to_gcs(
+            self.local_dir, file_names_to_send, file_blob_map
+        )
 
     def append_file_blob_map(self, new_file_name, file_blob_map, structure_dir):
         """
         Appending dictionary with target blobs.
         """
         if new_file_name.endswith("Remuneracao.csv"):
-            file_blob_map[
-                new_file_name] = f"SERVIDORES/ESTADUAIS/STAGING/DF/REMUNERACAO/REMUNERACAO/{structure_dir}"
+            file_blob_map[new_file_name] = (
+                f"SERVIDORES/ESTADUAIS/STAGING/DF/REMUNERACAO/REMUNERACAO/{structure_dir}"
+            )
         if new_file_name.endswith("Remuneracao_Detalhamento.csv"):
-            file_blob_map[
-                new_file_name] = f"SERVIDORES/ESTADUAIS/STAGING/DF/REMUNERACAO/REMUNERACAODETALHAMENTO/{structure_dir}"
+            file_blob_map[new_file_name] = (
+                f"SERVIDORES/ESTADUAIS/STAGING/DF/REMUNERACAO/REMUNERACAODETALHAMENTO/{structure_dir}"
+            )
 
     def get_new_file_name(self, file):
         """
@@ -203,10 +212,7 @@ class ProcessRunner:
         Convert dataframe to CSV format.
         """
         self.pd_csv_handle.convert_to_csv_file(
-            dataframe,
-            file_path,
-            sep=";",
-            encoding="ISO-8859-1"
+            dataframe, file_path, sep=";", encoding="ISO-8859-1"
         )
         self.logger.info(f"File successfully saved as csv to {file_path}.")
 
@@ -216,7 +222,11 @@ class ProcessRunner:
         """
         gcs_handle = GcsHandle(bucket, self.logger)
         for blob in list_blobs:
-            if blob.exists() and file_name in blob.name and self.target_date == tag_name:
+            if (
+                blob.exists()
+                and file_name in blob.name
+                and self.target_date == tag_name
+            ):
                 gcs_handle.delete_blob(blob)
 
     @staticmethod
@@ -224,10 +234,7 @@ class ProcessRunner:
         """
         Renames columns in the given dataframe.
         """
-        columns = {
-            "MÊS": "MES_REFERENCIA",
-            "ANO": "ANO_REFERENCIA"
-        }
+        columns = {"MÊS": "MES_REFERENCIA", "ANO": "ANO_REFERENCIA"}
         dataframe.rename(columns=columns, inplace=True)
 
     def run(self):
@@ -240,10 +247,13 @@ class ProcessRunner:
         zipfile_path = self.get_download_path(self.target_date)
         file_names = self.get_file_names()
         list_blobs = self.get_blobs_to_validate(bucket)
-        file_exists_in_bucket = self.checking_if_file_exists_in_gcs(list_blobs, file_names, year)
+        file_exists_in_bucket = self.checking_if_file_exists_in_gcs(
+            list_blobs, file_names, year
+        )
         if not file_exists_in_bucket:
             self.logger.info(
-                f"Starting the download for the Public Servants (DF) - Remuneração from {self.target_date}.")
+                f"Starting the download for the Public Servants (DF) - Remuneração from {self.target_date}."
+            )
             context = self.set_ssl_context()
             self.download_file(url, context, zipfile_path)
             # Change the directory of "dataproc job" to "/tmp"
@@ -255,7 +265,9 @@ class ProcessRunner:
                 file_blob_map = {}
                 list_new_file_names = []
                 structure_dir = f"ANO={year}/MES={month}/DIA={day}/"
-                subdir_path = os.path.join(self.local_dir, f"Remuneracao_{self.target_date}")
+                subdir_path = os.path.join(
+                    self.local_dir, f"Remuneracao_{self.target_date}"
+                )
                 if os.path.exists(subdir_path):
                     for file in os.listdir(subdir_path):
                         new_file_name = self.get_new_file_name(file)
@@ -267,8 +279,12 @@ class ProcessRunner:
                         self.rename_columns_df(dataframe)
                         self.dataframe_to_csv(dataframe, dest_path)
                         list_new_file_names.append(new_file_name)
-                        self.append_file_blob_map(new_file_name, file_blob_map, structure_dir)
-                        self.deleting_files_in_gcs(bucket, new_file_name, list_blobs, year)
+                        self.append_file_blob_map(
+                            new_file_name, file_blob_map, structure_dir
+                        )
+                        self.deleting_files_in_gcs(
+                            bucket, new_file_name, list_blobs, year
+                        )
                     self.upload_files_to_gcs(bucket, list_new_file_names, file_blob_map)
 
 

@@ -13,6 +13,7 @@
 
 import os
 import sys
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
 from src.utils.gcp.dataproc.workflow_pyspark_jobs import PySparkJob
@@ -38,27 +39,27 @@ class WorkflowTemplate(PySparkJob, WorkflowVariables):
         template = {
             "id": str(self.label_application),
             "labels": {
-                        "application": str(self.label_application),
-                        "billing-id": f"da-{step_name}",
-                        "cost-center": str(self.label_cost_center),
-                        "environment": str(self.label_environment),
-                        "product": str(self.label_application),
-                        "resource": "google_dataproc_cluster",
-                        "squad": str(self.label_squad),
-                        "type": "dataproc_cluster",
-                        "value-stream": str(self.label_value_stream)
-                    },
+                "application": str(self.label_application),
+                "billing-id": f"da-{step_name}",
+                "cost-center": str(self.label_cost_center),
+                "environment": str(self.label_environment),
+                "product": str(self.label_application),
+                "resource": "google_dataproc_cluster",
+                "squad": str(self.label_squad),
+                "type": "dataproc_cluster",
+                "value-stream": str(self.label_value_stream),
+            },
             "jobs": [
                 {
                     "pyspark_job": {
                         "main_python_file_uri": job_acquistion,
-                        "args":  [
+                        "args": [
                             message,
                             self.bucket_name,
                             self.project_id,
                             self.tmp_dir,
                         ],
-                        "python_file_uris": self.python_file_uris
+                        "python_file_uris": self.python_file_uris,
                     },
                     "step_id": step_id_acquistion,
                 },
@@ -149,11 +150,7 @@ class WorkflowTemplate(PySparkJob, WorkflowVariables):
                             job_ingestion,
                             "gs://spark-lib/bigquery/spark-bigquery-latest.jar",
                         ],
-                        "logging_config":{
-                            "driver_log_levels": {
-                                "root": "ERROR"
-                            }
-                        }
+                        "logging_config": {"driver_log_levels": {"root": "ERROR"}},
                     },
                     "step_id": step_id_ingestion,
                     "prerequisite_step_ids": [step_id_acquistion],
@@ -193,8 +190,8 @@ class WorkflowTemplate(PySparkJob, WorkflowVariables):
                                 "boot_disk_type": "pd-standard",
                                 "boot_disk_size_gb": int(self.disk_size_gb),
                                 "num_local_ssds": 0,
-                                "local_ssd_interface": "SCSI"
-                            }
+                                "local_ssd_interface": "SCSI",
+                            },
                         },
                         "software_config": {
                             "image_version": "2.1.20-debian11",

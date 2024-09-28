@@ -15,6 +15,7 @@ import os
 import sys
 import base64
 import binascii
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../../"))
 from src.utils.gcp.dataproc.workflow_submit_jobs import SubmitJobs
@@ -38,12 +39,14 @@ def run_jobs(event, context):
         if pubsub_message in ["monthly-task", "daily-task"]:
             if pubsub_message == "monthly-task":
                 job_names = [
-                    job_name for job_name in job_values
+                    job_name
+                    for job_name in job_values
                     if job_name not in ["sancoes", "ibama"]
                 ]
             else:
                 job_names = [
-                    job_name for job_name in job_values
+                    job_name
+                    for job_name in job_values
                     if job_name in ["sancoes", "ibama"]
                 ]
 

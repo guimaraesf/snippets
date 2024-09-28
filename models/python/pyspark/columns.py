@@ -6,11 +6,9 @@
 # E-mail:
 # Description: This code centralizes all columns to use in spark schemas.
 # ================================================================================================
+import pyspark
 from typing import NamedTuple
-from pyspark.sql.types import FloatType
-from pyspark.sql.types import IntegerType
-from pyspark.sql.types import StringType
-from pyspark.sql.types import TimestampType
+from enum import Enum
 
 
 class DataframeParams(NamedTuple):
@@ -18,27 +16,31 @@ class DataframeParams(NamedTuple):
     A NamedTuple for holding parameters related to a DataFrame.
 
     Args:
-        schema_params (tuple): A tuple containing parameters related (data type, nullable flag, and metadata) to the schema of the DataFrame. 
+        schema_params (tuple): A tuple containing parameters related (data type, nullable flag, and metadata) to the schema of the DataFrame.
         regex (tuple): A tuple containing regular expression for data processing.
     """
-    schema_params: tuple
-    regex: tuple
 
-class Columns(enumerate):
+    schema_attr: tuple[
+        pyspark.sql.types, bool, dict
+    ]  # NOTE: (e.g., StructType(dataType, nullable, metadata))
+    regex: tuple[str, str]
+
+
+class Columns(Enum):
     """
     Class to set all columns for schema on DataFrames.
     """
 
-    string_type = StringType()
-    timestamp_type = TimestampType()
-    float_type = FloatType()
-    integer_type = IntegerType()
-    STRIP_NON_ALPHANUMERIC = r"[^\w\s]"
-    EMPTY = r""
+    @classmethod
+    def get(cls):
+        return {var.name: var.value for var in cls}
 
-    TABLE_INFOS_NAME: dict = {
-        "name_column": DataframeParams(
-            schema_params=(string_type, True, {"description": ""}),
-            regex=((STRIP_NON_ALPHANUMERIC, EMPTY)),
+    PATTERN = ""
+    REPLACEMENT = ""
+
+    TABLE_NAME: dict = {
+        "column_name": DataframeParams(
+            schema_attr=("dataType", "nullable", {"description": ""}),
+            regex=((PATTERN, REPLACEMENT)),
         )
     }

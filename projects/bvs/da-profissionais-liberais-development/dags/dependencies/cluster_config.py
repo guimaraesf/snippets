@@ -72,9 +72,7 @@ class ClusterConfig(Variables):
         Returns:
             dataproc.types.GceClusterConfig: The GCE cluster configuration.
         """
-        subnetwork_name = (
-            "https://www.googleapis.com/compute/v1/projects/{}/regions/{}/subnetworks/{}"
-        )
+        subnetwork_name = "https://www.googleapis.com/compute/v1/projects/{}/regions/{}/subnetworks/{}"
         return self.dp_gce_cluster(
             metadata={"PIP_PACKAGES": self.get_pip_packages},
             zone_uri=self.get_zone,

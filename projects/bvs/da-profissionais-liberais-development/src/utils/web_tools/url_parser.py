@@ -19,6 +19,7 @@ from urllib.parse import urlparse
 PATH = os.path.dirname(os.path.abspath("__file__"))
 sys.path.append(PATH)
 
+
 def get_module_path(root_path: str):
     """
     This function returns the module path based on the given root path.
@@ -27,7 +28,7 @@ def get_module_path(root_path: str):
     root_path (str): The root path of the module.
 
     Returns:
-    str: If PATH does not start with sys.argv[9], it returns the root path. 
+    str: If PATH does not start with sys.argv[9], it returns the root path.
     """
     if not PATH.startswith(sys.argv[9]):
         return root_path

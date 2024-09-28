@@ -8,6 +8,7 @@
 # ================================================================================================
 import time
 
+
 class Stopwatch:
     """
     A Stopwatch class that can be used to measure the time of operations.

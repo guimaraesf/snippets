@@ -140,12 +140,15 @@ class PysparkHandler:
             df.persist(StorageLevel.MEMORY_AND_DISK)
             if write_format == "csv":
                 df.coalesce(PARTITIONS).write.mode(mode).options(
-                    delimiter=delimiter, encoding=encoding, header=header, maxRecordsPerFile=100000
+                    delimiter=delimiter,
+                    encoding=encoding,
+                    header=header,
+                    maxRecordsPerFile=100000,
                 ).csv(dest_path)
             if write_format == "parquet":
-                df.coalesce(PARTITIONS).write.mode(mode).options(maxRecordsPerFile=100000).parquet(
-                    dest_path
-                )
+                df.coalesce(PARTITIONS).write.mode(mode).options(
+                    maxRecordsPerFile=100000
+                ).parquet(dest_path)
         except Py4JJavaError as e:
             self.logger.error(e)
         finally:

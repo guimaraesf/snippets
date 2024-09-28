@@ -25,7 +25,12 @@ class ILoader(ABC):
 
     @abstractmethod
     def init_sparksession(
-        self, master: str, app_name: str, bucket_id: str, dataset_id: str, project_id: str
+        self,
+        master: str,
+        app_name: str,
+        bucket_id: str,
+        dataset_id: str,
+        project_id: str,
     ) -> SparkSession:
         pass
 

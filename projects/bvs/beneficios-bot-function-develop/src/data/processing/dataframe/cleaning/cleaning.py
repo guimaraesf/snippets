@@ -15,9 +15,20 @@ import os
 import sys
 from datetime import datetime
 import pytz
-from pyspark.sql.functions import translate, regexp_replace, col, lit, concat, substring, upper, trim
+from pyspark.sql.functions import (
+    translate,
+    regexp_replace,
+    col,
+    lit,
+    concat,
+    substring,
+    upper,
+    trim,
+)
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
+
 
 class Cleaning:
     """
@@ -70,7 +81,7 @@ class Cleaning:
         """
         columns_to_add = {
             "ARQUIVO": lit(file_name),
-            "DATA_PROCESSAMENTO": lit(processing_date)
+            "DATA_PROCESSAMENTO": lit(processing_date),
         }
         for column_name, column_value in columns_to_add.items():
             dataframe = dataframe.withColumn(column_name, column_value)

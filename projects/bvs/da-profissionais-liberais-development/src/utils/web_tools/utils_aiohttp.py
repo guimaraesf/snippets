@@ -23,6 +23,7 @@ from aiohttp.client_exceptions import ServerConnectionError
 PATH = os.path.dirname(os.path.abspath("__file__"))
 sys.path.append(PATH)
 
+
 def get_module_path(root_path: str):
     """
     This function returns the module path based on the given root path.
@@ -31,7 +32,7 @@ def get_module_path(root_path: str):
     root_path (str): The root path of the module.
 
     Returns:
-    str: If PATH does not start with sys.argv[9], it returns the root path. 
+    str: If PATH does not start with sys.argv[9], it returns the root path.
     """
     if not PATH.startswith(sys.argv[9]):
         return root_path
@@ -57,7 +58,9 @@ class AsyncRequest(ParserUrl):
         ValueError: If the URL is missing.
     """
 
-    def __init__(self, request_session: aiohttp.ClientSession, url: str, logger_obj=Logger) -> None:
+    def __init__(
+        self, request_session: aiohttp.ClientSession, url: str, logger_obj=Logger
+    ) -> None:
         """
         Initialize the AsyncRequest object.
 
@@ -70,7 +73,9 @@ class AsyncRequest(ParserUrl):
             ValueError: "Raises an error if missing `url`.
         """
         if not isinstance(request_session, aiohttp.ClientSession):
-            raise TypeError("request_session must be an instance of aiohttp.ClientSession.")
+            raise TypeError(
+                "request_session must be an instance of aiohttp.ClientSession."
+            )
         if not url:
             raise ValueError("Missing URL.")
         self.request_session = request_session

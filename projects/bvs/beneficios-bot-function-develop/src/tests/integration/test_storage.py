@@ -17,6 +17,7 @@ import shutil
 import unittest
 from unittest.mock import MagicMock, patch
 from google.cloud import storage
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
 from src.utils.gcp.storage.storage import GcsClient, GcsHandle
@@ -26,6 +27,7 @@ class GcsHandleTest(unittest.TestCase):
     """
     Test cases for the GcsHandle class.
     """
+
     def setUp(self):
         self.project_id = os.getenv("PROJECT_ID")
         self.bucket_id = os.getenv("BUCKET_ID")
@@ -33,10 +35,10 @@ class GcsHandleTest(unittest.TestCase):
         self.test_file_path = os.path.join(self.test_dir, "test.txt")
         self.blob_name = "test-blob"
         self.logger = MagicMock()
-    
+
     def tearDown(self):
         shutil.rmtree(self.test_dir)
-    
+
     def test_delete_blob(self):
         """
         Test deleting a blob from the bucket.

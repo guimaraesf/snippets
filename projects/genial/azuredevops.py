@@ -91,10 +91,7 @@ class AzureDevOps:
                 )
         return df
 
-    def _apply_regexpr_and_data_type(
-        self,
-        df: DataFrame, col_infos: dict
-    ) -> DataFrame:
+    def _apply_regexpr_and_data_type(self, df: DataFrame, col_infos: dict) -> DataFrame:
         """
         Applies a regular expression replacement to a DataFrame column.
 
@@ -108,12 +105,12 @@ class AzureDevOps:
         for col, (regex_expr, data_type) in col_infos.items():
             pattern, replacement = regex_expr
             df = df.withColumn(
-                col, 
+                col,
                 fn.regexp_replace(
-                    fn.regexp_replace(col, pattern, replacement).cast(data_type), 
-                    self.remove_extra_spaces, 
-                    r" "
-                )
+                    fn.regexp_replace(col, pattern, replacement).cast(data_type),
+                    self.remove_extra_spaces,
+                    r" ",
+                ),
             )
         df = df.select(list(col_infos.keys()))
         return df
@@ -146,6 +143,7 @@ class AzureDevOps:
         Returns:
             DataFrame: The transformed DataFrame.
         """
+
         def read_from_request() -> DataFrame:
             url = f"{self.__get_org_url}/_odata/v4.0-preview/Users"
             response = self._get_response(url)
@@ -172,6 +170,7 @@ class AzureDevOps:
         Returns:
             DataFrame: The transformed DataFrame.
         """
+
         def read_from_request() -> DataFrame:
             dfs = []
             range_date = f"ChangedDate ge {self.__get_filter_date}"
@@ -182,9 +181,7 @@ class AzureDevOps:
                 dfs.append(df)
             df = self.spark.createDataFrame(pd.concat(dfs))
             df = df.filter(
-                fn.date_format(
-                    fn.to_timestamp(fn.col("ChangedDate")), "yyyy-MM-dd"
-                )
+                fn.date_format(fn.to_timestamp(fn.col("ChangedDate")), "yyyy-MM-dd")
                 <= self.execution_date
             )
             return df
@@ -208,9 +205,7 @@ class AzureDevOps:
                 df = df.withColumn(
                     col,
                     fn.date_format(
-                        fn.from_utc_timestamp(
-                            fn.col(col), "America/Sao_Paulo"
-                        ),
+                        fn.from_utc_timestamp(fn.col(col), "America/Sao_Paulo"),
                         "yyyy-MM-dd HH:mm:ss.SSSXXX",
                     ),
                 )
@@ -250,7 +245,10 @@ class AzureDevOps:
                 "Custom_Custoestimado": ((r"[^\d.]", r""), DoubleType()),
                 "Custom_Custorealizado": ((r"[^\d.]", r""), DoubleType()),
                 "Custom_Projeto": ((self.remove_non_alphanumeric, r""), StringType()),
-                "Custom_Tipodeprojeto": ((self.remove_non_alphanumeric, r""), StringType()),
+                "Custom_Tipodeprojeto": (
+                    (self.remove_non_alphanumeric, r""),
+                    StringType(),
+                ),
             }
             df = self._apply_regexpr_and_data_type(df, col_infos)
             return df
@@ -268,6 +266,7 @@ class AzureDevOps:
         Returns:
             DataFrame: The transformed DataFrame.
         """
+
         def read_from_request() -> DataFrame:
             url = f"{self.__get_org_url}/_odata/v4.0-preview/Iterations"
             response = self._get_response(url)
@@ -280,9 +279,7 @@ class AzureDevOps:
                 "EndDate": "IterationEndDate",
             }
             for col_name, new_col_name in date_columns.items():
-                df = df.withColumn(
-                    col_name, fn.substring(fn.col(col_name), 0, 10)
-                )
+                df = df.withColumn(col_name, fn.substring(fn.col(col_name), 0, 10))
                 df = df.withColumnRenamed(col_name, new_col_name)
             return df
 
@@ -312,6 +309,7 @@ class AzureDevOps:
         Returns:
             DataFrame: The transformed DataFrame.
         """
+
         def read_from_request() -> DataFrame:
             url = f"{self.__get_org_url}/_odata/v4.0-preview/Areas"
             response = self._get_response(url)
@@ -338,6 +336,7 @@ class AzureDevOps:
         Returns:
             DataFrame: The transformed DataFrame.
         """
+
         def read_from_request() -> DataFrame:
             url = f"{self.__get_org_url}/_odata/v4.0-preview/Projects"
             response = self._get_response(url)
@@ -420,7 +419,9 @@ class AzureDevOps:
             fn.col("CompletedDate").cast(TimestampType()).alias("CompletedDate"),
             fn.col("LeadTimeDays").cast(IntegerType()).alias("LeadTimeDays"),
             fn.col("CycleTimeDays").cast(IntegerType()).alias("CycleTimeDays"),
-            fn.col("AnalyticsUpdatedDate").cast(TimestampType()).alias("AnalyticsUpdatedDate"),
+            fn.col("AnalyticsUpdatedDate")
+            .cast(TimestampType())
+            .alias("AnalyticsUpdatedDate"),
             fn.col("Title").cast(StringType()).alias("Title"),
             fn.col("WorkItemType").cast(StringType()).alias("WorkItemType"),
             fn.col("ChangedDate").cast(TimestampType()).alias("ChangedDate"),
@@ -436,8 +437,12 @@ class AzureDevOps:
             fn.col("TagNames").cast(StringType()).alias("TagNames"),
             fn.col("StateCategory").cast(StringType()).alias("StateCategory"),
             fn.col("StateChangeDate").cast(TimestampType()).alias("StateChangeDate"),
-            fn.round(fn.col("Custom_Custoestimado").cast(DoubleType()), 2).alias("CustoEstimado"),
-            fn.round(fn.col("Custom_Custorealizado").cast(DoubleType()), 2).alias("CustoRealizado"),
+            fn.round(fn.col("Custom_Custoestimado").cast(DoubleType()), 2).alias(
+                "CustoEstimado"
+            ),
+            fn.round(fn.col("Custom_Custorealizado").cast(DoubleType()), 2).alias(
+                "CustoRealizado"
+            ),
             fn.col("Custom_Projeto").cast(StringType()).alias("Projeto"),
             fn.col("Custom_Tipodeprojeto").cast(StringType()).alias("TipoProjeto"),
             fn.col("ProjectSK").cast(StringType()).alias("ProjectSK"),
@@ -451,7 +456,9 @@ class AzureDevOps:
             fn.col("AssignedToUserName").cast(StringType()).alias("AssignedToUserName"),
             fn.col("ChangedByUserName").cast(StringType()).alias("ChangedByUserName"),
             fn.col("CreatedByUserName").cast(StringType()).alias("CreatedByUserName"),
-            fn.col("ActivatedByUserName").cast(StringType()).alias("ActivatedByUserName"),
+            fn.col("ActivatedByUserName")
+            .cast(StringType())
+            .alias("ActivatedByUserName"),
             fn.col("ClosedByUserName").cast(StringType()).alias("ClosedByUserName"),
         )
 
@@ -505,7 +512,7 @@ class AzureDevOps:
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    
+
     EXECUTION_DATE = args[0]
     LOAD_PATH = args[1]
     AZURE_DEVOPS_PARAMS = json.loads(args[2])

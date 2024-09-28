@@ -8,5 +8,5 @@ setuptools.setup(
     name=app_artifact_id,
     version=package_version,
     packages=setuptools.find_packages(),
-    python_requires='>=3.9.5'
+    python_requires=">=3.9.5",
 )

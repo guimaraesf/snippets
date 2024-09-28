@@ -157,9 +157,7 @@ class Captacao:
                     fn.col("CD_CONTA"),
                 ),
             ).otherwise(
-                fn.concat(
-                    fn.col("ID_CLIENTE"), fn.lit("_"), fn.col("ID_TRANSACAO")
-                )
+                fn.concat(fn.col("ID_CLIENTE"), fn.lit("_"), fn.col("ID_TRANSACAO"))
             ),
         ).drop("ID_TRANSACAO")
         df = df.filter((fn.col("id").isNotNull()))
@@ -249,9 +247,7 @@ class Captacao:
             list[dict]: The list of queried items.
         """
         return list(
-            container.query_items(
-                query=query, enable_cross_partition_query=True
-            )
+            container.query_items(query=query, enable_cross_partition_query=True)
         )
 
     @staticmethod
@@ -269,9 +265,7 @@ class Captacao:
         # O 'id' e 'DT_BASE' são necessários, para garantir que não haverá repetição de valores
         # e que múltiplas transações numa mesma 'DT_BASE' não sejam excluídas
         df_captacao, df_cosmos_db = dfs
-        df = df_captacao.join(
-            df_cosmos_db, on=["id", "DT_BASE"], how="left_anti"
-        )
+        df = df_captacao.join(df_cosmos_db, on=["id", "DT_BASE"], how="left_anti")
         df = df.select(
             fn.col("id").cast(StringType()),
             fn.col("DT_PARTITION").cast(StringType()),
@@ -341,15 +335,11 @@ class Captacao:
         df = df_captacao
         logger.info("In this period there are %s records", df.count())
         if items:  # Se existem documentos no container
-            logger.info(
-                "Filter records that do not exist documents in CosmosDB"
-            )
+            logger.info("Filter records that do not exist documents in CosmosDB")
             df_cosmos_db = self.spark.createDataFrame(items)
             df = self.filter_non_matching_records([df, df_cosmos_db])
         if not df.rdd.isEmpty():
-            logger.info(
-                "%s new records were found. Writing documents.", df.count()
-            )
+            logger.info("%s new records were found. Writing documents.", df.count())
             self.load_cosmos_db(df)
             logger.info("Ingestion process completed")
         else:

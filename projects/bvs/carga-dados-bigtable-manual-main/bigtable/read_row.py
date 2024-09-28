@@ -19,7 +19,9 @@ class ReadRowBigtable:
         end_key = prefix[:-1] + chr(ord(prefix[-1]) + 1)
         row_set = RowSet()
         row_set.add_row_range_from_keys(prefix.encode("utf-8"), end_key.encode("utf-8"))
-        rows = self._table.read_rows(row_set=row_set, filter_=self._col_filter, limit=limit)
+        rows = self._table.read_rows(
+            row_set=row_set, filter_=self._col_filter, limit=limit
+        )
         result = []
         if rows is not None:
             for row in rows:
@@ -32,8 +34,8 @@ class ReadRowBigtable:
             for cf, cols in sorted(row.cells.items()):
                 for col, cells in sorted(cols.items()):
                     for cell in cells:
-                        key = col.decode('utf-8')
-                        value = cell.value.decode('utf-8')
+                        key = col.decode("utf-8")
+                        value = cell.value.decode("utf-8")
                         row_dct[key] = value
 
         return row_dct

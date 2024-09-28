@@ -21,10 +21,13 @@ class PandasCsvHandle:
     """
     This class provides methods for reading data from a Pandas.
     """
+
     def __init__(self, logger) -> None:
         self.logger = logger
 
-    def read_csv_file(self, file_path, sep, encoding, header=None, engine=None, on_bad_lines="skip"):
+    def read_csv_file(
+        self, file_path, sep, encoding, header=None, engine=None, on_bad_lines="skip"
+    ):
         """
         Reads a CSV file from the given file path and returns a DataFrame.
         """
@@ -47,9 +50,7 @@ class PandasCsvHandle:
         """
         Converts a DataFrame to a CSV file and saves it to the given file path.
         """
-        dataframe.to_csv(
-            file_path, sep=sep, encoding=encoding, index=index
-        )
+        dataframe.to_csv(file_path, sep=sep, encoding=encoding, index=index)
 
     def concat_dataframes(self, dataframes):
         """

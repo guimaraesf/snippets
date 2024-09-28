@@ -15,15 +15,22 @@ import os
 import sys
 from pyspark.sql.functions import col
 from google.cloud import bigquery
-from google.api_core.exceptions import NotFound, PermissionDenied, BadRequest, AlreadyExists
+from google.api_core.exceptions import (
+    NotFound,
+    PermissionDenied,
+    BadRequest,
+    AlreadyExists,
+)
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
 
 
 class BigQueryClient:
-    """ 
+    """
     The BigQuery client class.
     """
+
     def __init__(self) -> None:
         pass
 
@@ -58,12 +65,13 @@ class BigQueryUtils(BigQueryClient):
         """
         self.logger.info(f"Clearing table data in BigQuery: {table_name}")
         df_empty = self.spark.createDataFrame([], schema=schema)
-        df_empty.write.format("bigquery") \
-            .mode("overwrite") \
-            .option("table", self.get_target_table(table_name)) \
-            .save()
+        df_empty.write.format("bigquery").mode("overwrite").option(
+            "table", self.get_target_table(table_name)
+        ).save()
 
-    def __filtred_task(self, blob_path, start_blob_name_with, table_schema, table_name, unique_values):
+    def __filtred_task(
+        self, blob_path, start_blob_name_with, table_schema, table_name, unique_values
+    ):
         """
         Cleans up tables in a BigQuery dataset.
         """
@@ -77,14 +85,16 @@ class BigQueryUtils(BigQueryClient):
         Cleans up tables in a BigQuery dataset.
         """
         start_blob_name_with = [
-            "CNPJ", 
-            "SERVIDORES/ESTADUAIS/PR", 
+            "CNPJ",
+            "SERVIDORES/ESTADUAIS/PR",
         ]
 
         unique_values = set()
         blob_path, table_schema, table_name = (task[1], task[4], task[6])
         for blob_name in start_blob_name_with:
-            self.__filtred_task(blob_path, blob_name, table_schema, table_name, unique_values)
+            self.__filtred_task(
+                blob_path, blob_name, table_schema, table_name, unique_values
+            )
 
 
 class BigQueryValidation(BigQueryUtils):
@@ -106,12 +116,14 @@ class BigQueryValidation(BigQueryUtils):
         """
         self.logger.info("Validating last processing data in BigQuery table.")
         target_table = self.get_target_table(self.table_name)
-        dataframe = self.spark.read.format("bigquery") \
-            .option("table", target_table) \
-            .load() \
-            .select(column_names) \
-            .filter(col(column_names[0]) == file_name) \
+        dataframe = (
+            self.spark.read.format("bigquery")
+            .option("table", target_table)
+            .load()
+            .select(column_names)
+            .filter(col(column_names[0]) == file_name)
             .limit(1)
+        )
         return dataframe
 
     def collect_row(self, dataframe, column_name):
@@ -137,7 +149,9 @@ class BigQueryValidation(BigQueryUtils):
         Checks if the specified file name already exists in the BigQuery table.
         """
         if row_iterator_content == file_name:
-            self.logger.info(f"File {file_name} already processed. Starting file processing.")
+            self.logger.info(
+                f"File {file_name} already processed. Starting file processing."
+            )
             return False
         self.logger.info(f"File {file_name} does not processed. Skipping.")
         return True
@@ -181,13 +195,11 @@ class BigQuerySave(BigQueryClient):
             self.logger.info(
                 f"Saving the data to the following BigQuery table: {target_table}"
             )
-            dataframe.write.format("bigquery") \
-                .mode(save_mode) \
-                .option("table", target_table) \
-                .option("encoding", self.encoding) \
-                .save()
+            dataframe.write.format("bigquery").mode(save_mode).option(
+                "table", target_table
+            ).option("encoding", self.encoding).save()
             self.logger.info("Data has been saved successfully")
-        except(NotFound, PermissionDenied) as gcp_error:
+        except (NotFound, PermissionDenied) as gcp_error:
             self.logger.error(f"GCP Error: {gcp_error}")
 
     def query_external_table(self, bucket_id, blob_path, target_table):
@@ -226,8 +238,9 @@ class BigQuerySave(BigQueryClient):
         """
         query_job.result()
 
+
 # class BigQueryQueries(BigQueryClient):
-    
+
 #     def __init__(self, logger) -> None:
 #         self.logger = logger
 #         super().__init__()

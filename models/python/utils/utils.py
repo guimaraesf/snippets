@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 
 # ================================================================================================
@@ -9,9 +9,9 @@
 import yaml
 
 
-class UtilsYaml:
-    """
-    """
+class Utils:
+    """ """
+
     def __init__(self):
         pass
 
@@ -19,12 +19,12 @@ class UtilsYaml:
     def open_yaml_file(file_path: str) -> dict:
         """
         Opens the YAML file and returns its contents as a dictionary.
-    
+
         Parameters
         ----------
         file_path : str
             The path to the YAML file to be handled.
-    
+
         Returns
         -------
         dict

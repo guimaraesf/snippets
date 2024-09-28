@@ -15,6 +15,7 @@ import os
 import sys
 from time import sleep
 from google.cloud import dataproc_v1 as dataproc
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
 from src.utils.gcp.dataproc.workflow_vars import WorkflowVariables
@@ -48,9 +49,7 @@ class SubmitJobs(WorkflowTemplate, WorkflowVariables):
         )
         return workflow_template_client
 
-    def instantiate_workflow(
-        self, job_acquistion, job_ingestion, message
-    ):
+    def instantiate_workflow(self, job_acquistion, job_ingestion, message):
         """
         Submits a workflow for a Cloud Dataproc using the Python client library.
         """
@@ -68,7 +67,9 @@ class SubmitJobs(WorkflowTemplate, WorkflowVariables):
         Processes a file based on a Cloud PubSub message
         """
         try:
-            job_ingestion = self.python_file_uris[0] # "src/data/ingestion/ingestion.py"
+            job_ingestion = self.python_file_uris[
+                0
+            ]  # "src/data/ingestion/ingestion.py"
             for job_acquistition in jobs:
                 self.instantiate_workflow(
                     job_acquistition, job_ingestion, pubsub_message

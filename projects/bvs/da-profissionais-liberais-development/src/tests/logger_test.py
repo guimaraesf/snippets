@@ -33,7 +33,9 @@ class TestLogger(unittest.TestCase):
         self.logger._get_formatter()
 
         # Assert
-        mock_formatter.assert_called_once_with(self.logger.message, datefmt=self.logger.datefmt)
+        mock_formatter.assert_called_once_with(
+            self.logger.message, datefmt=self.logger.datefmt
+        )
 
 
 if __name__ == "__main__":

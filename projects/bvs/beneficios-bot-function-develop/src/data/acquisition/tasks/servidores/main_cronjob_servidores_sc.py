@@ -280,7 +280,7 @@ def process_df(file_path_table_1, file_path_table_2, target_date, destination_pa
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    bucket_dir = sys.argv[2]  # i.e.: hml-gcp-dados-alternativos    
+    bucket_dir = sys.argv[2]  # i.e.: hml-gcp-dados-alternativos
     project_id = sys.argv[3]  # i.e.: data-88d7
     local_dir = sys.argv[4]
     bucket = configure_storage(project_id, bucket_dir)

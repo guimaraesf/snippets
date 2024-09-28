@@ -15,6 +15,7 @@
 import os
 import ssl
 import sys
+
 # Adding python modules from bucket (e.g. da-beneficios-jobs) to path
 # These files are those passed in the "python_file_uris" parameter in "main.py"
 sys.path.append(os.path.abspath("../"))
@@ -34,7 +35,9 @@ class ProcessRunner:
     Class for running processes.
     """
 
-    def __init__(self, project_id, bucket_name, local_dir, files, dates_for_blobs, logger) -> None:
+    def __init__(
+        self, project_id, bucket_name, local_dir, files, dates_for_blobs, logger
+    ) -> None:
         self.project_id = project_id
         self.bucket_name = bucket_name
         self.local_dir = local_dir
@@ -79,7 +82,9 @@ class ProcessRunner:
         Checking if the file exists in Google Cloud Storage.
         """
         gcs_file_validator = GcsFileValidator()
-        file_exists = gcs_file_validator.file_exists_in_bucket(list_blobs, file_names, self.logger)
+        file_exists = gcs_file_validator.file_exists_in_bucket(
+            list_blobs, file_names, self.logger
+        )
         return file_exists
 
     def set_ssl_context(self):
@@ -96,9 +101,7 @@ class ProcessRunner:
         """
         Running download files.
         """
-        file_downloader = UrllibDownloader(
-            url, context, zipfile_path, self.logger
-        )
+        file_downloader = UrllibDownloader(url, context, zipfile_path, self.logger)
         file_downloader.run_download()
 
     def validate_if_file_exists(self, zipfile_path):
@@ -121,9 +124,7 @@ class ProcessRunner:
         """
         Unpacking files to "/tmp".
         """
-        file_unpacker = FileUnpacker(
-            zipfile_path, self.local_dir, self.logger
-        )
+        file_unpacker = FileUnpacker(zipfile_path, self.local_dir, self.logger)
         file_unpacker.unpack_zipfile()
 
     def get_file_blob_map(self, structure_dir):
@@ -131,7 +132,8 @@ class ProcessRunner:
         Get dictionary with blobs to send files.
         """
         file_blob_map = {
-            "Patrimonio_Bens_Moveis.csv": f"SERVIDORES/ESTADUAIS/STAGING/DF/PATRIMONIO/{structure_dir}", }
+            "Patrimonio_Bens_Moveis.csv": f"SERVIDORES/ESTADUAIS/STAGING/DF/PATRIMONIO/{structure_dir}",
+        }
         return file_blob_map
 
     def upload_files_to_gcs(self, bucket, file_names_to_send, file_blob_map):
@@ -139,7 +141,9 @@ class ProcessRunner:
         Uploading files into Google Cloud Storage.
         """
         gcs_handle = GcsHandle(bucket, self.logger)
-        gcs_handle.upload_blobs_to_gcs(self.local_dir, file_names_to_send, file_blob_map)
+        gcs_handle.upload_blobs_to_gcs(
+            self.local_dir, file_names_to_send, file_blob_map
+        )
 
     def deleting_files_in_gcs(self, bucket, file_name, list_blobs):
         """
@@ -155,8 +159,8 @@ class ProcessRunner:
         self.logger.info("Reading CSV file.")
         with open(file_path, "r", encoding="ISO-8859-1") as csv_file:
             first_line = csv_file.readline()
-            rows = csv_file.read().split('\n')
-        num_columns = first_line.count(';')
+            rows = csv_file.read().split("\n")
+        num_columns = first_line.count(";")
         return rows, num_columns
 
     def fix_rows(self, rows, num_columns):
@@ -186,7 +190,7 @@ class ProcessRunner:
             sep=";",
             encoding="ISO-8859-1",
             engine="python",
-            on_bad_lines="skip"
+            on_bad_lines="skip",
         )
         return dataframe
 
@@ -195,10 +199,7 @@ class ProcessRunner:
         Convert dataframe to CSV format.
         """
         self.pd_csv_handle.convert_to_csv_file(
-            dataframe,
-            file_path,
-            sep=";",
-            encoding="ISO-8859-1"
+            dataframe, file_path, sep=";", encoding="ISO-8859-1"
         )
 
     def run(self):
@@ -211,7 +212,8 @@ class ProcessRunner:
         list_blobs = self.get_blobs_to_validate(bucket)
         zipfile_path = self.get_download_path()
         self.logger.info(
-            "Starting the download for the Public Servants (DF) - Patrimônio Bens Imóveis.")
+            "Starting the download for the Public Servants (DF) - Patrimônio Bens Imóveis."
+        )
         context = self.set_ssl_context()
         self.download_file(url, context, zipfile_path)
         # Change the directory of "dataproc job" to "/tmp"
@@ -259,7 +261,9 @@ def main():
     year, month, day = (today.strftime(fmt) for fmt in ["%Y", "%m", "%d"])
     dates_for_blobs = [year, month, day]
 
-    process_runner = ProcessRunner(PROJECT_ID, BUCKET_NAME, TMP_DIR, files, dates_for_blobs, logger)
+    process_runner = ProcessRunner(
+        PROJECT_ID, BUCKET_NAME, TMP_DIR, files, dates_for_blobs, logger
+    )
     process_runner.run()
 
     logger.info(f"{'*' * 50} TASK FINISHED {'*' * 50}")

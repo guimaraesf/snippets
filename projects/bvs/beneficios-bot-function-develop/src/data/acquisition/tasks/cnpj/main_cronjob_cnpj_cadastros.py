@@ -303,22 +303,30 @@ class CNPJDataOrganizer:
         ]
         self.zipfiles_name = extract_zip_name()
         self.files_and_columns_name = {
-            zipfile: self.empresas_columns
-            if zipfile.startswith("Empresas")
-            else self.estabelecimentos_columns
-            if zipfile.startswith("Estabelecimentos")
-            else self.socios_columns
-            if zipfile.startswith("Socios")
-            else self.simples_columns
-            if zipfile.startswith("Simples")
-            else self.common_columns
+            zipfile: (
+                self.empresas_columns
+                if zipfile.startswith("Empresas")
+                else (
+                    self.estabelecimentos_columns
+                    if zipfile.startswith("Estabelecimentos")
+                    else (
+                        self.socios_columns
+                        if zipfile.startswith("Socios")
+                        else (
+                            self.simples_columns
+                            if zipfile.startswith("Simples")
+                            else self.common_columns
+                        )
+                    )
+                )
+            )
             for zipfile in self.zipfiles_name
         }
 
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    bucket_dir = sys.argv[2]  # i.e.: hml-gcp-dados-alternativos    
+    bucket_dir = sys.argv[2]  # i.e.: hml-gcp-dados-alternativos
     project_id = sys.argv[3]  # i.e.: data-88d7
     local_dir = sys.argv[4]
     bucket = configure_storage(project_id, bucket_dir)

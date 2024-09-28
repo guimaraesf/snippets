@@ -16,6 +16,7 @@ import zipfile
 import csv
 from abc import ABC, abstractmethod
 
+
 class Validator(ABC):
     """
     Abstract class for validators.
@@ -88,16 +89,16 @@ class ZipfileValidator(Validator):
 #                     return False
 #         return True
 
-    # def check_empty_lines(filename):
-    #     with open(filename, 'r') as f:
-    #         reader = csv.reader(f)
-    #         lines = list(reader)
-    #         empty_lines = [i for i, line in enumerate(lines) if not line]
-    #     return empty_lines
+# def check_empty_lines(filename):
+#     with open(filename, 'r') as f:
+#         reader = csv.reader(f)
+#         lines = list(reader)
+#         empty_lines = [i for i, line in enumerate(lines) if not line]
+#     return empty_lines
 
-    # def check_delimiter_consistency(filename, delimiter):
-    #     with open(filename, 'r') as f:
-    #         content = f.read()
-    #     lines = content.split('\n')
-    #     inconsistencies = [i for i, line in enumerate(lines) if line.count(delimiter) != lines[0].count(delimiter)]
-    #     return inconsistencies
+# def check_delimiter_consistency(filename, delimiter):
+#     with open(filename, 'r') as f:
+#         content = f.read()
+#     lines = content.split('\n')
+#     inconsistencies = [i for i, line in enumerate(lines) if line.count(delimiter) != lines[0].count(delimiter)]
+#     return inconsistencies

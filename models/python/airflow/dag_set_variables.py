@@ -49,15 +49,15 @@ def get_json_config(self):
     Returns:
         str: A string representation of the pipeline configuration.
     """
-    with open(self.souce_path, "r", encoding = "UTF-8") as f:
+    with open(self.souce_path, "r", encoding="UTF-8") as f:
         data = json.load(f)
-        return json.dumps(data, skipkeys = True, indent = 4)
+        return json.dumps(data, skipkeys=True, indent=4)
 
 
 DAG_ID = ""
 SCHEDULE_INTERVAL = "@daily"
 START_DATE = days_ago(0)
-RETRY_DELAY = timedelta(seconds = 30)
+RETRY_DELAY = timedelta(seconds=30)
 PATH = f"/home/airflow/gcs/dags/{{}}/variables.json"
 JSON_CONFIG = get_json_config()
 
@@ -66,13 +66,14 @@ JSON_CONFIG = get_json_config()
 # ================================================================================================
 
 with DAG(
-    dag_id = DAG_ID,
-    default_args = DEFAULT_ARGS,
-    schedule_interval = SCHEDULE_INTERVAL,
-    doc_md = __DOC__) as dag:
+    dag_id=DAG_ID,
+    default_args=DEFAULT_ARGS,
+    schedule_interval=SCHEDULE_INTERVAL,
+    doc_md=__DOC__,
+) as dag:
     BashOperator(
-        task_id = "set_variables",
-        bash_command = f"airflow variables set VARIABLE_NAME '{JSON_CONFIG}'",
-        doc_md = __DOC__,
-        dag = dag,
+        task_id="set_variables",
+        bash_command=f"airflow variables set VARIABLE_NAME '{JSON_CONFIG}'",
+        doc_md=__DOC__,
+        dag=dag,
     )

@@ -15,17 +15,22 @@ table_id = "base_cadastral_email_produto"
 
 
 def run():
-    bigtable_instance_hml = BigTableClient(project_id_hml, instance_id_hml).get_instance()
+    bigtable_instance_hml = BigTableClient(
+        project_id_hml, instance_id_hml
+    ).get_instance()
     table_hml = bigtable_instance_hml.table(table_id)
     input_row_dict = ReadRowBigtableV2(table_hml).read_row(row_key_origin)
-    print(r'Row Data: {}'.format(input_row_dict))
+    print(r"Row Data: {}".format(input_row_dict))
     if bool(input_row_dict):
-        print('Writing')
-        bigtable_instance_dev = BigTableClient(project_id_dev, instance_id_dev).get_instance()
+        print("Writing")
+        bigtable_instance_dev = BigTableClient(
+            project_id_dev, instance_id_dev
+        ).get_instance()
         table_dev = bigtable_instance_dev.table(table_id)
         WriteRowBigTableV2(table_dev).write_row(row_key_origin, input_row_dict)
     else:
-        print('Empty origin')
+        print("Empty origin")
+
 
 if __name__ == "__main__":
     run()

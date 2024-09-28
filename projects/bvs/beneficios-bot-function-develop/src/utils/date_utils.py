@@ -269,24 +269,18 @@ class DateUtils:
         daily_date_handle=DailyDateHandle,
         monthly_date_handle=MonthlyDateHandle,
         quarter_date_handle=QuarterDateHandle,
-        yearly_date_handle=YearlyDateHandle
+        yearly_date_handle=YearlyDateHandle,
     ):
         self.daily_date_handle = daily_date_handle
         self.monthly_date_handle = monthly_date_handle
         self.quarter_date_handle = quarter_date_handle
         self.yearly_date_handle = yearly_date_handle
-        self.use_date_daily = [
-            "SANCOES", 
-            "IBAMA", 
-            "SERVIDORES/ESTADUAIS/PR"
-        ]
-        self.use_date_quarter = [
-            "DEBITOSTRABALHISTAS"
-        ]
+        self.use_date_daily = ["SANCOES", "IBAMA", "SERVIDORES/ESTADUAIS/PR"]
+        self.use_date_quarter = ["DEBITOSTRABALHISTAS"]
         self.use_date_year = [
             "SERVIDORES/ESTADUAIS/STAGING/DF/DESPESA",
             "SERVIDORES/ESTADUAIS/STAGING/DF/RECEITA",
-            "SERVIDORES/ESTADUAIS/STAGING/DF/LICITACAO"
+            "SERVIDORES/ESTADUAIS/STAGING/DF/LICITACAO",
         ]
         self.format_daily = "%Y%m%d"
         self.format_monthly = "%Y%m"

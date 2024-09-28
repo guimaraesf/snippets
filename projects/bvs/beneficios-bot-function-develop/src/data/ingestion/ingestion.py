@@ -15,6 +15,7 @@ import os
 import sys
 from pyspark.sql.functions import *
 from pyspark import SparkContext
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
 from task import IngestionTasks
@@ -29,15 +30,15 @@ from date_utils import (
     DailyDateHandle,
     MonthlyDateHandle,
     QuarterDateHandle,
-    YearlyDateHandle
+    YearlyDateHandle,
 )
 from utils import (
-    EnvironmentUtils, 
-    HdfsUtils, 
-    FileUtils, 
-    SqlUtils, 
+    EnvironmentUtils,
+    HdfsUtils,
+    FileUtils,
+    SqlUtils,
     DataframeUtils,
-    Stopwatch
+    Stopwatch,
 )
 
 
@@ -45,6 +46,7 @@ class DataUtils:
     """
     Helper class to process data.
     """
+
     def __init__(self, spark, project_id, bucket_id, dataset, local_dir, logger):
         self.spark = spark
         self.project_id = project_id
@@ -65,14 +67,29 @@ class DataUtils:
         """
         Clears specific bigquery tables.
         """
-        bigquery_utils = BigQueryUtils(self.spark, self.project_id, self.dataset, self.logger)
+        bigquery_utils = BigQueryUtils(
+            self.spark, self.project_id, self.dataset, self.logger
+        )
         bigquery_utils.run_table_cleanup(task)
 
-    def get_target_date(self, daily_date_handle, monthly_date_handle, quarter_date_handle, year_date_handle, blob_path, period):
+    def get_target_date(
+        self,
+        daily_date_handle,
+        monthly_date_handle,
+        quarter_date_handle,
+        year_date_handle,
+        blob_path,
+        period,
+    ):
         """
         Getting target date for processing.
         """
-        date_utils = DateUtils(daily_date_handle, monthly_date_handle, quarter_date_handle, year_date_handle)
+        date_utils = DateUtils(
+            daily_date_handle,
+            monthly_date_handle,
+            quarter_date_handle,
+            year_date_handle,
+        )
         target_date = date_utils.get_target_date(blob_path, period)
         return target_date
 
@@ -89,14 +106,18 @@ class DataUtils:
         Setting file name for processing.
         """
         file_utils = FileUtils()
-        file_name = file_utils.get_file_names(snippet_name, self.logger, **target_date_arg)
+        file_name = file_utils.get_file_names(
+            snippet_name, self.logger, **target_date_arg
+        )
         return file_name
 
     def get_target_table(self, table_name):
         """
         Returns the target table for the given file.
         """
-        bigquery_utils = BigQueryUtils(self.spark, self.project_id, self.dataset, self.logger)
+        bigquery_utils = BigQueryUtils(
+            self.spark, self.project_id, self.dataset, self.logger
+        )
         target_table = bigquery_utils.get_target_table(table_name)
         return target_table
 
@@ -145,7 +166,11 @@ class DataUtils:
         gcs_handle = GcsHandle(bucket, self.logger)
         for blob in list_blobs:
             for path in blobs_to_delete_before_process:
-                if blob.exists() and blob.name.startswith(path) and blob.name.endswith("snappy.parquet"):
+                if (
+                    blob.exists()
+                    and blob.name.startswith(path)
+                    and blob.name.endswith("snappy.parquet")
+                ):
                     gcs_handle.delete_blob(blob)
                     self.logger.warning(f"Deleting blob at earlier dates: {blob}.")
 
@@ -154,6 +179,7 @@ class DataConfig:
     """
     Getting parameters of configuration.
     """
+
     def __init__(self, project_id, bucket_id, dataset, app_name, master, logger):
         self.project_id = project_id
         self.bucket_id = bucket_id
@@ -166,7 +192,9 @@ class DataConfig:
         """
         Instantiating SparkSession.
         """
-        spark_launcher = SparkLauncher(self.master, self.app_name, self.project_id, self.dataset, self.bucket_id)
+        spark_launcher = SparkLauncher(
+            self.master, self.app_name, self.project_id, self.dataset, self.bucket_id
+        )
         spark = spark_launcher.initialize_sparksession()
         return spark
 
@@ -180,9 +208,10 @@ class DataConfig:
 
 
 class DataValidate:
-    """ 
+    """
     This class is used to validate the data against the specified target table.
     """
+
     def __init__(self, spark, project_id, bucket_id, dataset, table_name, logger):
         self.spark = spark
         self.project_id = project_id
@@ -190,17 +219,25 @@ class DataValidate:
         self.dataset = dataset
         self.table_name = table_name
         self.logger = logger
-        self.bq_validation = BigQueryValidation(self.spark, self.project_id, self.dataset, self.table_name, self.logger)
+        self.bq_validation = BigQueryValidation(
+            self.spark, self.project_id, self.dataset, self.table_name, self.logger
+        )
 
     def validate_file_in_bq(self, file_name) -> bool:
-        """ 
+        """
         Returns TRUE if the file does not exists in BigQuery table.
         """
         columns_to_validate = ["ARQUIVO", "DATA_PROCESSAMENTO"]
-        filtred_df = self.bq_validation.get_filtred_dataframe(file_name, columns_to_validate)
+        filtred_df = self.bq_validation.get_filtred_dataframe(
+            file_name, columns_to_validate
+        )
         row_iterator = self.bq_validation.collect_row(filtred_df, "ARQUIVO")
-        row_iter_content = self.bq_validation.get_row_iterator_content(row_iterator, "ARQUIVO")
-        should_process = self.bq_validation.should_process_file(file_name, row_iter_content)
+        row_iter_content = self.bq_validation.get_row_iterator_content(
+            row_iterator, "ARQUIVO"
+        )
+        should_process = self.bq_validation.should_process_file(
+            file_name, row_iter_content
+        )
         return should_process
 
 
@@ -208,6 +245,7 @@ class DataLoad:
     """
     Class is responsible for loading data from a file.
     """
+
     def __init__(self, logger):
         self.logger = logger
         self.bigquery_save = BigQuerySave(self.logger)
@@ -227,10 +265,12 @@ class DataLoad:
         self.bigquery_save.save_table(dataframe, target_table, save_mode)
 
     def create_external_table(self, bucket_id, blob_path, target_table):
-        """ 
+        """
         Create external table for the given dataframe.
         """
-        query = self.bigquery_save.query_external_table(bucket_id, blob_path, target_table)
+        query = self.bigquery_save.query_external_table(
+            bucket_id, blob_path, target_table
+        )
         query_job = self.bigquery_save.run_query_job(query)
         self.bigquery_save.job_result(query_job)
 
@@ -239,6 +279,7 @@ class DataProcess:
     """
     Process data from Google Cloud Storage.
     """
+
     def __init__(self, spark, bucket, bucket_id, local_dir, logger):
         self.spark = spark
         self.bucket = bucket
@@ -288,7 +329,9 @@ class DataProcess:
         """
         Read a PySpark DataFrame from a file.
         """
-        dataframe_utils = DataframeUtils(self.spark, file_name, table_schema, self.logger)
+        dataframe_utils = DataframeUtils(
+            self.spark, file_name, table_schema, self.logger
+        )
         dataframe = dataframe_utils.read_dataframe()
         return dataframe
 
@@ -304,7 +347,9 @@ class DataProcess:
         """
         Fix the rows in table Pescador Artesanal.
         """
-        dataframe_utils = DataframeUtils(self.spark, file_name, table_schema, self.logger)
+        dataframe_utils = DataframeUtils(
+            self.spark, file_name, table_schema, self.logger
+        )
         fixed_df = dataframe_utils.fixing_rows(dataframe)
         return fixed_df
 
@@ -318,34 +363,56 @@ class DataProcess:
             save_mode,
             staging_list_blobs,
             _,
-            _
+            _,
         ) = parameters_for_processing
         for blob in staging_list_blobs:
             if file_name in blob.name:
                 file_path = self.download_file_from_gcs(blob, file_name)
                 self.moving_file_in_gcs(blob)
                 if os.path.exists(file_path):
-                    self.logger.info(f"File {file_name} exists, proceeding with the processing.")
+                    self.logger.info(
+                        f"File {file_name} exists, proceeding with the processing."
+                    )
                     self.hdfs_process_file(file_path, file_name)
                     dataframe = self.read_dataframe_from_file(file_name, table_schema)
                     if "PescadorArtesanal.csv" in file_name:
-                        dataframe = self.dataframe_fixing_rows(file_name, table_schema, dataframe)
+                        dataframe = self.dataframe_fixing_rows(
+                            file_name, table_schema, dataframe
+                        )
                     dataframe = self.data_load.run_query(dataframe, select_columns)
-                    dataframe = self.apply_transformations(transform_functions, dataframe, file_name)
-                    self.data_load.save_table_in_bigquery(dataframe, target_table, save_mode)
+                    dataframe = self.apply_transformations(
+                        transform_functions, dataframe, file_name
+                    )
+                    self.data_load.save_table_in_bigquery(
+                        dataframe, target_table, save_mode
+                    )
 
-    def process_blob_parquet(self, blob, trusted_uri, table_schema, select_columns, transform_functions, trusted_blob_path, target_table, save_mode):
+    def process_blob_parquet(
+        self,
+        blob,
+        trusted_uri,
+        table_schema,
+        select_columns,
+        transform_functions,
+        trusted_blob_path,
+        target_table,
+        save_mode,
+    ):
         staging_uri = trusted_uri.replace("TRUSTED", "STAGING")
         tag_name = "/".join(staging_uri.split("/")[3:-2])
         if blob.name.startswith(tag_name):
             file_to_process = blob.name.split("/")[-1]
             file_path = self.download_file_from_gcs(blob, file_to_process)
             if os.path.exists(file_path):
-                self.logger.info(f"File {file_to_process} exists, proceeding with the processing.")
+                self.logger.info(
+                    f"File {file_to_process} exists, proceeding with the processing."
+                )
                 self.hdfs_process_file(file_path, file_to_process)
                 dataframe = self.read_dataframe_from_file(file_to_process, table_schema)
                 dataframe = self.data_load.run_query(dataframe, select_columns)
-                dataframe = self.apply_transformations(transform_functions, dataframe, file_to_process)
+                dataframe = self.apply_transformations(
+                    transform_functions, dataframe, file_to_process
+                )
                 self.gcs_handle.write_to_parquet(dataframe, trusted_uri, save_mode)
                 # self.data_load.create_external_table(self.bucket_id, trusted_blob_path, target_table)
                 self.processed_files.add(file_to_process)
@@ -366,7 +433,16 @@ class DataProcess:
             trusted_uri,
         ) = parameters_for_processing
         for blob in staging_list_blobs:
-            self.process_blob_parquet(blob, trusted_uri, table_schema, select_columns, transform_functions, trusted_blob_path, target_table, save_mode)
+            self.process_blob_parquet(
+                blob,
+                trusted_uri,
+                table_schema,
+                select_columns,
+                transform_functions,
+                trusted_blob_path,
+                target_table,
+                save_mode,
+            )
 
 
 def main():
@@ -390,7 +466,7 @@ def main():
         ingestion_args.get("spark_app_name"),
         ingestion_args.get("spark_master"),
         ingestion_args.get("tmp_dir"),
-        ingestion_args.get("step_name")
+        ingestion_args.get("step_name"),
     )
     logger.info(f"{'*' * 50} TASK STARTED {'*' * 50}")
 
@@ -422,15 +498,33 @@ def main():
             data_utils.clearing_bigquery_tables(task)
             for period in range(0, period_to_go):
                 # Setting date parameter to process files.
-                date_handlers = [DailyDateHandle, MonthlyDateHandle, QuarterDateHandle, YearlyDateHandle]
-                day_date, month_date, quarter_date, year_date = [handler(today) for handler in date_handlers]
+                date_handlers = [
+                    DailyDateHandle,
+                    MonthlyDateHandle,
+                    QuarterDateHandle,
+                    YearlyDateHandle,
+                ]
+                day_date, month_date, quarter_date, year_date = [
+                    handler(today) for handler in date_handlers
+                ]
 
                 # Manipulating target date to handle files with or without date.
-                target_date = data_utils.get_target_date(day_date, month_date, quarter_date, year_date, staging_blob_path, period)
-                target_date_args = data_utils.get_target_date_args(staging_blob_path, target_date)
+                target_date = data_utils.get_target_date(
+                    day_date,
+                    month_date,
+                    quarter_date,
+                    year_date,
+                    staging_blob_path,
+                    period,
+                )
+                target_date_args = data_utils.get_target_date_args(
+                    staging_blob_path, target_date
+                )
 
                 # Setting the target table and file name for processing.
-                file_name = data_utils.get_file_name_for_processing(snippet_name, target_date_args)
+                file_name = data_utils.get_file_name_for_processing(
+                    snippet_name, target_date_args
+                )
                 target_table = data_utils.get_target_table(table_name)
 
                 # Replace "STAGING" with "TRUSTED" in the blob path to create the trusted blob path
@@ -447,7 +541,9 @@ def main():
                 ]
 
                 # Search for the table type in BigQuery. If it is "EXTERNAL" or "TABLE".
-                bq_validation = BigQueryValidation(spark, PROJECT_ID, DATASET, table_name, logger)
+                bq_validation = BigQueryValidation(
+                    spark, PROJECT_ID, DATASET, table_name, logger
+                )
                 table_type = bq_validation.get_table_type()
                 try:
                     # Setting parameters required for file processing.
@@ -460,34 +556,59 @@ def main():
                         save_mode,
                         staging_list_blobs,
                         trusted_blob_path,
-                        trusted_uri
+                        trusted_uri,
                     )
-                    data_process = DataProcess(spark, bucket, BUCKET_ID, TMP_DIR, logger)
-                    data_validate = DataValidate(spark, PROJECT_ID, BUCKET_ID, DATASET, table_name, logger)
+                    data_process = DataProcess(
+                        spark, bucket, BUCKET_ID, TMP_DIR, logger
+                    )
+                    data_validate = DataValidate(
+                        spark, PROJECT_ID, BUCKET_ID, DATASET, table_name, logger
+                    )
                     if table_type == "TABLE":
                         # Validate whether data already exists in the table in BigQuery.
-                        should_process_file_in_bq = data_validate.validate_file_in_bq(file_name)
+                        should_process_file_in_bq = data_validate.validate_file_in_bq(
+                            file_name
+                        )
                         if should_process_file_in_bq:
                             data_process.process_table_file(parameters_for_processing)
                     if table_type == "EXTERNAL":
                         # Deletes old files that only receive incremental updates.
                         data_utils.deleting_files_in_gcs(bucket, trusted_list_blobs)
                         # The "tags" are the filter used to process files from the "ANO" and "MES" partition.
-                        staging_tag, trusted_tag = [data_utils.get_tag(uri) for uri in [staging_uri, trusted_uri]]
+                        staging_tag, trusted_tag = [
+                            data_utils.get_tag(uri)
+                            for uri in [staging_uri, trusted_uri]
+                        ]
                         # Searching for files that will be validated.
-                        staging_blobs, _ = [data_utils.get_list_blobs(bucket, tag) for tag in [staging_tag, trusted_tag]]
-                        csv_file_names = [blob.name.split("/")[-1] for blob in staging_blobs]
+                        staging_blobs, _ = [
+                            data_utils.get_list_blobs(bucket, tag)
+                            for tag in [staging_tag, trusted_tag]
+                        ]
+                        csv_file_names = [
+                            blob.name.split("/")[-1] for blob in staging_blobs
+                        ]
                         # Validate whether data already exists in the table in Trusted layer.
                         gcs_handle = GcsHandle(bucket, logger)
                         processed_files = data_process.processed_files
                         for csv in csv_file_names:
                             if csv not in processed_files:
                                 trusted_path = f"gs://{BUCKET_ID}/{trusted_tag}/*"
-                                trusted_df = gcs_handle.get_filtred_dataframe(spark, trusted_path, csv)
-                                should_process_file_in_bq = gcs_handle.should_process_file(trusted_df, csv)
+                                trusted_df = gcs_handle.get_filtred_dataframe(
+                                    spark, trusted_path, csv
+                                )
+                                should_process_file_in_bq = (
+                                    gcs_handle.should_process_file(trusted_df, csv)
+                                )
                                 if should_process_file_in_bq:
-                                    data_process.process_ext_table_file(parameters_for_processing)
-                except (FileNotFoundError, ValueError, PermissionError, AttributeError) as error:
+                                    data_process.process_ext_table_file(
+                                        parameters_for_processing
+                                    )
+                except (
+                    FileNotFoundError,
+                    ValueError,
+                    PermissionError,
+                    AttributeError,
+                ) as error:
                     logger.error(error)
 
     data_utils.delete_temporary_files()

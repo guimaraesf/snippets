@@ -201,7 +201,9 @@ class ScraperCffa(IScraper):
             self.selenium.go_to_page(driver)
             element = self.selenium.find_element(driver, By.ID, "form-field-estado")
             self.selenium.select_by_value(element, uf)
-            self.selenium.find_element(driver, By.CSS_SELECTOR, "button[type='submit']").click()
+            self.selenium.find_element(
+                driver, By.CSS_SELECTOR, "button[type='submit']"
+            ).click()
             self.selenium.webdrive_wait(driver, By.ID, "printTable")
             self.selenium.execute_script(
                 driver, "return document.getElementById('printTable').innerHTML;"

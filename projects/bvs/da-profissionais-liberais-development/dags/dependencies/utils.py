@@ -56,11 +56,15 @@ class Utils(Variables):
         self.id = uuid.uuid4()
         super().__init__(self.pipeline_config)
         self.bucket_path = f"gs://{self.get_bucket_id}"
-        self.main_python_file_uri_extract = f"{self.bucket_path}/scripts/src/pipeline/extract"
+        self.main_python_file_uri_extract = (
+            f"{self.bucket_path}/scripts/src/pipeline/extract"
+        )
         self.main_python_file_uri_transform = (
             f"{self.bucket_path}/scripts/src/pipeline/transform/transformer.py"
         )
-        self.main_python_file_uri_load = f"{self.bucket_path}/scripts/src/pipeline/load/loader.py"
+        self.main_python_file_uri_load = (
+            f"{self.bucket_path}/scripts/src/pipeline/load/loader.py"
+        )
 
     def get_bucket_obj(self):
         """
@@ -101,7 +105,9 @@ class Utils(Variables):
             list: The list of URIs of the Python files.
         """
         return [
-            f"{self.bucket_path}/{blob.name}" for blob in blob_list if self._ends_name_is_py(blob)
+            f"{self.bucket_path}/{blob.name}"
+            for blob in blob_list
+            if self._ends_name_is_py(blob)
         ]
 
     def get_list_blobs(self, prefix: str = None) -> list:
@@ -118,7 +124,9 @@ class Utils(Variables):
         return list(bucket.list_blobs(prefix=prefix))
 
     @staticmethod
-    def customize_cluster_name(original_string: str, insert_string: str, delimiter: str) -> str:
+    def customize_cluster_name(
+        original_string: str, insert_string: str, delimiter: str
+    ) -> str:
         """
         Inserts a string into the original string before the last occurrence of the delimiter.
 

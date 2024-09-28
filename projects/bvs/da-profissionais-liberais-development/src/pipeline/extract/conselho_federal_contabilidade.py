@@ -57,7 +57,9 @@ GcsClient = importlib.import_module(GCS_CLIENT_MOD_PATH).GcsClient
 GcsManager = importlib.import_module(GCS_MANAGER_MOD_PATH).GcsManager
 Logger = importlib.import_module(LOGGER_MOD_PATH).Logger
 PandasFileHandle = importlib.import_module(PANDAS_FILE_HANDLE).PandasFileHandle
-SslContextConfigurator = importlib.import_module(SSL_CONFIG_MOD_PATH).SslContextConfigurator
+SslContextConfigurator = importlib.import_module(
+    SSL_CONFIG_MOD_PATH
+).SslContextConfigurator
 IScraper = importlib.import_module(ISCRAPER_MOD_PATH).IScraper
 Stopwatch = importlib.import_module(STOPWATCH_MOD_PATH).Stopwatch
 UtilsDataproc = importlib.import_module(UTILS_MOD_PATH).UtilsDataproc
@@ -123,7 +125,9 @@ class ScraperCfc(IScraper):
         """
         layer_name = self.variables.STAGING_NAME
         dir_name = self.variables.DIR_NAME_CFC
-        file_name = self.variables.FILENAME.format(f"{self.type_list.lower()}/{uf.lower()}", "cfc")
+        file_name = self.variables.FILENAME.format(
+            f"{self.type_list.lower()}/{uf.lower()}", "cfc"
+        )
         blob_name = self.variables.BLOB_NAME.format(layer_name, dir_name, file_name)
         return blob_name
 

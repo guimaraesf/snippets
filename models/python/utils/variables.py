@@ -8,35 +8,41 @@
 # ================================================================================================
 from __future__ import annotations
 import inspect
+from enum import Enum
 
 
-class Variables(enumerate):
+class Variables(Enum):
     """
     Class to set all support variables.
     """
-    @staticmethod
-    def get_all_variables() -> list:
+
+    @classmethod
+    def init(cls):
+        return {var.name: var.value for var in cls}
+
+    @classmethod
+    def get_all_variables(cls) -> list:
         """
         Retrieves all class-level variables of the Variables class.
 
         Returns:
             list: A list of tuples, each representing a class-level variable and its value.
         """
-        attributes = inspect.getmembers(Variables, lambda attr: not (inspect.isroutine(attr)))
-        return [v for v in attributes if not (v[0].startswith("__") and v[0].endswith("__"))]
+        attributes = inspect.getmembers(cls, lambda attr: not (inspect.isroutine(attr)))
+        return [
+            v for v in attributes if not (v[0].startswith("__") and v[0].endswith("__"))
+        ]
 
-
-    @staticmethod
-    def check_variables() -> None:
+    @classmethod
+    def check_variables(cls) -> None:
         """
         Check if all variables defined in the Variables class have been initialized.
         """
-        for key, value in Variables.get_all_variables():
+        for key, value in cls.get_all_variables():
             if not value:
                 print(
                     f"The variable {key} was not created, because the value is: '{value}'"
                 )
-
 
     NAME_VAR: str = ""
 

@@ -250,22 +250,30 @@ def extract_zip_name():
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    bucket_dir = sys.argv[2]  # i.e.: hml-gcp-dados-alternativos    
+    bucket_dir = sys.argv[2]  # i.e.: hml-gcp-dados-alternativos
     project_id = sys.argv[3]  # i.e.: data-88d7
     local_dir = sys.argv[4]
     bucket = configure_storage(project_id, bucket_dir)
 
     zipfiles_name = extract_zip_name()
     files_name = {
-        zipfile: ["Imunes e isentas.csv", "ImunesIsentas.csv"]
-        if zipfile.endswith("isentas")
-        else ["Lucro Arbitrado.csv", "LucroArbitrado.csv"]
-        if zipfile.endswith("Arbitrado")
-        else ["Lucro Real.csv", "LucroReal.csv"]
-        if zipfile.endswith("Real")
-        else ["Lucro Presumido.csv", "LucroPresumido.csv"]
-        if zipfile.endswith("Presumido")
-        else None
+        zipfile: (
+            ["Imunes e isentas.csv", "ImunesIsentas.csv"]
+            if zipfile.endswith("isentas")
+            else (
+                ["Lucro Arbitrado.csv", "LucroArbitrado.csv"]
+                if zipfile.endswith("Arbitrado")
+                else (
+                    ["Lucro Real.csv", "LucroReal.csv"]
+                    if zipfile.endswith("Real")
+                    else (
+                        ["Lucro Presumido.csv", "LucroPresumido.csv"]
+                        if zipfile.endswith("Presumido")
+                        else None
+                    )
+                )
+            )
+        )
         for zipfile in zipfiles_name
     }
 

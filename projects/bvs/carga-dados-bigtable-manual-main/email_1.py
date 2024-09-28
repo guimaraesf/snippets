@@ -14,7 +14,7 @@ instance_id = "dc-base-cadastral-hml"
 row_key_origin = "39a46da628d7a43a98fd92e6b8d49e35-0"
 
 table_id = "base_cadastral_email_produto"
-num_cpf_cnpj_destiny = '00054239270480'
+num_cpf_cnpj_destiny = "00054239270480"
 row_key_destiny = UtilsBigTable.get_row_key(num_cpf_cnpj_destiny)
 
 
@@ -22,27 +22,27 @@ def run():
     bigtable_instance = BigTableClient(project_id, instance_id).get_instance()
     table = bigtable_instance.table(table_id)
     input_row_dict = ReadRowBigtableV2(table).read_row(row_key_origin)
-    print(r'Row Data: {}'.format(input_row_dict))
+    print(r"Row Data: {}".format(input_row_dict))
     if bool(input_row_dict):
         changed_row = change_data(input_row_dict)
-        print(r'Changed Row Data: {}'.format(changed_row))
-        print('Writing')
+        print(r"Changed Row Data: {}".format(changed_row))
+        print("Writing")
         WriteRowBigTableV2(table).write_row(row_key_destiny, input_row_dict)
     else:
-        print('Empty origin')
+        print("Empty origin")
 
 
 def change_data(input_data: dict[str, dict[str, str]]) -> dict[str, dict[str, str]]:
     for family, qualifier in input_data.items():
         for key in qualifier.keys():
-            if key in ('num_cpf_cnpj'):
+            if key in ("num_cpf_cnpj"):
                 input_data[family][key] = num_cpf_cnpj_destiny
-            elif key in ('key', 'chave'):
+            elif key in ("key", "chave"):
                 input_data[family][key] = row_key_destiny
-            elif key in ('index', 'indice'):
-                input_data[family][key] = '0'
-            elif key == 'endr_corr_eltr':
-                input_data[family][key] = 'test@test.com'
+            elif key in ("index", "indice"):
+                input_data[family][key] = "0"
+            elif key == "endr_corr_eltr":
+                input_data[family][key] = "test@test.com"
     return input_data
 
 

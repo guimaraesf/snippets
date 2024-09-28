@@ -172,7 +172,9 @@ JSON_CONFIG = dag_variables.get_json_config()
 # DAG CREATE
 # ================================================================================================
 
-dag_pipeline = DagPipeline(DAG_ID, DEFAULT_ARGS, __DOC__, SCHEDULE_INTERVAL, JSON_CONFIG)
+dag_pipeline = DagPipeline(
+    DAG_ID, DEFAULT_ARGS, __DOC__, SCHEDULE_INTERVAL, JSON_CONFIG
+)
 dag_pipeline.create_dag()
 
 globals()[dag_pipeline.dag_id] = dag_pipeline

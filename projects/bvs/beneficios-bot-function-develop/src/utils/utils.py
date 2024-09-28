@@ -14,7 +14,7 @@
 import os
 import sys
 import time
-from subprocess import PIPE, Popen # nosec
+from subprocess import PIPE, Popen  # nosec
 from pyspark.sql.functions import col, lit
 from pyspark import SparkConf
 
@@ -23,6 +23,7 @@ class SparkUtils:
     """
     This class implements the Spark utilities.
     """
+
     def __init__(self, spark, logger):
         self.spark = spark
         self.logger = logger
@@ -78,16 +79,13 @@ class FileUtils:
         """
         task_details = [task[i] for i in range(len(task))]
         return task_details
-    
+
     @staticmethod
     def check_blob_path(blob_path, target_date):
         """
         Checks if the blob path contains the start blob name.
         """
-        start_blob_names = [
-            "CNPJ",
-            "SERVIDORES/ESTADUAIS/STAGING/DF/PATRIMONIO"
-        ]
+        start_blob_names = ["CNPJ", "SERVIDORES/ESTADUAIS/STAGING/DF/PATRIMONIO"]
         if not any(blob_path.startswith(name) for name in start_blob_names):
             target_date_arg = {"target_date": target_date}
             return target_date_arg
@@ -296,6 +294,7 @@ class Stopwatch:
     """
     Create a Stopwatch.
     """
+
     def __init__(self):
         self.start_time = None
         self.end_time = None
@@ -309,7 +308,7 @@ class Stopwatch:
     def stop(self):
         """
         Stop the Stopwatch.
-        """        
+        """
         self.end_time = time.time()
 
     def elapsed_time(self, logger):
@@ -321,5 +320,7 @@ class Stopwatch:
         hours = round(elapsed_time // 3600, 2)
         minutes = round((elapsed_time % 3600) // 60, 2)
         seconds = round(elapsed_time % 60, 4)
-    
-        logger.info(f"Execution time: {hours} hours {minutes} minutes {seconds} seconds")
+
+        logger.info(
+            f"Execution time: {hours} hours {minutes} minutes {seconds} seconds"
+        )

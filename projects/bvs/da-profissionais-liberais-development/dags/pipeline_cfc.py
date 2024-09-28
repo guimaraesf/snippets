@@ -16,15 +16,23 @@ import importlib
 from airflow import DAG
 from airflow.models import Variable
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator
-from airflow.providers.google.cloud.operators.dataproc import DataprocDeleteClusterOperator
+from airflow.providers.google.cloud.operators.dataproc import (
+    DataprocCreateClusterOperator,
+)
+from airflow.providers.google.cloud.operators.dataproc import (
+    DataprocDeleteClusterOperator,
+)
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobOperator
 from airflow.providers.google.cloud.operators.gcs import GCSDeleteObjectsOperator
 from airflow.utils.dates import days_ago
 from airflow.utils.task_group import TaskGroup
 
-from dependencies.dados_alternativos.profissionais_liberais.cluster_config import ClusterConfig
-from dependencies.dados_alternativos.profissionais_liberais.pyspark_job import PySparkJob
+from dependencies.dados_alternativos.profissionais_liberais.cluster_config import (
+    ClusterConfig,
+)
+from dependencies.dados_alternativos.profissionais_liberais.pyspark_job import (
+    PySparkJob,
+)
 from dependencies.dados_alternativos.profissionais_liberais.utils import Utils
 from dependencies.dados_alternativos.profissionais_liberais.variables import Variables
 
@@ -133,7 +141,9 @@ class DagPipeline(Variables):
         self.pyspark_job = pyspark_job(self.pipeline_config)
         self.utils = utils(self.pipeline_config)
         super().__init__(self.pipeline_config)
-        self.cluster_name = self.utils.customize_cluster_name(self.get_cluster_id, "cfc", "-")
+        self.cluster_name = self.utils.customize_cluster_name(
+            self.get_cluster_id, "cfc", "-"
+        )
 
     @staticmethod
     def create_empty_operator(task_id: str, dag: DAG) -> DummyOperator:
@@ -163,7 +173,9 @@ class DagPipeline(Variables):
         return DataprocCreateClusterOperator(
             task_id=task_id,
             project_id=self.get_project_id,
-            cluster_name=self.utils.customize_cluster_name(self.get_cluster_id, "cfc", "-"),
+            cluster_name=self.utils.customize_cluster_name(
+                self.get_cluster_id, "cfc", "-"
+            ),
             labels=self.cluster_config.get_labels(),
             cluster_config=self.cluster_config.get_cluster_config(self.cluster_name),
             region=self.get_region,
@@ -223,7 +235,8 @@ class DagPipeline(Variables):
         """
         JOB_PARAMS = self.utils.task_parameters_map().get(tooltip)
         STEP_EXTRACT, STEP_TRANSFORM, STEP_LOAD = [
-            JOB_PARAMS.step.format(step) for step in ("extract-cfc", "transform-cfc", "load-cfc")
+            JOB_PARAMS.step.format(step)
+            for step in ("extract-cfc", "transform-cfc", "load-cfc")
         ]
 
         with TaskGroup(group_id=group_id, tooltip=tooltip, dag=dag) as pipeline:
@@ -258,7 +271,9 @@ class DagPipeline(Variables):
 
             return pipeline
 
-    def delete_gcs_objects(self, task_id: str, prefix: list, dag: DAG) -> GCSDeleteObjectsOperator:
+    def delete_gcs_objects(
+        self, task_id: str, prefix: list, dag: DAG
+    ) -> GCSDeleteObjectsOperator:
         """
         Creates an operator to delete objects in Google Cloud Storage.
 
@@ -271,7 +286,11 @@ class DagPipeline(Variables):
             GCSDeleteObjectsOperator: An instance of the GCSDeleteObjectsOperator class.
         """
         return GCSDeleteObjectsOperator(
-            task_id=task_id, bucket_name=self.get_bucket_id, objects=None, prefix=prefix, dag=dag
+            task_id=task_id,
+            bucket_name=self.get_bucket_id,
+            objects=None,
+            prefix=prefix,
+            dag=dag,
         )
 
     def delete_cluster(self, task_id: str, dag: DAG) -> DataprocDeleteClusterOperator:
@@ -305,7 +324,9 @@ class DagPipeline(Variables):
         ) as dag:
             start_pipeline = self.create_empty_operator("start", dag)
             create_cluster = self.create_cluster("create_dataproc_cluster", dag)
-            pipeline = self.create_pipeline("pipeline", "conselho-federal-contabilidade", dag)
+            pipeline = self.create_pipeline(
+                "pipeline", "conselho-federal-contabilidade", dag
+            )
             delete_gcs_objects = self.delete_gcs_objects(
                 "delete_files",
                 ["transient/conselho-federal-contabilidade"],
@@ -350,7 +371,9 @@ DEFAULT_ARGS = dag_config.get_args()
 # ================================================================================================
 # DAG CREATE
 # ================================================================================================
-dag_pipeline = DagPipeline(DAG_ID, DEFAULT_ARGS, __DOC__, SCHEDULE_INTERVAL, PIPELINE_CONFIG)
+dag_pipeline = DagPipeline(
+    DAG_ID, DEFAULT_ARGS, __DOC__, SCHEDULE_INTERVAL, PIPELINE_CONFIG
+)
 dag_pipeline.create_dag()
 
 globals()[dag_pipeline.dag_id] = dag_pipeline

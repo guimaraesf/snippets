@@ -36,14 +36,13 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.napoleon",
     "sphinx.ext.duration",
-    "sphinx_rtd_theme"
+    "sphinx_rtd_theme",
 ]
 
 templates_path = ["_templates"]
 source_suffix = [".rst", ".md"]
 exclude_patterns = [
-    "setup.py"
-    "Thumbs.db",
+    "setup.py" "Thumbs.db",
     "DS_Store",
     "library/xml.rst",
     "library/xml",
@@ -69,19 +68,17 @@ autodoc_member_order = "alphabetical"
 autodoc_typehints = "True"
 suppress_warnings = ["True"]
 autodoc_default_options = {
-    'members': True,
-    'undoc-members': True,
-    'show-inheritance': True,
+    "members": True,
+    "undoc-members": True,
+    "show-inheritance": True,
 }
+
 
 def skip_modules(app, what, name, obj, skip, options):
     """
     Skip the given module and all its dependencies
     """
-    modules = [
-        "pandas", "zipfile", "unidecode", 
-        "google", "pyspark", "pytz"
-    ]
+    modules = ["pandas", "zipfile", "unidecode", "google", "pyspark", "pytz"]
     if name in modules:
         return True
     return skip

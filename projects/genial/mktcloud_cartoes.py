@@ -51,9 +51,7 @@ class MktCloudCartoes:
         """
         # Remove acentos
         chars_with_accents = "áéíóúÁÉÍÓÚâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕçÇäëïöüÄËÏÖÜ"
-        chars_without_accents = (
-            "aeiouAEIOUaeiouAEIOUaeiouAEIOUaoAOcCaeiouAEIOU"
-        )
+        chars_without_accents = "aeiouAEIOUaeiouAEIOUaeiouAEIOUaoAOcCaeiouAEIOU"
         df = self.spark.table(table_name).select(
             fn.col("person_id").alias("person_id"),
             fn.col("person_type").alias("Persontype"),
@@ -124,9 +122,7 @@ class MktCloudCartoes:
             DataFrame: The transformed DataFrame.
         """
         df_person, df_account, df_card = dfs
-        df_account = df_account.filter(
-            fn.to_date(fn.col("create_date")) == self.date
-        )
+        df_account = df_account.filter(fn.to_date(fn.col("create_date")) == self.date)
         df = df_person.join(df_account, ["person_id"], "inner")
         df = df.join(df_card, ["person_id", "Accountid"], "inner")
         df = df.select(
@@ -208,9 +204,7 @@ class MktCloudCartoes:
         BODY = self.api_credentials["body"]
         HEADERS = {"Content-Type": "application/json"}
         with requests.Session() as session:
-            response = session.post(
-                url=URL, headers=HEADERS, json=BODY, timeout=60
-            )
+            response = session.post(url=URL, headers=HEADERS, json=BODY, timeout=60)
             if response.status_code == 200:
                 token = response.json()
                 return token["access_token"]
@@ -245,9 +239,7 @@ class MktCloudCartoes:
                     return True
                 return False
 
-    async def send_post_request_payloads(
-        self, payloads: list, token: str
-    ) -> None:
+    async def send_post_request_payloads(self, payloads: list, token: str) -> None:
         """
         Sends POST requests with payloads and a token.
 
@@ -324,6 +316,7 @@ class MktCloudCartoes:
         else:
             logger.info("Finishing job")
 
+
 if __name__ == "__main__":
     args = sys.argv[1:]
     EXECUTION_DATE = args[0]
@@ -332,7 +325,5 @@ if __name__ == "__main__":
 
     nest_asyncio.apply()
     spark = SparkSession.builder.getOrCreate()
-    etl = MktCloudCartoes(
-        spark, EXECUTION_DATE, LOAD_PATH, MKT_CLOUD_API_CREDENTIALS
-    )
+    etl = MktCloudCartoes(spark, EXECUTION_DATE, LOAD_PATH, MKT_CLOUD_API_CREDENTIALS)
     asyncio.run(etl.main())

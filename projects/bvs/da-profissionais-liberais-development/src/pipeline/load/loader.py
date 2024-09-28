@@ -45,11 +45,15 @@ def get_module_path(root_path: str):
 
 BUILDER_MOD_PATH = get_module_path("src.utils.dataframe.pyspark.schema.builder")
 COLUMNS_MOD_PATH = get_module_path("src.utils.dataframe.pyspark.schema.columns")
-FILE_CLEANER_MOD_PATH = get_module_path("src.utils.dataframe.pyspark.processors.file_cleaner")
+FILE_CLEANER_MOD_PATH = get_module_path(
+    "src.utils.dataframe.pyspark.processors.file_cleaner"
+)
 GCS_CLIENT_MOD_PATH = get_module_path("src.utils.gcp.storage.gcs_client")
 GCS_MANAGER_MOD_PATH = get_module_path("src.utils.gcp.storage.gcs_manager")
 LOGGER_MOD_PATH = get_module_path("src.utils.helpers.logger")
-PYSPARK_HANDLER_MOD_PATH = get_module_path("src.utils.dataframe.pyspark.processors.file_operator")
+PYSPARK_HANDLER_MOD_PATH = get_module_path(
+    "src.utils.dataframe.pyspark.processors.file_operator"
+)
 SPARKLAUNCHER_MOD_PATH = get_module_path("src.utils.spark.sparksession")
 STOPWATCH_MOD_PATH = get_module_path("src.utils.time.stopwatch")
 UTILS_MOD_PATH = get_module_path("src.utils.helpers.utils")
@@ -126,7 +130,12 @@ class Loader(ILoader, SchemaTables, CleanTables, PysparkHandler):
         return self.schema
 
     def init_sparksession(
-        self, master: str, app_name: str, bucket_id: str, dataset_id: str, project_id: str
+        self,
+        master: str,
+        app_name: str,
+        bucket_id: str,
+        dataset_id: str,
+        project_id: str,
     ) -> SparkSession:
         """
         Initializes the Spark session.
@@ -141,7 +150,9 @@ class Loader(ILoader, SchemaTables, CleanTables, PysparkHandler):
         Returns:
             SparkSession: Description of the return value.
         """
-        spark_launcher = self.spark_launcher(master, app_name, bucket_id, dataset_id, project_id)
+        spark_launcher = self.spark_launcher(
+            master, app_name, bucket_id, dataset_id, project_id
+        )
         spark = spark_launcher.initialize_sparksession()
         return spark
 
@@ -228,7 +239,9 @@ class Loader(ILoader, SchemaTables, CleanTables, PysparkHandler):
             )
             if self.df_is_valid(df):
                 # Write a blob into transient layer.
-                dest_path = source_path.replace(self.transient_layer, self.trusted_layer)
+                dest_path = source_path.replace(
+                    self.transient_layer, self.trusted_layer
+                )
                 self.write_file(df, write_format, dest_path, mode)
 
     def process_all_blobs(
@@ -288,9 +301,15 @@ class Loader(ILoader, SchemaTables, CleanTables, PysparkHandler):
         """
         infos = self.variables.LOADER_TASKS.get(step_id)
 
-        dir_name, table_infos, df_params = (infos.dir_name, infos.table_infos, infos.df_params)
+        dir_name, table_infos, df_params = (
+            infos.dir_name,
+            infos.table_infos,
+            infos.df_params,
+        )
 
-        spark = self.init_sparksession(master, app_name, bucket_id, dataset_id, project_id)
+        spark = self.init_sparksession(
+            master, app_name, bucket_id, dataset_id, project_id
+        )
 
         sc = SparkConf()
         self.logger.info(f"Spark Configuration: {sc.getAll()}")

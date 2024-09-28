@@ -38,7 +38,9 @@ class AsyncRequest(ParserUrl):
             ValueError: "Raises an error if missing `url`.
         """
         if not isinstance(request_session, aiohttp.ClientSession):
-            raise TypeError("request_session must be an instance of aiohttp.ClientSession.")
+            raise TypeError(
+                "request_session must be an instance of aiohttp.ClientSession."
+            )
         if not url:
             raise ValueError("Missing URL.")
         self.request_session = request_session

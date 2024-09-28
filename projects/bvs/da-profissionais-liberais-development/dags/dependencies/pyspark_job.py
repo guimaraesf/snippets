@@ -162,6 +162,9 @@ class PySparkJob(Variables):
                 archive_uris if archive_uris else [],
                 properties if properties else {},
             ),
-            "reference": {"project_id": self.get_project_id, "job_id": self.validate_id(job_id)},
+            "reference": {
+                "project_id": self.get_project_id,
+                "job_id": self.validate_id(job_id),
+            },
         }
         return job

@@ -24,6 +24,7 @@ import os
 import sys
 import ssl
 import concurrent.futures
+
 # Adding python modules from bucket (e.g. da-beneficios-jobs) to path
 # These files are those passed in the "python_file_uris" parameter in "main.py"
 sys.path.append(os.path.abspath("../"))
@@ -34,7 +35,9 @@ class ProcessRunner:
     Class for running processes.
     """
 
-    def __init__(self, project_id, bucket_name, local_dir, files, target_dates, logger) -> None:
+    def __init__(
+        self, project_id, bucket_name, local_dir, files, target_dates, logger
+    ) -> None:
         self.project_id = project_id
         self.bucket_name = bucket_name
         self.local_dir = local_dir
@@ -62,7 +65,9 @@ class ProcessRunner:
         """
         Get download path for a target date.
         """
-        download_path = os.path.join(self.local_dir, f"garantia_safra{self.target_date}.zip")
+        download_path = os.path.join(
+            self.local_dir, f"garantia_safra{self.target_date}.zip"
+        )
         return download_path
 
     def get_file_names(self):
@@ -86,7 +91,9 @@ class ProcessRunner:
         Checking if the file exists in Google Cloud Storage.
         """
         gcs_file_validator = GcsFileValidator()
-        file_exists = gcs_file_validator.file_exists_in_bucket(list_blobs, file_names, self.logger)
+        file_exists = gcs_file_validator.file_exists_in_bucket(
+            list_blobs, file_names, self.logger
+        )
         return file_exists
 
     def set_ssl_context(self):
@@ -103,9 +110,7 @@ class ProcessRunner:
         """
         Running download files.
         """
-        file_downloader = UrllibDownloader(
-            url, context, zipfile_path, self.logger
-        )
+        file_downloader = UrllibDownloader(url, context, zipfile_path, self.logger)
         file_downloader.run_download()
 
     def validate_if_file_exists(self, zipfile_path):
@@ -128,9 +133,7 @@ class ProcessRunner:
         """
         Unpacking files to "/tmp".
         """
-        file_unpacker = FileUnpacker(
-            zipfile_path, self.local_dir, self.logger
-        )
+        file_unpacker = FileUnpacker(zipfile_path, self.local_dir, self.logger)
         file_unpacker.unpack_zipfile()
 
     def get_file_blob_map(self):
@@ -147,7 +150,9 @@ class ProcessRunner:
         Uploading files into Google Cloud Storage.
         """
         gcs_handle = GcsHandle(bucket, self.logger)
-        gcs_handle.upload_blobs_to_gcs(self.local_dir, file_names_to_send, file_blob_map)
+        gcs_handle.upload_blobs_to_gcs(
+            self.local_dir, file_names_to_send, file_blob_map
+        )
 
     def run(self):
         """
@@ -158,10 +163,13 @@ class ProcessRunner:
         zipfile_path = self.get_download_path()
         file_names = self.get_file_names()
         list_blobs = self.get_blobs_to_validate(bucket)
-        file_exists_in_bucket = self.checking_if_file_exists_in_gcs(list_blobs, file_names)
+        file_exists_in_bucket = self.checking_if_file_exists_in_gcs(
+            list_blobs, file_names
+        )
         if not file_exists_in_bucket:
             self.logger.info(
-                f"Starting the download for the Garantia Safra social benefit from {self.target_date_name}.")
+                f"Starting the download for the Garantia Safra social benefit from {self.target_date_name}."
+            )
             context = self.set_ssl_context()
             self.download_file(url, context, zipfile_path)
             # Change the directory of "dataproc job" to "/tmp"
@@ -206,7 +214,7 @@ def main():
         for period in range(periods_to_check):
             target_dates = [
                 monthly_date_handle.get_target_month_date(period, "%Y%m"),
-                monthly_date_handle.get_target_month_date(period, "%B %Y")
+                monthly_date_handle.get_target_month_date(period, "%B %Y"),
             ]
             process_runner = ProcessRunner(
                 PROJECT_ID,

@@ -14,10 +14,13 @@
 import os
 import sys
 from pyspark.sql.functions import regexp_replace, col, lit, concat, substring
+
 # pylint: disable=import-error
 from cleaning import Cleaning, Formatting
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
+
 
 class Functions:
     """
@@ -438,7 +441,7 @@ class Functions:
             start1=start1,
             len1=len1,
             start2=start2,
-            len2=len2
+            len2=len2,
         )
 
         return dataframe
@@ -485,7 +488,7 @@ class Functions:
             start1=start1,
             len1=len1,
             start2=start2,
-            len2=len2
+            len2=len2,
         )
 
         return dataframe
@@ -539,7 +542,7 @@ class Functions:
             start1=start1,
             len1=len1,
             start2=start2,
-            len2=len2
+            len2=len2,
         )
         dataframe = self.formatting.format_date_columns(
             dataframe=df_for_clean,
@@ -549,7 +552,7 @@ class Functions:
             start2=start4,
             len2=len4,
             start3=start5,
-            len3=len5
+            len3=len5,
         )
 
         return dataframe
@@ -591,7 +594,7 @@ class Functions:
             start1=start1,
             len1=len1,
             start2=start2,
-            len2=len2
+            len2=len2,
         )
 
         return dataframe
@@ -632,7 +635,7 @@ class Functions:
             start1=start1,
             len1=len1,
             start2=start2,
-            len2=len2
+            len2=len2,
         )
 
         return dataframe
@@ -679,7 +682,7 @@ class Functions:
             start1=start1,
             len1=len1,
             start2=start2,
-            len2=len2
+            len2=len2,
         )
 
         return dataframe
@@ -719,7 +722,7 @@ class Functions:
             start1=start1,
             len1=len1,
             start2=start2,
-            len2=len2
+            len2=len2,
         )
 
         return dataframe
@@ -761,7 +764,7 @@ class Functions:
             start1=start1,
             len1=len1,
             start2=start2,
-            len2=len2
+            len2=len2,
         )
 
         return dataframe
@@ -1752,7 +1755,7 @@ class Functions:
             start1=start1,
             len1=len1,
             start2=start2,
-            len2=len2
+            len2=len2,
         )
         return dataframe
 
@@ -2467,21 +2470,21 @@ class Functions:
         :return: The cleaned dataframe
         """
         regexp_columns = {
-            "NOME": [("[^A-Za-z0-9 ]", "")], 
-            "MATRICULA": [("[^A-Za-z0-9 ]", "")], 
-            "ORGAO": [("[^A-Za-z0-9 ]", "")], 
-            "CARGO": [("[^A-Za-z0-9 ]", "")], 
-            "FUNCAO": [("[^A-Za-z0-9 ]", "")], 
-            "SIMBOLO_DA_FUNCAO": [("[^A-Za-z0-9 ]", "")], 
-            "SITUACAO_FUNCIONAL_GERAL": [("[^A-Za-z0-9 ]", "")], 
-            "CARREIRA": [("[^A-Za-z0-9 ]", "")], 
-            "LOTACAO": [("[^A-Za-z0-9 ]", "")], 
-            "DATA_ADMISSAO": [("[^A-Za-z0-9 ]", "")], 
-            "DATA_ADMISSAO_FORMATO_NUMERICO": [("[^A-Za-z0-9 ]", "")], 
-            "SITUACAO": [("[^A-Za-z0-9 ]", "")], 
-            "TIPO_VINCULO": [("[^A-Za-z0-9 ]", "")], 
-            "MES_REFERENCIA": [("[^A-Za-z0-9 ]", "")], 
-            "SITUACAO_FUNCIONAL_ESPECIFICA": [("[^A-Za-z0-9 ]", "")]
+            "NOME": [("[^A-Za-z0-9 ]", "")],
+            "MATRICULA": [("[^A-Za-z0-9 ]", "")],
+            "ORGAO": [("[^A-Za-z0-9 ]", "")],
+            "CARGO": [("[^A-Za-z0-9 ]", "")],
+            "FUNCAO": [("[^A-Za-z0-9 ]", "")],
+            "SIMBOLO_DA_FUNCAO": [("[^A-Za-z0-9 ]", "")],
+            "SITUACAO_FUNCIONAL_GERAL": [("[^A-Za-z0-9 ]", "")],
+            "CARREIRA": [("[^A-Za-z0-9 ]", "")],
+            "LOTACAO": [("[^A-Za-z0-9 ]", "")],
+            "DATA_ADMISSAO": [("[^A-Za-z0-9 ]", "")],
+            "DATA_ADMISSAO_FORMATO_NUMERICO": [("[^A-Za-z0-9 ]", "")],
+            "SITUACAO": [("[^A-Za-z0-9 ]", "")],
+            "TIPO_VINCULO": [("[^A-Za-z0-9 ]", "")],
+            "MES_REFERENCIA": [("[^A-Za-z0-9 ]", "")],
+            "SITUACAO_FUNCIONAL_ESPECIFICA": [("[^A-Za-z0-9 ]", "")],
         }
 
         date_columns_1 = ["DATA_ADMISSAO"]
@@ -2569,7 +2572,7 @@ class Functions:
             "VR_RECEITA_REALIZADA": [("[,]", "."), ("^\.00$", "0")],
             "VR_RECEITA_PREVISTA": [("[,]", "."), ("^\.00$", "0")],
             "IN_MES": [("[^A-Za-z0-9 ]", "")],
-            "DT_CARGA": [("[^A-Za-z0-9 ]", "")]
+            "DT_CARGA": [("[^A-Za-z0-9 ]", "")],
         }
 
         date_columns_1 = ["DT_CARGA"]
@@ -2582,7 +2585,7 @@ class Functions:
 
         start3 = 7
         len3 = 2
-        
+
         # Applying transformations to specified columns
         dataframe = self.cleaning.process_dataframe(
             df_for_clean, file_name, regexp_columns, self.cleaning.processing_date
@@ -2690,7 +2693,7 @@ class Functions:
             "DATA_3": [("[^A-Za-z0-9 ]", "")],
             "SITUACAO": [("[^A-Za-z0-9 ]", "")],
             "TOTAL_PROPOSTO": [("[,]", ".")],
-            "TOTAL_HOMOLOGADO": [("[,]", ".")]
+            "TOTAL_HOMOLOGADO": [("[,]", ".")],
         }
         date_columns = ["DATA_1", "DATA_2", "DATA_3"]
 

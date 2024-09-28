@@ -42,11 +42,15 @@ def get_module_path(root_path: str):
 
 BUILDER_MOD_PATH = get_module_path("src.utils.dataframe.pyspark.schema.builder")
 COLUMNS_MOD_PATH = get_module_path("src.utils.dataframe.pyspark.schema.columns")
-FILE_CLEANER_MOD_PATH = get_module_path("src.utils.dataframe.pyspark.processors.file_cleaner")
+FILE_CLEANER_MOD_PATH = get_module_path(
+    "src.utils.dataframe.pyspark.processors.file_cleaner"
+)
 GCS_CLIENT_MOD_PATH = get_module_path("src.utils.gcp.storage.gcs_client")
 GCS_MANAGER_MOD_PATH = get_module_path("src.utils.gcp.storage.gcs_manager")
 LOGGER_MOD_PATH = get_module_path("src.utils.helpers.logger")
-PYSPARK_HANDLER_MOD_PATH = get_module_path("src.utils.dataframe.pyspark.processors.file_operator")
+PYSPARK_HANDLER_MOD_PATH = get_module_path(
+    "src.utils.dataframe.pyspark.processors.file_operator"
+)
 SPARKLAUNCHER_MOD_PATH = get_module_path("src.utils.spark.sparksession")
 STOPWATCH_MOD_PATH = get_module_path("src.utils.time.stopwatch")
 UTILS_MOD_PATH = get_module_path("src.utils.helpers.utils")
@@ -123,7 +127,12 @@ class Transformer(ITransformer, SchemaTables, CleanTables, PysparkHandler):
         return self.schema
 
     def init_sparksession(
-        self, master: str, app_name: str, bucket_id: str, dataset_id: str, project_id: str
+        self,
+        master: str,
+        app_name: str,
+        bucket_id: str,
+        dataset_id: str,
+        project_id: str,
     ) -> SparkSession:
         """
         Initializes the Spark session.
@@ -138,7 +147,9 @@ class Transformer(ITransformer, SchemaTables, CleanTables, PysparkHandler):
         Returns:
             SparkSession: Description of the return value.
         """
-        spark_launcher = self.spark_launcher(master, app_name, bucket_id, dataset_id, project_id)
+        spark_launcher = self.spark_launcher(
+            master, app_name, bucket_id, dataset_id, project_id
+        )
         spark = spark_launcher.initialize_sparksession()
         return spark
 
@@ -222,18 +233,26 @@ class Transformer(ITransformer, SchemaTables, CleanTables, PysparkHandler):
         source_path = f"gs://{bucket_id}/{blob_name}"
         file_name = source_path.split("/")[-1]
         # Read CSV file in transient layer.
-        df = self.read_csv_file(spark, source_path, delimiter, header, encoding, self.get_schema)
+        df = self.read_csv_file(
+            spark, source_path, delimiter, header, encoding, self.get_schema
+        )
         rows_before_process = df.count()
         if self.df_is_valid(df):
             # Processing DataFrame for transient layer.
             df = self.process_df(df, table_infos, file_name)
             rows_after_process = df.count()
             if rows_before_process != rows_after_process:
-                self.logger.warning("The number of records is different after the transformations.")
+                self.logger.warning(
+                    "The number of records is different after the transformations."
+                )
             # Write a blob into transient layer.
             BEFORE_EXT_FILE = -4
-            dest_path = source_path.replace(self.staging_layer, self.transient_layer)[:BEFORE_EXT_FILE]
-            self.write_file(df, write_format, dest_path, mode, delimiter, header, encoding)
+            dest_path = source_path.replace(self.staging_layer, self.transient_layer)[
+                :BEFORE_EXT_FILE
+            ]
+            self.write_file(
+                df, write_format, dest_path, mode, delimiter, header, encoding
+            )
 
     def process_all_blobs(
         self,
@@ -260,7 +279,9 @@ class Transformer(ITransformer, SchemaTables, CleanTables, PysparkHandler):
         """
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = [
-                executor.submit(self.process_blob, spark, bucket_id, blob, table_infos, df_params)
+                executor.submit(
+                    self.process_blob, spark, bucket_id, blob, table_infos, df_params
+                )
                 for blob in blob_names
             ]
         future_as_completed = list(concurrent.futures.as_completed(futures))
@@ -294,9 +315,15 @@ class Transformer(ITransformer, SchemaTables, CleanTables, PysparkHandler):
         """
         infos = self.variables.TRANSFORMER_TASKS.get(step_id)
 
-        dir_name, table_infos, df_params = (infos.dir_name, infos.table_infos, infos.df_params)
+        dir_name, table_infos, df_params = (
+            infos.dir_name,
+            infos.table_infos,
+            infos.df_params,
+        )
 
-        spark = self.init_sparksession(master, app_name, bucket_id, dataset_id, project_id)
+        spark = self.init_sparksession(
+            master, app_name, bucket_id, dataset_id, project_id
+        )
 
         sc = SparkConf()
         self.logger.info(f"Spark Configuration: {sc.getAll()}")
@@ -310,7 +337,9 @@ class Transformer(ITransformer, SchemaTables, CleanTables, PysparkHandler):
         self.logger.info(
             f"Searching files to process in: {self.staging_layer}/{dir_name}/ano={YEAR}/mes={MONTH}"
         )
-        blob_names = self.get_list_blobs(bucket, f"{self.staging_layer}/{dir_name}/ano={YEAR}/mes={MONTH}")
+        blob_names = self.get_list_blobs(
+            bucket, f"{self.staging_layer}/{dir_name}/ano={YEAR}/mes={MONTH}"
+        )
         if self.check_before_processing(blob_names):
             self.logger.info(
                 f"Running data transformations for Blob: {self.transient_layer}/{dir_name}/ano={YEAR}/mes={MONTH}/dia={DAY}"
@@ -340,7 +369,9 @@ if __name__ == "__main__":
     )
 
     transform = Transformer()
-    transform.run_transform(STEP_ID, BUCKET_ID, DATASET_ID, PROJECT_ID, APP_NAME, MASTER)
+    transform.run_transform(
+        STEP_ID, BUCKET_ID, DATASET_ID, PROJECT_ID, APP_NAME, MASTER
+    )
 
     stopwatch.stop()
     stopwatch.show_elapsed_time()

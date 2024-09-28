@@ -13,8 +13,10 @@
 import os
 import sys
 from pyspark.sql import SparkSession
+
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath("../"))
+
 
 class SparkLauncher:
     """
@@ -73,16 +75,13 @@ class SparkLauncher:
         Initialize SparkSession
         """
         spark = (
-            SparkSession.builder \
-            .master(self.master) \
-            .appName(self.app_name) \
-            # .config(
-            #     "spark.driver.extraJavaOptions", 
+            SparkSession.builder.master(self.master).appName(self.app_name)  # .config(
+            #     "spark.driver.extraJavaOptions",
             #     "-Dlog4j.configuration=file:log4j.properties"
             # ) \
             .getOrCreate()
         )
 
         self.__configure_session(spark)
-        
+
         return spark
