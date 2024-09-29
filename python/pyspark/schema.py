@@ -18,7 +18,7 @@ class Schema:
     def __init__(self) -> None:
         pass
 
-    def create_spark_struct_type(self, schema_atrr: dict) -> None:
+    def create_schema(self, schema_atrr: dict) -> None:
         """
         Creates a Spark StructType schema based on the provided table information.
 
