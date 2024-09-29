@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
 
 
-class UtilsSelenium:
+class Selenium:
     """
     This is the main class that contains all the necessary methods to interact with a web page using Selenium.
     """
@@ -29,7 +29,7 @@ class UtilsSelenium:
         self.url = url
 
     @staticmethod
-    def instantiate_browser_options(browser_option_class: callable) -> any:
+    def init_browser_options(browser_option_class: callable) -> any:
         """
         Creates an instance of Options which allows you to set options for the WebDriver.
 
@@ -42,7 +42,7 @@ class UtilsSelenium:
         return browser_option_class()
 
     @staticmethod
-    def add_argument_option(options: callable, argument: str) -> None:
+    def add_arg_option(options: callable, argument: str) -> None:
         """
         Adds an argument to the ChromeOptions instance.
 
@@ -73,7 +73,7 @@ class UtilsSelenium:
             options=options, service=Service(self._driver_install(driver_name_install))
         )
 
-    def go_to_page(self, driver: webdriver):
+    def go_to_page(self, driver: webdriver) -> None:
         """
         Navigates the driver to the specified URL.
 

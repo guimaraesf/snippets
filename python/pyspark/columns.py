@@ -11,7 +11,7 @@ from typing import NamedTuple
 from enum import Enum
 
 
-class DataframeParams(NamedTuple):
+class DataframeSchema(NamedTuple):
     """
     A NamedTuple for holding parameters related to a DataFrame.
 
@@ -30,14 +30,14 @@ class Columns(Enum):
     """
 
     @classmethod
-    def get(cls):
+    def init(cls):
         return {var.name: var.value for var in cls}
 
     PATTERN = ""
     REPLACEMENT = ""
 
     TABLE_NAME: dict = {
-        "column_name": DataframeParams(
+        "column_name": DataframeSchema(
             schema_attr=("dataType", "nullable", {"description": ""}),
             regex=((PATTERN, REPLACEMENT)),
         )

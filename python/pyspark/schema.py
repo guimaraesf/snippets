@@ -10,7 +10,7 @@ from pyspark.sql.types import StructField
 from pyspark.sql.types import StructType
 
 
-class Schema:
+class SparkSchema:
     """
     This class is responsible for creating the schemas of all tables
     """
