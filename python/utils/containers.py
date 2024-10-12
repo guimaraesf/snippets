@@ -31,9 +31,8 @@ class MyClass:
 
 if __name__ == "__main__":
     container = Container()
-    container.init_resources()
-    container.wire(modules=[__name__])
-    container.check_dependencies()
+
+
 
     run = MyClass()
     run.main()
