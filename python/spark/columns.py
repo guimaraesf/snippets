@@ -19,8 +19,9 @@ class DataframeSchema(NamedTuple):
         schema_params (tuple): A tuple containing parameters related (data type, nullable flag, and metadata) to the schema of the DataFrame.
         regex (tuple): A tuple containing regular expression for data processing.
     """
+
     # NOTE: (e.g., StructType(dataType, nullable, metadata))
-    schema_attr: tuple[pyspark.sql.types, bool, dict] 
+    schema_attr: tuple[pyspark.sql.types, bool, dict]
     regex: tuple[str, str]
 
 

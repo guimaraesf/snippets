@@ -1,0 +1,1 @@
+python -m unittest discover --start-directory src/tests --verbose --failfast --pattern *_test.py

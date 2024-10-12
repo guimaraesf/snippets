@@ -38,5 +38,3 @@ class MySqlConnector:
 
     def close_obj(self, mysql_obj: MySQLConnection | MySQLCursor) -> None:
         mysql_obj.close()
-
-
