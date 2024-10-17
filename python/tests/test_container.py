@@ -1,9 +1,11 @@
 import logging
 import unittest
-from unittest.mock import patch
 
 from python.utils.containers import Container
 from dependency_injector import providers
+from unittest import mock
+from unittest.mock import patch, Mock
+from python.utils.enums import Example
 
 
 class TestContainer(unittest.TestCase):
@@ -29,7 +31,7 @@ class TestContainer(unittest.TestCase):
 
 		self.assertIsNotNone(container.logger)
 		self.assertIsNotNone(container.enums)
-		
+
 		self.assertEqual(json, json_config)
 		self.assertEqual(enums["NOME"], "FERNANDO THEODORO GUIMARÃES")
 		self.assertIsInstance(logger, logging.RootLogger)

@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 import unittest
 from python.utils.logger import Logger
 
@@ -37,7 +38,7 @@ class TestLogger(unittest.TestCase):
 	def test_init(self):
 		# Act
 		logger = Logger.init(self.temp_config_file)
-
+		
 		# Assert
 		self.assertIsInstance(logger, logging.Logger)
 	
@@ -50,7 +51,7 @@ class TestLogger(unittest.TestCase):
 		# Assert
 		self.assertIs(logger1, logger2)
 	
-	
+
 	def tearDown(self):
 		os.remove(self.temp_config_file)
 
